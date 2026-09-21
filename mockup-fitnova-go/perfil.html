@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitNova Go · Personalizar perfil</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app">
+
+    <!-- Cabecera -->
+    <header class="app-header">
+      <button class="icon-btn" onclick="location.href='index.html'" title="Volver">←</button>
+      <span style="font-weight:700;font-size:15px;">Personalizar perfil</span>
+      <button class="icon-btn" onclick="location.href='ajustes.html'" title="Ajustes">⚙️</button>
+    </header>
+
+    <main class="app-content">
+
+      <div class="profile-summary">
+        <button class="icon-square" style="width:64px;height:64px;" title="Cambiar foto">
+          <img src="../imagenes/LOGO-FITNOVA USUARIO.png" alt="Foto de perfil" />
+        </button>
+        <h2>Ana Martínez</h2>
+      </div>
+
+      <!-- Evolución -->
+      <section class="card">
+        <p class="card-title">Evolución</p>
+        <div class="line-chart-wrap">
+          <svg viewBox="0 0 300 100" preserveAspectRatio="none">
+            <polyline fill="none" stroke="#FF6A00" stroke-width="3"
+              points="0,70 50,65 100,55 150,58 200,40 250,35 300,25" />
+            <circle cx="300" cy="25" r="4" fill="#0A1A2F" />
+          </svg>
+        </div>
+        <div class="row" style="font-size:11px;color:#8a93a1;">
+          <span>01 Ago</span><span style="text-align:right;">21 Sep</span>
+        </div>
+      </section>
+
+      <!-- Métricas -->
+      <section class="card">
+        <p class="card-title">Métricas</p>
+        <p style="font-size:13px;color:#55606f;margin:0 0 12px;">Consulta y actualiza tus medidas corporales.</p>
+        <button class="btn-primary" onclick="openModal('modal-metrica')">Entrar</button>
+      </section>
+
+      <!-- Tus profesionales -->
+      <section class="card">
+        <p class="card-title">Tus profesionales</p>
+        <div class="professional-item">
+          <img class="avatar" src="https://via.placeholder.com/44" alt="" />
+          <div class="info"><strong>Carlos Ruiz</strong><span>Entrenador personal</span></div>
+          <button class="btn-link">Ver</button>
+        </div>
+        <div class="professional-item">
+          <img class="avatar" src="https://via.placeholder.com/44" alt="" />
+          <div class="info"><strong>Laura Gómez</strong><span>Nutricionista</span></div>
+          <button class="btn-link">Ver</button>
+        </div>
+      </section>
+
+      <!-- Legales -->
+      <section class="card legal-list">
+        <div class="list-item"><span>Ayudas al usuario</span><span>›</span></div>
+        <div class="list-item"><span>Política de privacidad</span><span>›</span></div>
+        <div class="list-item"><span>Términos y condiciones</span><span>›</span></div>
+        <div class="list-item"><span>Aviso legal</span><span>›</span></div>
+      </section>
+
+    </main>
+
+    <!-- ===================== MODAL: Métrica ===================== -->
+    <div class="modal-overlay" id="modal-metrica">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Métrica</h2>
+          <button class="modal-close" onclick="closeModal('modal-metrica')">✕</button>
+        </div>
+
+        <label for="metrica-tipo">Selecciona la métrica</label>
+        <select id="metrica-tipo">
+          <option>Peso corporal</option>
+          <option>Grasa corporal</option>
+          <option>Pecho</option>
+          <option>Cuello</option>
+          <option>Hombros</option>
+          <option>Bíceps izq.</option>
+          <option>Bíceps der.</option>
+          <option>Antebrazo izq.</option>
+          <option>Antebrazo der.</option>
+          <option>Cintura</option>
+          <option>Cadera</option>
+          <option>Muslo izq.</option>
+          <option>Muslo der.</option>
+          <option>Gemelo izq.</option>
+          <option>Gemelo der.</option>
+        </select>
+
+        <!-- Gráfica de evolución de la métrica -->
+        <div class="card" style="margin-top:14px;">
+          <div class="line-chart-wrap">
+            <svg viewBox="0 0 300 100" preserveAspectRatio="none">
+              <polyline fill="none" stroke="#FF6A00" stroke-width="3"
+                points="0,80 50,75 100,68 150,60 200,55 250,48 300,42" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Objetivo -->
+        <div class="card" style="margin-top:14px;">
+          <p class="card-title">
+            Objetivo
+            <button class="icon-btn" style="color:var(--azul);width:30px;height:30px;font-size:16px;" onclick="openModal('modal-objetivo')" title="Definir objetivo">⚖️</button>
+          </p>
+          <div class="row" style="align-items:center;">
+            <div>
+              <div class="list-item"><span>Peso inicial</span><strong>82,0 kg</strong></div>
+              <div class="list-item"><span>Peso actual</span><strong>76,4 kg</strong></div>
+              <div class="list-item"><span>Peso objetivo</span><strong>70,0 kg</strong></div>
+            </div>
+            <div class="circular-progress" style="--value:47;">
+              <span>47%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Registros del mes -->
+        <div class="card" style="margin-top:14px;">
+          <p class="card-title">Registros de este mes</p>
+          <div class="list-item"><span>21 sep · 76,4 kg</span><button class="delete-icon">🗑</button></div>
+          <div class="list-item"><span>14 sep · 77,1 kg</span><button class="delete-icon">🗑</button></div>
+          <div class="list-item"><span>07 sep · 78,0 kg</span><button class="delete-icon">🗑</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MODAL: Objetivo (báscula) ===================== -->
+    <div class="modal-overlay" id="modal-objetivo">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Definir objetivo</h2>
+          <button class="modal-close" onclick="closeModal('modal-objetivo')">✕</button>
+        </div>
+        <label for="objetivo-peso">Peso objetivo (kg)</label>
+        <input type="number" id="objetivo-peso" step="0.1" value="70.0" />
+        <div class="row" style="margin-top:18px;">
+          <button class="btn-secondary" onclick="closeModal('modal-objetivo')">Cancelar</button>
+          <button class="btn-primary" onclick="closeModal('modal-objetivo')">Actualizar</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

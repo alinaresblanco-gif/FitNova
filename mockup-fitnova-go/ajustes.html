@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitNova Go · Ajustes</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app">
+
+    <header class="app-header">
+      <button class="icon-btn" onclick="location.href='perfil.html'" title="Volver">←</button>
+      <span style="font-weight:700;font-size:15px;">Ajustes</span>
+      <span style="width:42px;"></span>
+    </header>
+
+    <main class="app-content">
+
+      <!-- MI PERFIL -->
+      <div class="accordion-item open">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          Mi perfil <span class="chevron">⌄</span>
+        </div>
+        <div class="accordion-body">
+          <button class="icon-square" style="width:64px;height:64px;" title="Cambiar foto">
+            <img src="../imagenes/LOGO-FITNOVA USUARIO.png" alt="Foto de perfil" />
+          </button>
+
+          <p class="section-title">Datos personales</p>
+          <div class="field-row">
+            <div><label for="perfil-nombre">Nombre</label><input id="perfil-nombre" value="Ana" /></div>
+            <div><label for="perfil-apellidos">Apellidos</label><input id="perfil-apellidos" value="Martínez" /></div>
+          </div>
+          <label for="perfil-avatar">Nombre de avatar</label>
+          <input id="perfil-avatar" value="anafit" />
+          <div class="field-row">
+            <div><label for="perfil-nacimiento">Fecha de nacimiento</label><input type="date" id="perfil-nacimiento" /></div>
+            <div><label for="perfil-telefono">Teléfono</label><input id="perfil-telefono" placeholder="+34 600 000 000" /></div>
+          </div>
+          <label for="perfil-email">Email</label>
+          <input type="email" id="perfil-email" value="ana@example.com" />
+          <label for="perfil-password">Contraseña</label>
+          <input type="password" id="perfil-password" value="********" />
+
+          <p class="section-title">Datos de facturación</p>
+          <div class="field-row">
+            <div><label for="fact-dni">DNI</label><input id="fact-dni" /></div>
+            <div><label for="fact-cp">Código postal</label><input id="fact-cp" /></div>
+          </div>
+          <label for="fact-direccion">Dirección</label>
+          <input id="fact-direccion" />
+          <div class="field-row">
+            <div><label for="fact-ciudad">Ciudad</label><input id="fact-ciudad" /></div>
+            <div><label for="fact-region">Región</label><input id="fact-region" /></div>
+          </div>
+          <label for="fact-pais">País</label>
+          <input id="fact-pais" />
+
+          <button class="btn-primary" style="margin-top:16px;">Guardar cambios</button>
+        </div>
+      </div>
+
+      <!-- SOBRE MÍ -->
+      <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          Sobre mí <span class="chevron">⌄</span>
+        </div>
+        <div class="accordion-body">
+          <label>Género</label>
+          <div class="chip-select">
+            <button class="active" onclick="selectChip(this)">Masculino</button>
+            <button onclick="selectChip(this)">Femenino</button>
+          </div>
+          <div class="field-row">
+            <div><label for="sobre-altura">Altura (cm)</label><input type="number" id="sobre-altura" value="170" /></div>
+            <div><label for="sobre-peso">Peso inicial (kg)</label><input type="number" id="sobre-peso" value="82" /></div>
+          </div>
+          <label for="sobre-objetivo">Notas sobre tu objetivo</label>
+          <textarea id="sobre-objetivo" placeholder="Ej. Quiero perder grasa y ganar tono muscular"></textarea>
+          <label for="sobre-lesiones">Lesiones, alergias u otras observaciones</label>
+          <textarea id="sobre-lesiones" placeholder="Ej. Molestia en rodilla derecha"></textarea>
+          <button class="btn-primary" style="margin-top:16px;">Guardar cambios</button>
+        </div>
+      </div>
+
+      <!-- MÉTODOS DE PAGO -->
+      <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          Métodos de pago <span class="chevron">⌄</span>
+        </div>
+        <div class="accordion-body">
+          <div class="list-item"><span>💳 Visa · •••• 4321</span><span>Predeterminada</span></div>
+          <div class="list-item"><span>💳 Mastercard · •••• 8890</span><span></span></div>
+          <button class="btn-secondary" style="margin-top:12px;">Introducir nueva forma de pago</button>
+        </div>
+      </div>
+
+      <!-- AJUSTES -->
+      <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          Ajustes <span class="chevron">⌄</span>
+        </div>
+        <div class="accordion-body">
+          <label for="ajuste-medidas">Sistema de medidas</label>
+          <select id="ajuste-medidas">
+            <option>Internacional (Kg/m)</option>
+            <option>Imperial (Lb/inches)</option>
+          </select>
+          <label for="ajuste-notif">Notificaciones</label>
+          <select id="ajuste-notif">
+            <option>Activadas</option>
+            <option>Desactivadas</option>
+          </select>
+          <label for="ajuste-idioma">Idioma</label>
+          <select id="ajuste-idioma">
+            <option>Español</option>
+            <option>English</option>
+          </select>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

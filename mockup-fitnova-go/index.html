@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitNova Go · Inicio</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app">
+
+    <!-- Cabecera -->
+    <header class="app-header">
+      <a href="perfil.html" class="icon-square" title="Personalizar perfil">
+        <img src="../imagenes/LOGO-FITNOVA USUARIO.png" alt="Perfil" />
+      </a>
+      <div class="header-actions">
+        <button class="icon-btn" onclick="openModal('modal-chat')" title="Chat">
+          💬
+          <span class="badge">2</span>
+        </button>
+        <button class="icon-btn" onclick="openModal('modal-notificaciones')" title="Notificaciones">
+          🔔
+          <span class="badge">3</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Contenido -->
+    <main class="app-content">
+
+      <div class="greeting">
+        <h1>Buenos días, Ana</h1>
+      </div>
+
+      <div class="empty-state">
+        <p>Hoy aún no has registrado ninguna actividad. ¡Vamos, tú puedes con esto! 💪</p>
+        <button class="btn-primary" onclick="openModal('modal-actividad')">Registrar Actividad de Hoy</button>
+      </div>
+
+      <!-- Resumen semanal -->
+      <section class="card">
+        <p class="card-title">Resumen semanal</p>
+        <div class="weekly-chart">
+          <div class="bar-col"><div class="bar filled" style="height:40%"></div><span class="bar-label">L</span></div>
+          <div class="bar-col"><div class="bar filled" style="height:65%"></div><span class="bar-label">M</span></div>
+          <div class="bar-col"><div class="bar filled" style="height:20%"></div><span class="bar-label">X</span></div>
+          <div class="bar-col"><div class="bar" style="height:5%"></div><span class="bar-label">J</span></div>
+          <div class="bar-col"><div class="bar filled" style="height:80%"></div><span class="bar-label">V</span></div>
+          <div class="bar-col"><div class="bar filled" style="height:55%"></div><span class="bar-label">S</span></div>
+          <div class="bar-col"><div class="bar" style="height:0%"></div><span class="bar-label">D</span></div>
+        </div>
+      </section>
+
+      <!-- Conectar app externa -->
+      <section class="card">
+        <p class="card-title">Conecta tu app o dispositivo</p>
+        <p style="font-size:13px;color:#55606f;margin:0 0 12px;">Sincroniza Strava o tu reloj inteligente para importar tu actividad automáticamente.</p>
+        <button class="btn-secondary">Conectar dispositivo</button>
+      </section>
+
+      <!-- Nutrición -->
+      <section class="card">
+        <p class="card-title">Nutrición</p>
+        <p style="font-size:13px;color:#55606f;margin:0 0 12px;">Registra tu alimentación del día pulsando el siguiente botón.</p>
+        <button class="btn-primary" onclick="openModal('modal-nutricion')">Registrar nutrición</button>
+      </section>
+
+    </main>
+
+    <!-- Barra inferior -->
+    <nav class="bottom-nav">
+      <a href="index.html" class="active"><span class="nav-icon">🏠</span>Inicio</a>
+      <a href="placeholder.html?vista=Agenda"><span class="nav-icon">📅</span>Agenda</a>
+      <a href="placeholder.html?vista=Videos"><span class="nav-icon">▶️</span>Videos</a>
+      <a href="placeholder.html?vista=Evolución"><span class="nav-icon">📈</span>Evolución</a>
+    </nav>
+
+    <!-- ===================== MODAL: Registrar actividad ===================== -->
+    <div class="modal-overlay" id="modal-actividad">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Registrar actividad</h2>
+          <button class="modal-close" onclick="closeModal('modal-actividad')">✕</button>
+        </div>
+
+        <label for="act-nombre">Nombre de la actividad</label>
+        <input type="text" id="act-nombre" placeholder="Ej. Carrera en el parque" />
+
+        <div class="field-row">
+          <div>
+            <label for="act-fecha">Fecha</label>
+            <input type="date" id="act-fecha" />
+          </div>
+          <div>
+            <label for="act-duracion">Duración</label>
+            <input type="text" id="act-duracion" placeholder="Ej. 00:45" />
+          </div>
+        </div>
+
+        <p class="section-title">Detalles de la actividad</p>
+        <div class="field-row">
+          <div>
+            <label for="act-distancia">Distancia (Km)</label>
+            <input type="number" id="act-distancia" step="0.1" oninput="calcularActividad()" />
+          </div>
+          <div>
+            <label for="act-pasos">Pasos (calculado)</label>
+            <input type="number" id="act-pasos" readonly />
+          </div>
+          <div>
+            <label for="act-calorias">Calorías (calculado)</label>
+            <input type="number" id="act-calorias" readonly />
+          </div>
+        </div>
+
+        <label for="act-comentario">Deja un comentario de la actividad</label>
+        <textarea id="act-comentario" placeholder="¿Cómo te has sentido?"></textarea>
+
+        <label>Foto de la ruta</label>
+        <div class="upload-box">📷 Subir foto de la ruta (opcional)</div>
+
+        <div class="row" style="margin-top:18px;">
+          <button class="btn-secondary" onclick="closeModal('modal-actividad')">Cancelar</button>
+          <button class="btn-primary" onclick="closeModal('modal-actividad')">Guardar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MODAL: Registrar nutrición ===================== -->
+    <div class="modal-overlay" id="modal-nutricion">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Registrar nutrición</h2>
+          <button class="modal-close" onclick="closeModal('modal-nutricion')">✕</button>
+        </div>
+
+        <label for="nut-fecha">Fecha</label>
+        <input type="date" id="nut-fecha" />
+
+        <label>Tipo de comida</label>
+        <div class="chip-select">
+          <button class="active" onclick="selectChip(this)">Desayuno</button>
+          <button onclick="selectChip(this)">Comida</button>
+          <button onclick="selectChip(this)">Cena</button>
+          <button onclick="selectChip(this)">Snack</button>
+          <button onclick="selectChip(this)">Agua</button>
+          <button onclick="selectChip(this)">Otro</button>
+        </div>
+
+        <label for="nut-alimentos">Alimentos tomados</label>
+        <textarea id="nut-alimentos" placeholder="Ej. 2 tostadas integrales, aguacate, café..."></textarea>
+
+        <label for="nut-agua">Vasos de agua</label>
+        <input type="number" id="nut-agua" min="0" placeholder="0" />
+
+        <div class="row" style="margin-top:18px;">
+          <button class="btn-secondary" onclick="closeModal('modal-nutricion')">Cancelar</button>
+          <button class="btn-primary" onclick="closeModal('modal-nutricion')">Guardar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MODAL: Chat ===================== -->
+    <div class="modal-overlay" id="modal-chat">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Chat</h2>
+          <button class="modal-close" onclick="closeModal('modal-chat')">✕</button>
+        </div>
+        <div class="professional-item">
+          <img class="avatar" src="https://via.placeholder.com/44" alt="" />
+          <div class="info">
+            <strong>Carlos Ruiz</strong>
+            <span>Entrenador personal</span>
+          </div>
+        </div>
+        <div class="professional-item">
+          <img class="avatar" src="https://via.placeholder.com/44" alt="" />
+          <div class="info">
+            <strong>Laura Gómez</strong>
+            <span>Nutricionista</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MODAL: Actualización de la app ===================== -->
+    <div class="modal-overlay" id="modal-actualizacion">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Actualización disponible</h2>
+        </div>
+        <p style="font-size:14px;color:#55606f;margin:0 0 18px;">Hay una nueva versión de FitNova Go con mejoras y correcciones. Actualiza para disfrutar de los últimos cambios.</p>
+        <div class="row">
+          <button class="btn-secondary" onclick="descartarActualizacion()">Ahora no</button>
+          <button class="btn-primary" onclick="aplicarActualizacion()">Actualizar aplicación</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MODAL: Notificaciones ===================== -->
+    <div class="modal-overlay" id="modal-notificaciones">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Notificaciones</h2>
+          <button class="modal-close" onclick="closeModal('modal-notificaciones')">✕</button>
+        </div>
+        <div class="list-item"><span>Carlos te ha enviado una nueva rutina</span><span>Hoy</span></div>
+        <div class="list-item"><span>Recuerda registrar tu peso de esta semana</span><span>Ayer</span></div>
+        <div class="list-item"><span>Laura ha revisado tu diario de nutrición</span><span>2 días</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>checkForAppUpdate();</script>
+</body>
+</html>
