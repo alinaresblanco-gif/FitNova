@@ -1,7 +1,7 @@
 // Utilidades genéricas para el mockup de FitNova Go (sin backend, solo simulación visual)
 
 // Incrementar en cada cambio visible del mockup para que se muestre el aviso de actualización.
-const APP_VERSION = '2026.09.21.2';
+const APP_VERSION = '2026.09.21.3';
 
 // Comprueba si hay una versión nueva del mockup y muestra el modal de actualización en Inicio.
 function checkForAppUpdate() {
