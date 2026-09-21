@@ -99,20 +99,21 @@
         </div>
 
         <p class="section-title">Detalles de la actividad</p>
-        <div class="field-row">
+        <div class="field-row field-row-align">
           <div>
             <label for="act-distancia">Distancia (Km)</label>
             <input type="number" id="act-distancia" step="0.1" oninput="calcularActividad()" />
           </div>
           <div>
-            <label for="act-pasos">Pasos (calculado)</label>
+            <label for="act-pasos">Pasos</label>
             <input type="number" id="act-pasos" readonly />
           </div>
           <div>
-            <label for="act-calorias">Calorías (calculado)</label>
+            <label for="act-calorias">Calorías</label>
             <input type="number" id="act-calorias" readonly />
           </div>
         </div>
+        <p style="font-size:11px;color:#8a93a1;margin:4px 0 0;">Pasos y calorías se calculan automáticamente a partir de la distancia.</p>
 
         <label for="act-comentario">Deja un comentario de la actividad</label>
         <textarea id="act-comentario" placeholder="¿Cómo te has sentido?"></textarea>

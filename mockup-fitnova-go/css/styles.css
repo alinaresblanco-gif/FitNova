@@ -340,6 +340,7 @@ textarea { resize: vertical; min-height: 60px; }
 
 .field-row { display: flex; gap: 10px; }
 .field-row > div { flex: 1; }
+.field-row-align label { white-space: nowrap; }
 
 .upload-box {
   border: 2px dashed var(--gris);
