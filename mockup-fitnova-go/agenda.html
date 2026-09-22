@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitNova Go · Agenda</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <a href="perfil.html" class="icon-square" title="Personalizar perfil">
+        <img src="../imagenes/LOGO-FITNOVA USUARIO.png" alt="Perfil" />
+      </a>
+      <div class="header-actions">
+        <button class="icon-btn" onclick="openModal('modal-chat')" title="Chat">💬<span class="badge">2</span></button>
+        <button class="icon-btn" onclick="openModal('modal-notificaciones')" title="Notificaciones">🔔<span class="badge">3</span></button>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="agenda-heading">
+        <h1>Agenda</h1>
+        <button id="agenda-view-toggle" class="agenda-view-toggle" onclick="toggleAgendaView()" title="Cambiar vista">▦</button>
+      </div>
+      <section id="agenda-calendar" class="agenda-calendar"></section>
+      <section class="agenda-activities">
+        <h2>Próximas actividades</h2>
+        <div id="agenda-activity-list"></div>
+      </section>
+    </main>
+
+    <button class="agenda-add" onclick="openActivityModal()" title="Añadir actividad">+</button>
+
+    <nav class="bottom-nav">
+      <a href="index.html"><span class="nav-icon">🏠</span>Inicio</a>
+      <a href="agenda.html" class="active"><span class="nav-icon">📅</span>Agenda</a>
+      <a href="placeholder.html?vista=Videos"><span class="nav-icon">▶️</span>Videos</a>
+      <a href="placeholder.html?vista=Evolución"><span class="nav-icon">📈</span>Evolución</a>
+    </nav>
+
+    <div class="modal-overlay" id="modal-actividad">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 id="actividad-modal-title">Registrar actividad</h2>
+          <button class="modal-close" onclick="closeModal('modal-actividad')">✕</button>
+        </div>
+        <input type="hidden" id="actividad-id" />
+        <label for="act-nombre">Nombre de la actividad</label>
+        <input type="text" id="act-nombre" placeholder="Ej. Carrera en el parque" />
+        <div class="field-row">
+          <div><label for="act-fecha">Fecha</label><input type="date" id="act-fecha" /></div>
+          <div><label for="act-duracion">Duración</label><input type="text" id="act-duracion" placeholder="Ej. 00:45" /></div>
+        </div>
+        <p class="section-title">Detalles de la actividad</p>
+        <div class="field-row field-row-align">
+          <div><label for="act-distancia">Distancia (Km)</label><input type="number" id="act-distancia" step="0.1" oninput="calcularActividad()" /></div>
+          <div><label for="act-pasos">Pasos</label><input type="number" id="act-pasos" readonly /></div>
+          <div><label for="act-calorias">Calorías</label><input type="number" id="act-calorias" readonly /></div>
+        </div>
+        <label for="act-comentario">Deja un comentario de la actividad</label>
+        <textarea id="act-comentario" placeholder="¿Cómo te has sentido?"></textarea>
+        <div class="row" style="margin-top:18px;">
+          <button class="btn-secondary" onclick="closeModal('modal-actividad')">Cancelar</button>
+          <button class="btn-primary" onclick="saveActivity()">Guardar</button>
+        </div>
+        <button id="actividad-delete" class="btn-link" onclick="deleteActivity()" style="display:none;margin:14px auto 0;">Eliminar actividad</button>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-chat"><div class="modal"><div class="modal-header"><h2>Chat</h2><button class="modal-close" onclick="closeModal('modal-chat')">✕</button></div><p>Tu equipo profesional está disponible para ayudarte.</p></div></div>
+    <div class="modal-overlay" id="modal-notificaciones"><div class="modal"><div class="modal-header"><h2>Notificaciones</h2><button class="modal-close" onclick="closeModal('modal-notificaciones')">✕</button></div><div class="list-item"><span>Carlos te ha enviado una nueva rutina</span><span>Hoy</span></div><div class="list-item"><span>Recuerda registrar tu peso de esta semana</span><span>Ayer</span></div></div></div>
+  </div>
+  <script src="js/app.js"></script>
+  <script>initAgenda();</script>
+</body>
+</html>
