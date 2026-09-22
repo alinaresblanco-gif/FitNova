@@ -178,6 +178,10 @@ function toggleAgendaView() {
 function initAgenda() {
   const calendar = document.getElementById('agenda-calendar');
   if (!calendar.dataset.view) calendar.dataset.view = 'week';
+  calendar.addEventListener('click', (event) => {
+    const dayButton = event.target.closest('[data-agenda-date]');
+    if (dayButton) openDayModal(dayButton.dataset.agendaDate);
+  });
   renderAgenda();
 }
 
@@ -207,7 +211,7 @@ function renderWeek() {
     const date = new Date(monday);
     date.setDate(monday.getDate() + index);
     const iso = date.toISOString().slice(0, 10);
-    return `<button class="agenda-week-day${iso === todayIso() ? ' today' : ''}" onclick="openDayModal('${iso}')">${date.toLocaleDateString('es-ES', { weekday: 'short' })}<strong>${date.getDate()}</strong></button>`;
+    return `<button type="button" class="agenda-week-day${iso === todayIso() ? ' today' : ''}" data-agenda-date="${iso}">${date.toLocaleDateString('es-ES', { weekday: 'short' })}<strong>${date.getDate()}</strong></button>`;
   }).join('');
   return `<div class="agenda-calendar-title"><span>Esta semana</span><span>${formatDate(todayIso())}</span></div><div class="agenda-week">${days}</div>`;
 }
@@ -222,7 +226,7 @@ function renderMonth() {
     if (index < firstDay) return '<span></span>';
     const day = index - firstDay + 1;
     const iso = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    return `<button class="calendar-day${day === today.getDate() ? ' today' : ''}" onclick="openDayModal('${iso}')">${day}</button>`;
+    return `<button type="button" class="calendar-day${day === today.getDate() ? ' today' : ''}" data-agenda-date="${iso}">${day}</button>`;
   }).join('');
   return `<div class="agenda-calendar-title"><span>${today.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</span><span>Mes</span></div><div class="calendar-grid"><span class="weekday">L</span><span class="weekday">M</span><span class="weekday">X</span><span class="weekday">J</span><span class="weekday">V</span><span class="weekday">S</span><span class="weekday">D</span>${cells}</div>`;
 }
