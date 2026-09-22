@@ -6,7 +6,7 @@
 <title>FitNova Go · Vídeos</title>
 <link rel="manifest" href="manifest.webmanifest" />
 <meta name="theme-color" content="#0A1A2F" />
-<link rel="stylesheet" href="css/styles.css" />
+<link rel="stylesheet" href="css/styles.css?v=20260922.8" />
 </head>
 <body>
   <div class="app">
@@ -21,15 +21,17 @@
     <main class="app-content">
       <div class="videos-heading"><h1>Vídeos</h1></div>
       <div class="video-tabs" role="tablist">
-        <button class="video-tab active" data-library="all" role="tab">Todos</button>
-        <button class="video-tab" data-library="favorites" role="tab">Favoritos</button>
+        <button class="video-tab active" data-library="all" role="tab"><span class="video-tab-icon">▤</span>Todos</button>
+        <button class="video-tab" data-library="favorites" role="tab"><span class="video-tab-icon">★</span>Mis favoritos</button>
       </div>
-      <div class="video-search-row">
-        <button class="video-filter-button" onclick="openVideoFilters()" title="Filtrar vídeos">☷</button>
-        <label class="video-search"><span>⌕</span><input id="video-search" type="search" placeholder="Buscar vídeos" aria-label="Buscar vídeos" /></label>
+      <div class="video-panel" role="tabpanel">
+        <div class="video-search-row">
+          <button class="video-filter-button" onclick="openVideoFilters()" title="Filtrar vídeos">☷</button>
+          <label class="video-search"><span>⌕</span><input id="video-search" type="search" placeholder="Buscar..." aria-label="Buscar vídeos" /></label>
+        </div>
+        <p id="video-filter-summary" class="video-filter-summary">Buscando por nombre</p>
+        <section id="video-list" class="video-list" aria-live="polite"></section>
       </div>
-      <p id="video-filter-summary" class="video-filter-summary">Buscando por nombre</p>
-      <section id="video-list" class="video-list" aria-live="polite"></section>
     </main>
 
     <nav class="bottom-nav">
@@ -52,7 +54,7 @@
     <div class="modal-overlay" id="modal-chat"><div class="modal"><div class="modal-header"><h2>Chat</h2><button class="modal-close" onclick="closeModal('modal-chat')">✕</button></div><p>Tu equipo profesional está disponible para ayudarte.</p></div></div>
     <div class="modal-overlay" id="modal-notificaciones"><div class="modal"><div class="modal-header"><h2>Notificaciones</h2><button class="modal-close" onclick="closeModal('modal-notificaciones')">✕</button></div><div class="list-item"><span>Carlos te ha enviado una nueva rutina</span><span>Hoy</span></div></div></div>
   </div>
-  <script src="js/app.js?v=20260922.5"></script>
+  <script src="js/app.js?v=20260922.8"></script>
   <script>initVideos();</script>
 </body>
 </html>

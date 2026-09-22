@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fitnova-go-2026.09.22.5';
+const CACHE_NAME = 'fitnova-go-2026.09.22.10';
 const APP_SHELL = [
   './',
   './index.html',
@@ -30,6 +30,11 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.pathname.endsWith('/service-worker.js')) {
+    event.respondWith(fetch(event.request, { cache: 'no-store' }));
+    return;
+  }
   event.respondWith(
     caches.match(event.request).then((cached) => cached || fetch(event.request).then((response) => {
       const copy = response.clone();
