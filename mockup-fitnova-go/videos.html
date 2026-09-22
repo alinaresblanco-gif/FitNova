@@ -6,12 +6,13 @@
 <title>FitNova Go · Vídeos</title>
 <link rel="manifest" href="manifest.webmanifest" />
 <meta name="theme-color" content="#0A1A2F" />
-<link rel="stylesheet" href="css/styles.css?v=20260922.11" />
+<link rel="stylesheet" href="css/styles.css?v=20260922.13" />
 </head>
 <body>
   <div class="app">
     <header class="app-header">
       <a href="perfil.html" class="icon-square" title="Personalizar perfil"><img src="../imagenes/LOGO-FITNOVA USUARIO.png" alt="Perfil" /></a>
+      <div class="app-brand" aria-label="FitNova Go"><span>FitNova</span> <strong>Go</strong></div>
       <div class="header-actions">
         <button class="icon-btn" onclick="openModal('modal-chat')" title="Chat">💬<span class="badge">2</span></button>
         <button class="icon-btn" onclick="openModal('modal-notificaciones')" title="Notificaciones">🔔<span class="badge">3</span></button>
@@ -54,7 +55,7 @@
     <div class="modal-overlay" id="modal-chat"><div class="modal"><div class="modal-header"><h2>Chat</h2><button class="modal-close" onclick="closeModal('modal-chat')">✕</button></div><p>Tu equipo profesional está disponible para ayudarte.</p></div></div>
     <div class="modal-overlay" id="modal-notificaciones"><div class="modal"><div class="modal-header"><h2>Notificaciones</h2><button class="modal-close" onclick="closeModal('modal-notificaciones')">✕</button></div><div class="list-item"><span>Carlos te ha enviado una nueva rutina</span><span>Hoy</span></div></div></div>
   </div>
-  <script src="js/app.js?v=20260922.11"></script>
+  <script src="js/app.js?v=20260922.13"></script>
   <script>initVideos();</script>
 </body>
 </html>
