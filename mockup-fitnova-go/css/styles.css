@@ -383,9 +383,10 @@ textarea { resize: vertical; min-height: 60px; }
 .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
 .calendar-grid span { min-height: 30px; padding-top: 6px; font-size: 12px; }
 .calendar-grid .weekday { color: #8a93a1; font-size: 10px; font-weight: 700; }
+.calendar-grid .calendar-day { cursor: pointer; border: 0; background: transparent; color: var(--azul); min-height: 30px; padding-top: 6px; font-size: 12px; }
 .calendar-grid .today { background: var(--naranja); border-radius: 50%; color: var(--blanco); font-weight: 700; }
 .agenda-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-.agenda-week-day { border: 1px solid var(--gris); border-radius: 10px; min-height: 68px; padding: 8px 4px; text-align: center; font-size: 11px; }
+.agenda-week-day { border: 1px solid var(--gris); border-radius: 10px; min-height: 68px; padding: 8px 4px; text-align: center; font-size: 11px; cursor: pointer; background: var(--blanco); color: var(--azul); }
 .agenda-week-day.today { border: 2px solid var(--naranja); }
 .agenda-week-day strong { display: block; font-size: 16px; margin-top: 5px; }
 .agenda-activities { margin-top: 18px; }
@@ -397,6 +398,15 @@ textarea { resize: vertical; min-height: 60px; }
 .activity-item > span { color: var(--naranja); font-size: 20px; margin: 0; }
 .agenda-empty { color: #55606f; font-size: 14px; line-height: 1.5; margin: 22px 12px; text-align: center; }
 .agenda-add { align-items: center; background: var(--naranja); border: none; border-radius: 50%; bottom: 78px; box-shadow: 0 4px 12px rgba(255, 106, 0, 0.35); color: var(--blanco); cursor: pointer; display: flex; font-size: 28px; height: 56px; justify-content: center; position: fixed; right: max(20px, calc((100vw - 480px) / 2 + 20px)); width: 56px; z-index: 60; }
+.day-activity { align-items: center; border-bottom: 1px solid var(--gris); display: flex; gap: 10px; padding: 12px 0; }
+.day-activity:last-child { border-bottom: none; }
+.day-activity-info { cursor: pointer; flex: 1; }
+.day-activity-info strong, .day-activity-info span { display: block; }
+.day-activity-info strong { font-size: 14px; }
+.day-activity-info span { color: #55606f; font-size: 12px; margin-top: 3px; }
+.day-activity-open, .day-activity-delete { background: none; border: none; cursor: pointer; flex-shrink: 0; font-size: 20px; padding: 6px; }
+.day-activity-open { color: var(--naranja); }
+.day-activity-delete { color: #c0392b; }
 
 .professional-item:last-child { border-bottom: none; }
 

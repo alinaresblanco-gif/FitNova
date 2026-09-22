@@ -3,6 +3,7 @@
 // Incrementar en cada cambio visible del mockup para que se muestre el aviso de actualización.
 const APP_VERSION = '2026.09.22.1';
 const ACTIVITIES_KEY = 'fitnova_activities';
+let selectedAgendaDay = '';
 
 // Comprueba si hay una versión nueva del mockup y muestra el modal de actualización en Inicio.
 function checkForAppUpdate() {
@@ -96,6 +97,7 @@ function todayIso() {
 }
 
 function openActivityModal(activityId) {
+  closeModal('modal-dia');
   const activity = getActivities().find((item) => item.id === activityId);
   document.getElementById('actividad-id').value = activity ? activity.id : '';
   document.getElementById('actividad-modal-title').textContent = activity ? 'Editar actividad' : 'Registrar actividad';
@@ -138,6 +140,34 @@ function deleteActivity() {
   if (typeof initAgenda === 'function' && document.getElementById('agenda-calendar')) initAgenda();
 }
 
+function deleteActivityById(activityId) {
+  saveActivities(getActivities().filter((item) => item.id !== activityId));
+  renderAgenda();
+  openDayModal(selectedAgendaDay);
+}
+
+function openDayModal(date) {
+  selectedAgendaDay = date;
+  const activities = getActivities().filter((activity) => activity.date === date);
+  document.getElementById('dia-modal-title').textContent = formatDate(date);
+  document.getElementById('dia-activity-list').innerHTML = activities.length ? activities.map((activity) => `
+    <div class="day-activity">
+      <div class="day-activity-info" onclick="openActivityModal('${activity.id}')">
+        <strong>${escapeHtml(activity.name)}</strong>
+        <span>${activity.duration ? `${escapeHtml(activity.duration)} · ` : ''}Pulsa para consultar o editar</span>
+      </div>
+      <button class="day-activity-open" onclick="openActivityModal('${activity.id}')" title="Abrir actividad">›</button>
+      <button class="day-activity-delete" onclick="deleteActivityById('${activity.id}')" title="Eliminar actividad">🗑</button>
+    </div>`).join('') : '<p class="agenda-empty">No hay actividades para este día.</p>';
+  openModal('modal-dia');
+}
+
+function addActivityForSelectedDay() {
+  closeModal('modal-dia');
+  openActivityModal();
+  document.getElementById('act-fecha').value = selectedAgendaDay;
+}
+
 function toggleAgendaView() {
   const calendar = document.getElementById('agenda-calendar');
   if (!calendar) return;
@@ -177,7 +207,7 @@ function renderWeek() {
     const date = new Date(monday);
     date.setDate(monday.getDate() + index);
     const iso = date.toISOString().slice(0, 10);
-    return `<div class="agenda-week-day${iso === todayIso() ? ' today' : ''}">${date.toLocaleDateString('es-ES', { weekday: 'short' })}<strong>${date.getDate()}</strong></div>`;
+    return `<button class="agenda-week-day${iso === todayIso() ? ' today' : ''}" onclick="openDayModal('${iso}')">${date.toLocaleDateString('es-ES', { weekday: 'short' })}<strong>${date.getDate()}</strong></button>`;
   }).join('');
   return `<div class="agenda-calendar-title"><span>Esta semana</span><span>${formatDate(todayIso())}</span></div><div class="agenda-week">${days}</div>`;
 }
@@ -188,7 +218,12 @@ function renderMonth() {
   const month = today.getMonth();
   const firstDay = (new Date(year, month, 1).getDay() || 7) - 1;
   const totalDays = new Date(year, month + 1, 0).getDate();
-  const cells = Array.from({ length: firstDay + totalDays }, (_, index) => index < firstDay ? '<span></span>' : `<span class="${index - firstDay + 1 === today.getDate() ? 'today' : ''}">${index - firstDay + 1}</span>`).join('');
+  const cells = Array.from({ length: firstDay + totalDays }, (_, index) => {
+    if (index < firstDay) return '<span></span>';
+    const day = index - firstDay + 1;
+    const iso = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    return `<button class="calendar-day${day === today.getDate() ? ' today' : ''}" onclick="openDayModal('${iso}')">${day}</button>`;
+  }).join('');
   return `<div class="agenda-calendar-title"><span>${today.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</span><span>Mes</span></div><div class="calendar-grid"><span class="weekday">L</span><span class="weekday">M</span><span class="weekday">X</span><span class="weekday">J</span><span class="weekday">V</span><span class="weekday">S</span><span class="weekday">D</span>${cells}</div>`;
 }
 
