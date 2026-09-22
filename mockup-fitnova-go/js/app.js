@@ -1,7 +1,7 @@
 // Utilidades genéricas para el mockup de FitNova Go (sin backend, solo simulación visual)
 
 // Incrementar en cada cambio visible del mockup para que se muestre el aviso de actualización.
-const APP_VERSION = '2026.09.22.1';
+const APP_VERSION = '2026.09.22.3';
 const ACTIVITIES_KEY = 'fitnova_activities';
 let selectedAgendaDay = '';
 
@@ -21,6 +21,21 @@ function checkForAppUpdate() {
   }
 }
 
+function ensureUpdateModal() {
+  if (document.getElementById('modal-actualizacion')) return;
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="modal-overlay" id="modal-actualizacion">
+      <div class="modal">
+        <div class="modal-header"><h2>Actualización disponible</h2></div>
+        <p style="font-size:14px;color:#55606f;margin:0 0 18px;">Hay una nueva versión de FitNova Go con mejoras y correcciones. Actualiza para disfrutar de los últimos cambios.</p>
+        <div class="row">
+          <button class="btn-secondary" onclick="descartarActualizacion()">Ahora no</button>
+          <button class="btn-primary" onclick="aplicarActualizacion()">Actualizar aplicación</button>
+        </div>
+      </div>
+    </div>`);
+}
+
 function descartarActualizacion() {
   localStorage.setItem('fitnova_dismissed_version', APP_VERSION);
   closeModal('modal-actualizacion');
@@ -30,6 +45,19 @@ function aplicarActualizacion() {
   localStorage.setItem('fitnova_seen_version', APP_VERSION);
   localStorage.removeItem('fitnova_dismissed_version');
   location.reload();
+}
+
+function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  navigator.serviceWorker.register('./service-worker.js').then((registration) => {
+    registration.update();
+  }).catch(() => {});
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'APP_UPDATED') {
+      ensureUpdateModal();
+      checkForAppUpdate();
+    }
+  });
 }
 
 function openModal(id) {
@@ -238,3 +266,5 @@ function formatDate(date) {
 function escapeHtml(value) {
   return value.replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
 }
+
+registerServiceWorker();
