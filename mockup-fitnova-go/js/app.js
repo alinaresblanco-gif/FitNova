@@ -1,7 +1,7 @@
 // Utilidades genéricas para el mockup de FitNova Go (sin backend, solo simulación visual)
 
 // Incrementar en cada cambio visible del mockup para que se muestre el aviso de actualización.
-const APP_VERSION = '2026.09.22.3';
+const APP_VERSION = '2026.09.22.5';
 const ACTIVITIES_KEY = 'fitnova_activities';
 let selectedAgendaDay = '';
 
@@ -265,6 +265,58 @@ function formatDate(date) {
 
 function escapeHtml(value) {
   return value.replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
+}
+
+const VIDEO_LIBRARY = [
+  { id: 'v1', title: 'Movilidad para empezar el día', date: '22 sep 2026', activity: 'Movilidad', duration: '12 min', favorite: true, color: 'orange' },
+  { id: 'v2', title: 'Fuerza de tren inferior', date: '20 sep 2026', activity: 'Fuerza', duration: '28 min', favorite: false, color: 'blue' },
+  { id: 'v3', title: 'Estiramientos después de correr', date: '18 sep 2026', activity: 'Running', duration: '15 min', favorite: true, color: 'green' },
+  { id: 'v4', title: 'Core y estabilidad', date: '15 sep 2026', activity: 'Core', duration: '20 min', favorite: false, color: 'navy' }
+];
+let videoLibrary = 'all';
+let videoFilter = 'name';
+
+function initVideos() {
+  document.querySelectorAll('.video-tab').forEach((tab) => tab.addEventListener('click', () => {
+    videoLibrary = tab.dataset.library;
+    document.querySelectorAll('.video-tab').forEach((item) => item.classList.toggle('active', item === tab));
+    renderVideos();
+  }));
+  document.getElementById('video-search').addEventListener('input', renderVideos);
+  document.querySelectorAll('.video-filter-option').forEach((option) => option.addEventListener('click', () => {
+    videoFilter = option.dataset.filter;
+    document.querySelectorAll('.video-filter-option').forEach((item) => item.classList.toggle('active', item === option));
+    document.getElementById('video-filter-summary').textContent = `Buscando por ${filterLabel(videoFilter).toLowerCase()}`;
+    closeModal('modal-filtros-video');
+    renderVideos();
+  }));
+  renderVideos();
+}
+
+function openVideoFilters() {
+  openModal('modal-filtros-video');
+}
+
+function filterLabel(filter) {
+  return { name: 'Nombre', date: 'Fecha', activity: 'Actividad' }[filter];
+}
+
+function toggleVideoFavorite(videoId) {
+  const video = VIDEO_LIBRARY.find((item) => item.id === videoId);
+  if (!video) return;
+  video.favorite = !video.favorite;
+  renderVideos();
+}
+
+function renderVideos() {
+  const query = document.getElementById('video-search').value.trim().toLowerCase();
+  const field = { name: 'title', date: 'date', activity: 'activity' }[videoFilter];
+  const videos = VIDEO_LIBRARY.filter((video) => (videoLibrary === 'all' || video.favorite) && (!query || video[field].toLowerCase().includes(query)));
+  document.getElementById('video-list').innerHTML = videos.length ? videos.map((video) => `
+    <article class="video-card">
+      <div class="video-thumb ${video.color}"><span>▶</span><small>${escapeHtml(video.duration)}</small></div>
+      <div class="video-card-body"><div><h2>${escapeHtml(video.title)}</h2><p>${escapeHtml(video.activity)} · ${escapeHtml(video.date)}</p></div><button class="video-favorite${video.favorite ? ' active' : ''}" onclick="toggleVideoFavorite('${video.id}')" title="${video.favorite ? 'Quitar de favoritos' : 'Añadir a favoritos'}">${video.favorite ? '★' : '☆'}</button></div>
+    </article>`).join('') : '<p class="agenda-empty">No hemos encontrado vídeos con esos criterios.</p>';
 }
 
 registerServiceWorker();

@@ -1,8 +1,9 @@
-const CACHE_NAME = 'fitnova-go-2026.09.22.3';
+const CACHE_NAME = 'fitnova-go-2026.09.22.5';
 const APP_SHELL = [
   './',
   './index.html',
   './agenda.html',
+  './videos.html',
   './perfil.html',
   './ajustes.html',
   './placeholder.html',
