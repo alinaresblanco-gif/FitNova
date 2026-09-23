@@ -83,6 +83,8 @@
       </section>
     </main>
 
+    <button class="evolution-add" onclick="openModal('modal-registrar-metricas')" title="Añadir métrica">+</button>
+
     <nav class="bottom-nav">
       <a href="index.html"><span class="nav-icon">🏠</span>Inicio</a>
       <a href="agenda.html"><span class="nav-icon">📅</span>Agenda</a>
@@ -91,11 +93,39 @@
     </nav>
 
     <div class="modal-overlay" id="modal-objetivo"><div class="modal"><div class="modal-header"><h2>Definir objetivo</h2><button class="modal-close" onclick="closeModal('modal-objetivo')">✕</button></div><label for="objetivo-peso">Peso objetivo (kg)</label><input type="number" id="objetivo-peso" step="0.1" value="70.0" /><div class="row" style="margin-top:18px;"><button class="btn-secondary" onclick="closeModal('modal-objetivo')">Cancelar</button><button class="btn-primary" onclick="closeModal('modal-objetivo')">Actualizar</button></div></div></div>
+    <div class="modal-overlay" id="modal-registrar-metricas">
+      <div class="modal metrics-modal">
+        <div class="modal-header"><h2>Registrar métricas</h2><button class="modal-close" onclick="closeModal('modal-registrar-metricas')">✕</button></div>
+        <form id="metrics-form" onsubmit="saveMetrics(event)">
+          <label for="metric-date">Fecha</label>
+          <input id="metric-date" name="date" type="date" required />
+          <div class="metric-form-grid">
+            <div class="metric-field"><label for="metric-weight">Peso corporal</label><div class="metric-input"><input id="metric-weight" name="weight" type="number" step="0.1" min="0" /><span>Kg</span></div></div>
+            <div class="metric-field"><label for="metric-fat">Grasa corporal <button type="button" class="metric-help" data-help="fat" title="Información sobre grasa corporal">?</button></label><div class="metric-input"><input id="metric-fat" name="fat" type="number" step="0.1" min="0" /><span>%</span></div></div>
+            <div class="metric-field"><label for="metric-chest">Pecho <button type="button" class="metric-help" data-help="chest" title="Cómo medir el pecho">?</button></label><div class="metric-input"><input id="metric-chest" name="chest" type="number" step="0.1" min="0" /><span>cm</span></div></div>
+            <div class="metric-field"><label for="metric-neck">Cuello <button type="button" class="metric-help" data-help="neck" title="Cómo medir el cuello">?</button></label><div class="metric-input"><input id="metric-neck" name="neck" type="number" step="0.1" min="0" /><span>cm</span></div></div>
+            <div class="metric-field"><label for="metric-shoulders">Hombros <button type="button" class="metric-help" data-help="shoulders" title="Cómo medir los hombros">?</button></label><div class="metric-input"><input id="metric-shoulders" name="shoulders" type="number" step="0.1" min="0" /><span>cm</span></div></div>
+            <div class="metric-field"><label for="metric-biceps-left">Bíceps izq. <button type="button" class="metric-help" data-help="biceps" title="Cómo medir el bíceps">?</button></label><div class="metric-input"><input id="metric-biceps-left" name="bicepsLeft" type="number" step="0.1" min="0" /><span>cm</span></div></div>
+            <div class="metric-field"><label for="metric-biceps-right">Bíceps der. <button type="button" class="metric-help" data-help="biceps" title="Cómo medir el bíceps">?</button></label><div class="metric-input"><input id="metric-biceps-right" name="bicepsRight" type="number" step="0.1" min="0" /><span>cm</span></div></div>
+            <div class="metric-field"><label for="metric-forearm-left">Antebrazo izq. <button type="button" class="metric-help" data-help="forearm" title="Cómo medir el antebrazo">?</button></label><div class="metric-input"><input id="metric-forearm-left" name="forearmLeft" type="number" step="0.1" min="0" /><span>cm</span></div></div>
+            <div class="metric-field"><label for="metric-forearm-right">Antebrazo der. <button type="button" class="metric-help" data-help="forearm" title="Cómo medir el antebrazo">?</button></label><div class="metric-input"><input id="metric-forearm-right" name="forearmRight" type="number" step="0.1" min="0" /><span>cm</span></div></div>
+            <div class="metric-field"><label for="metric-waist">Cintura <button type="button" class="metric-help" data-help="waist" title="Cómo medir la cintura">?</button></label><div class="metric-input"><input id="metric-waist" name="waist" type="number" step="0.1" min="0" /><span>cm</span></div></div>
+            <div class="metric-field"><label for="metric-hip">Cadera <button type="button" class="metric-help" data-help="hip" title="Cómo medir la cadera">?</button></label><div class="metric-input"><input id="metric-hip" name="hip" type="number" step="0.1" min="0" /><span>cm</span></div></div>
+            <div class="metric-field"><label for="metric-thigh-left">Muslo izq. <button type="button" class="metric-help" data-help="thigh" title="Cómo medir el muslo">?</button></label><div class="metric-input"><input id="metric-thigh-left" name="thighLeft" type="number" step="0.1" min="0" /><span>cm</span></div></div>
+            <div class="metric-field"><label for="metric-thigh-right">Muslo der. <button type="button" class="metric-help" data-help="thigh" title="Cómo medir el muslo">?</button></label><div class="metric-input"><input id="metric-thigh-right" name="thighRight" type="number" step="0.1" min="0" /><span>cm</span></div></div>
+            <div class="metric-field"><label for="metric-calf-left">Gemelo izq. <button type="button" class="metric-help" data-help="calf" title="Cómo medir el gemelo">?</button></label><div class="metric-input"><input id="metric-calf-left" name="calfLeft" type="number" step="0.1" min="0" /><span>cm</span></div></div>
+            <div class="metric-field"><label for="metric-calf-right">Gemelo der. <button type="button" class="metric-help" data-help="calf" title="Cómo medir el gemelo">?</button></label><div class="metric-input"><input id="metric-calf-right" name="calfRight" type="number" step="0.1" min="0" /><span>cm</span></div></div>
+          </div>
+          <button class="btn-primary metrics-save" type="submit">Guardar métricas</button>
+        </form>
+      </div>
+    </div>
+    <div class="modal-overlay" id="modal-metric-help"><div class="modal metric-help-modal"><div class="modal-header"><h2 id="metric-help-title">Cómo medir</h2><button class="modal-close" onclick="closeModal('modal-metric-help')">✕</button></div><p id="metric-help-text"></p></div></div>
     <div class="modal-overlay" id="modal-chat"><div class="modal"><div class="modal-header"><h2>Chat</h2><button class="modal-close" onclick="closeModal('modal-chat')">✕</button></div><p>Tu equipo profesional está disponible para ayudarte.</p></div></div>
     <div class="modal-overlay" id="modal-notificaciones"><div class="modal"><div class="modal-header"><h2>Notificaciones</h2><button class="modal-close" onclick="closeModal('modal-notificaciones')">✕</button></div><div class="list-item"><span>Carlos te ha enviado una nueva rutina</span><span>Hoy</span></div></div></div>
   </div>
 
-  <script src="js/app.js?v=20260923.16"></script>
+  <script src="js/app.js?v=20260923.17"></script>
   <script>initEvolution();</script>
 </body>
 </html>

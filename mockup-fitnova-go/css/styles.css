@@ -435,6 +435,16 @@ textarea { resize: vertical; min-height: 60px; }
 .evolution-photo-grid { display: grid; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .evolution-photo-grid img { aspect-ratio: 1; border-radius: 10px; object-fit: cover; width: 100%; }
 .evolution-empty { color: #55606f; font-size: 13px; line-height: 1.5; margin: 8px 0; text-align: center; }
+.evolution-add { align-items: center; background: var(--naranja); border: 0; border-radius: 50%; bottom: 78px; box-shadow: 0 4px 12px rgba(255, 106, 0, 0.35); color: var(--blanco); cursor: pointer; display: flex; font-size: 28px; height: 56px; justify-content: center; position: fixed; right: max(20px, calc((100vw - 480px) / 2 + 20px)); width: 56px; z-index: 60; }
+.metrics-modal { max-height: 90vh; overflow-y: auto; }
+.metric-form-grid { display: grid; gap: 12px; margin-top: 16px; }
+.metric-field label { align-items: center; display: flex; gap: 6px; margin-bottom: 5px; }
+.metric-input { align-items: center; display: flex; gap: 8px; }
+.metric-input input { flex: 1; min-width: 0; }
+.metric-input span { color: #55606f; font-size: 13px; min-width: 24px; }
+.metric-help { align-items: center; background: var(--azul); border: 0; border-radius: 50%; color: var(--blanco); cursor: pointer; display: inline-flex; font-size: 11px; height: 18px; justify-content: center; padding: 0; width: 18px; }
+.metrics-save { margin-top: 18px; width: 100%; }
+.metric-help-modal p { color: #55606f; font-size: 14px; line-height: 1.55; margin: 0; }
 .video-search-row { align-items: center; display: flex; gap: 8px; }
 .video-filter-button { appearance: none; background: var(--blanco); border: 1px solid #858b95; border-radius: 50%; color: var(--azul); cursor: pointer; flex: 0 0 44px; font-size: 21px; height: 44px; width: 44px; }
 .video-search { align-items: center; border: 0; border-bottom: 1px solid #9da2aa; border-radius: 0; display: flex; flex: 1; gap: 8px; margin: 0; padding: 0 12px; }

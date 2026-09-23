@@ -1,8 +1,9 @@
 // Utilidades genéricas para el mockup de FitNova Go (sin backend, solo simulación visual)
 
 // Incrementar en cada cambio visible del mockup para que se muestre el aviso de actualización.
-const APP_VERSION = '2026.09.23.16';
+const APP_VERSION = '2026.09.23.17';
 const ACTIVITIES_KEY = 'fitnova_activities';
+const METRICS_KEY = 'fitnova_metrics';
 let selectedAgendaDay = '';
 
 // Comprueba si hay una versión nueva del mockup y muestra el modal de actualización en Inicio.
@@ -49,7 +50,7 @@ function aplicarActualizacion() {
 
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.register('./service-worker.js?v=20260923.16').then((registration) => {
+  navigator.serviceWorker.register('./service-worker.js?v=20260923.17').then((registration) => {
     registration.update();
   }).catch(() => {});
   navigator.serviceWorker.addEventListener('message', (event) => {
@@ -219,6 +220,10 @@ function initEvolution() {
   const photoInput = document.getElementById('evolution-photo-input');
   if (!tabs.length) return;
 
+  const dateInput = document.getElementById('metric-date');
+  if (dateInput) dateInput.value = todayIso();
+  document.querySelectorAll('.metric-help').forEach((button) => button.addEventListener('click', () => openMetricHelp(button.dataset.help)));
+
   tabs.forEach((tab) => tab.addEventListener('click', () => {
     const selectedTab = tab.dataset.evolutionTab;
     tabs.forEach((item) => item.classList.toggle('active', item === tab));
@@ -247,6 +252,37 @@ function initEvolution() {
     });
     photoInput.value = '';
   });
+}
+
+function openMetricHelp(type) {
+  const help = {
+    fat: ['Grasa corporal', 'Añade tu % de grasa directamente, si tienes una báscula avanzada. En cualquier farmacia, puedes encontrar una, o bien pregunta a tu profesional cómo calcularlo.'],
+    chest: ['Pecho', 'En posición de pie, rodeate con una cinta métrica la parte más grande del pecho. No aprietes la cinta sobre el cuerpo.'],
+    neck: ['Cuello', 'Con la cabeza mirando al frente y hombros relajados, con una cinta métrica mediremos la parte más estrecha del cuello, justo encima de los hombros.'],
+    shoulders: ['Hombros', 'Utilizamos la cinta métrica y situándola en la espalda mediremos de borde externo a borde externo. La cinta métrica debe estar paralela a los pies.'],
+    biceps: ['Bíceps', 'Con la cinta métrica rodea la zona más ancha del brazo, como a 5 cm desde la axila. Flexiona el brazo y haz fuerza.'],
+    forearm: ['Antebrazo', 'Con el brazo relajado y la palma de la mano hacia arriba, rodea con tu cinta métrica la zona más ancha del antebrazo.'],
+    waist: ['Cintura', 'En posición de pie y derecho pero relajado, sin meter tripa, rodeamos con la cinta métrica la zona más estrecha del abdomen.'],
+    hip: ['Cadera', 'De pie y en posición erguida, rodearemos con la cinta métrica la zona más ancha de la cintura.'],
+    thigh: ['Muslo', 'De pie, rodeamos con la cinta métrica la zona más ancha del muslo.'],
+    calf: ['Gemelo', 'De pie y con las piernas separadas, con el peso equilibrado entre las dos piernas, rodeamos con nuestra cinta métrica la zona más ancha de la pantorrilla.']
+  }[type];
+  if (!help) return;
+  document.getElementById('metric-help-title').textContent = help[0];
+  document.getElementById('metric-help-text').textContent = help[1];
+  openModal('modal-metric-help');
+}
+
+function saveMetrics(event) {
+  event.preventDefault();
+  const form = event.target;
+  const values = Object.fromEntries(new FormData(form).entries());
+  const metrics = JSON.parse(localStorage.getItem(METRICS_KEY) || '[]');
+  metrics.unshift(values);
+  localStorage.setItem(METRICS_KEY, JSON.stringify(metrics));
+  closeModal('modal-registrar-metricas');
+  form.reset();
+  document.getElementById('metric-date').value = todayIso();
 }
 
 function renderAgenda() {
