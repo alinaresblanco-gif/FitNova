@@ -424,6 +424,16 @@ textarea { resize: vertical; min-height: 60px; }
 .video-tab.active { border-color: var(--azul); color: var(--naranja); }
 .video-tab-icon { color: var(--azul); font-size: 22px; line-height: 1; }
 .video-panel { min-width: 0; }
+.evolution-panel[hidden] { display: none; }
+.evolution-metric-card, .evolution-goal-card, .evolution-records-card, .evolution-photos-card { margin: 0 0 14px; }
+.evolution-chart-card { margin: 14px 0 0; padding: 12px; }
+.evolution-goal-card .card-title { align-items: center; display: flex; justify-content: space-between; }
+.evolution-goal-card .card-title .icon-btn { margin-left: auto; }
+.evolution-records-card .list-item:last-child { border-bottom: 0; }
+.evolution-add-photos { margin-top: 14px; width: 100%; }
+.evolution-photo-grid { display: grid; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.evolution-photo-grid img { aspect-ratio: 1; border-radius: 10px; object-fit: cover; width: 100%; }
+.evolution-empty { color: #55606f; font-size: 13px; line-height: 1.5; margin: 8px 0; text-align: center; }
 .video-search-row { align-items: center; display: flex; gap: 8px; }
 .video-filter-button { appearance: none; background: var(--blanco); border: 1px solid #858b95; border-radius: 50%; color: var(--azul); cursor: pointer; flex: 0 0 44px; font-size: 21px; height: 44px; width: 44px; }
 .video-search { align-items: center; border: 0; border-bottom: 1px solid #9da2aa; border-radius: 0; display: flex; flex: 1; gap: 8px; margin: 0; padding: 0 12px; }

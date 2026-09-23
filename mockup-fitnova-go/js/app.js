@@ -1,7 +1,7 @@
 // Utilidades genéricas para el mockup de FitNova Go (sin backend, solo simulación visual)
 
 // Incrementar en cada cambio visible del mockup para que se muestre el aviso de actualización.
-const APP_VERSION = '2026.09.23.15';
+const APP_VERSION = '2026.09.23.16';
 const ACTIVITIES_KEY = 'fitnova_activities';
 let selectedAgendaDay = '';
 
@@ -49,7 +49,7 @@ function aplicarActualizacion() {
 
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.register('./service-worker.js?v=20260923.15').then((registration) => {
+  navigator.serviceWorker.register('./service-worker.js?v=20260923.16').then((registration) => {
     registration.update();
   }).catch(() => {});
   navigator.serviceWorker.addEventListener('message', (event) => {
@@ -211,6 +211,42 @@ function initAgenda() {
     if (dayButton) openDayModal(dayButton.dataset.agendaDate);
   });
   renderAgenda();
+}
+
+function initEvolution() {
+  const tabs = document.querySelectorAll('[data-evolution-tab]');
+  const metricSelect = document.getElementById('evolution-metric-select');
+  const photoInput = document.getElementById('evolution-photo-input');
+  if (!tabs.length) return;
+
+  tabs.forEach((tab) => tab.addEventListener('click', () => {
+    const selectedTab = tab.dataset.evolutionTab;
+    tabs.forEach((item) => item.classList.toggle('active', item === tab));
+    document.getElementById('evolution-metrics').hidden = selectedTab !== 'metrics';
+    document.getElementById('evolution-photos').hidden = selectedTab !== 'photos';
+  }));
+
+  metricSelect.addEventListener('change', () => {
+    const chart = document.querySelector('#evolution-chart polyline');
+    const points = metricSelect.value === 'Grasa corporal' ? '0,40 50,45 100,52 150,48 200,58 250,62 300,68' : '0,80 50,75 100,68 150,60 200,55 250,48 300,42';
+    chart.setAttribute('points', points);
+  });
+
+  photoInput.addEventListener('change', () => {
+    const grid = document.getElementById('evolution-photo-grid');
+    grid.querySelector('.evolution-empty')?.remove();
+    Array.from(photoInput.files).forEach((file) => {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        const image = document.createElement('img');
+        image.src = reader.result;
+        image.alt = 'Foto de progreso';
+        grid.appendChild(image);
+      });
+      reader.readAsDataURL(file);
+    });
+    photoInput.value = '';
+  });
 }
 
 function renderAgenda() {
