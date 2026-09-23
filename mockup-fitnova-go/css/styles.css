@@ -396,7 +396,7 @@ textarea { resize: vertical; min-height: 60px; }
 .agenda-heading h1 { color: var(--naranja); font-size: 40px; font-weight: 400; margin: 4px 0 16px; }
 .agenda-view-toggle { width: 42px; height: 42px; border: 1px solid var(--gris); border-radius: 50%; background: var(--blanco); color: var(--azul); cursor: pointer; font-size: 20px; }
 .agenda-calendar { border: 1px solid var(--gris); border-radius: var(--radius); padding: 14px; margin-bottom: 16px; }
-.agenda-calendar-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; font-size: 14px; font-weight: 700; }
+.agenda-calendar-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; color: var(--naranja); font-size: 14px; font-weight: 700; }
 .agenda-calendar-title button { border: none; background: transparent; color: var(--naranja); cursor: pointer; font-size: 20px; }
 .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
 .calendar-grid span { min-height: 30px; padding-top: 6px; font-size: 12px; }
@@ -408,7 +408,7 @@ textarea { resize: vertical; min-height: 60px; }
 .agenda-week-day.today { border: 2px solid var(--naranja); }
 .agenda-week-day strong { display: block; font-size: 16px; margin-top: 5px; }
 .agenda-activities { margin-top: 18px; }
-.agenda-activities h2 { font-size: 14px; margin: 0 0 10px; }
+.agenda-activities h2 { color: var(--naranja); font-size: 14px; margin: 0 0 10px; }
 .activity-item { align-items: center; background: #fff8f3; border-left: 4px solid var(--naranja); border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; margin-bottom: 8px; padding: 12px; }
 .activity-item strong, .activity-item span { display: block; }
 .activity-item strong { font-size: 14px; }
