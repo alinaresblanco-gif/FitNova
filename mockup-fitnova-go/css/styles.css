@@ -427,6 +427,7 @@ textarea { resize: vertical; min-height: 60px; }
 .evolution-panel[hidden] { display: none; }
 .evolution-metric-card, .evolution-goal-card, .evolution-records-card, .evolution-photos-card { margin: 0 0 14px; }
 .evolution-chart-card { margin: 14px 0 0; padding: 12px; }
+.evolution-progress-title { color: var(--naranja); font-size: 14px; font-weight: 700; margin: 14px 0 0; }
 .evolution-goal-card .card-title { align-items: center; display: flex; justify-content: space-between; }
 .evolution-goal-card .card-title .icon-btn { margin-left: auto; }
 .evolution-records-card .list-item:last-child { border-bottom: 0; }
