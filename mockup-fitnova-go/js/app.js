@@ -1,7 +1,7 @@
 // Utilidades genéricas para el mockup de FitNova Go (sin backend, solo simulación visual)
 
 // Incrementar en cada cambio visible del mockup para que se muestre el aviso de actualización.
-const APP_VERSION = '2026.09.23.17';
+const APP_VERSION = '2026.09.23.18';
 const ACTIVITIES_KEY = 'fitnova_activities';
 const METRICS_KEY = 'fitnova_metrics';
 let selectedAgendaDay = '';
@@ -50,7 +50,7 @@ function aplicarActualizacion() {
 
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.register('./service-worker.js?v=20260923.17').then((registration) => {
+  navigator.serviceWorker.register('./service-worker.js?v=20260923.18').then((registration) => {
     registration.update();
   }).catch(() => {});
   navigator.serviceWorker.addEventListener('message', (event) => {
