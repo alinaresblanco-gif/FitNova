@@ -196,9 +196,9 @@ button { font-family: inherit; }
 
 .page-header h1 {
   margin: 0 0 4px;
-  font-size: 26px;
+  font-size: 34px;
   font-weight: 800;
-  color: var(--azul);
+  color: var(--naranja);
 }
 
 .page-header .subtitle {
