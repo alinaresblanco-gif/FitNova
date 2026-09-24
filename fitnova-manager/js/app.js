@@ -30,8 +30,19 @@ function switchTab(group, tabId) {
 // Resalta en la barra superior el enlace correspondiente a la página actual
 document.addEventListener('DOMContentLoaded', () => {
   const current = document.body.dataset.view;
-  if (!current) return;
-  document.querySelectorAll('.topbar-link').forEach((link) => {
-    link.classList.toggle('active', link.dataset.view === current);
-  });
+  if (current) {
+    document.querySelectorAll('.topbar-link').forEach((link) => {
+      link.classList.toggle('active', link.dataset.view === current);
+    });
+  }
+
+  // Permite llegar desde un enlace directamente a una pestaña o a un modal abierto
+  // Ej: libreria.html?tab=videos  ·  agenda.html?open=modal-nueva-sesion
+  const params = new URLSearchParams(location.search);
+  const tab = params.get('tab');
+  const group = document.body.dataset.tabGroup;
+  if (tab && group) switchTab(group, tab);
+
+  const openId = params.get('open');
+  if (openId) openModal(openId);
 });

@@ -745,6 +745,39 @@ button { font-family: inherit; }
   outline: none;
 }
 
+/* ---------- Perfil de cliente ---------- */
+.client-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--blanco);
+  border: 1px solid #E7EAEF;
+  border-radius: var(--radius);
+  box-shadow: var(--sombra);
+  padding: 18px 22px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.client-header .avatar-lg {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--azul-suave);
+  color: var(--blanco);
+  font-weight: 700;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.client-header .client-info { flex: 1; min-width: 200px; }
+.client-header .client-info h1 { margin: 0 0 4px; font-size: 20px; color: var(--azul); }
+.client-header .client-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 12.5px; color: var(--gris-texto-suave); }
+.client-header .client-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
 /* ---------- Placeholder de vista ---------- */
 .view-placeholder {
   border: 2px dashed #E1E6ED;

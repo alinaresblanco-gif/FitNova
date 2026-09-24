@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1280, initial-scale=1.0" />
+<title>FitNova Manager · Perfil de cliente</title>
+<link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
+<link rel="stylesheet" href="css/styles.css?v=20260924.2" />
+</head>
+<body data-view="clientes" data-tab-group="cliente-perfil">
+
+  <header class="topbar">
+    <a href="index.html" class="topbar-brand">
+      <img src="../imagenes/LOGO FITNOVA MANAGER.png" alt="FitNova Manager" />
+    </a>
+    <nav class="topbar-nav">
+      <a href="index.html" class="topbar-link" data-view="dashboard"><span class="ico">🏠</span>Inicio</a>
+      <a href="clientes.html" class="topbar-link" data-view="clientes"><span class="ico">👥</span>Clientes<span class="chev">▾</span></a>
+      <a href="equipo.html" class="topbar-link" data-view="equipo"><span class="ico">🧑‍🤝‍🧑</span>Equipo<span class="chev">▾</span></a>
+      <a href="libreria.html" class="topbar-link" data-view="libreria"><span class="ico">📚</span>Librería<span class="chev">▾</span></a>
+      <a href="agenda.html" class="topbar-link" data-view="agenda"><span class="ico">📅</span>Agenda<span class="chev">▾</span></a>
+      <a href="negocio.html" class="topbar-link" data-view="negocio"><span class="ico">💼</span>Negocio<span class="chev">▾</span></a>
+    </nav>
+    <div class="topbar-actions">
+      <a href="chat.html" class="topbar-icon-btn" title="Chat" style="text-decoration:none;">💬<span class="badge">3</span></a>
+      <button class="topbar-icon-btn" title="Ayuda">❓</button>
+      <div class="topbar-avatar" title="Mi cuenta">
+        <div class="avatar-circle">B</div>
+        <span class="chev">▾</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <div class="page-header">
+      <p class="breadcrumb"><a href="clientes.html">Clientes</a> / Planificación</p>
+      <h1 id="cp-nombre">Ficha de cliente</h1>
+      <p class="subtitle">Resumen, entrenamiento, nutrición, agenda y progreso en un mismo lugar.</p>
+    </div>
+
+    <div class="page-body single">
+
+      <!-- Cabecera fija del cliente -->
+      <div class="client-header">
+        <div class="avatar-lg" id="cp-iniciales">BD</div>
+        <div class="client-info">
+          <h2 id="cp-nombre-2" style="margin:0 0 4px;font-size:20px;color:var(--azul);">Blanco Demo</h2>
+          <div class="client-meta">
+            <span class="status-dot">Activo</span>
+            <span class="tag">Demo</span>
+            <span>Última actividad: hace 2 días</span>
+          </div>
+        </div>
+        <div class="client-actions">
+          <a href="chat.html" class="btn-outline">💬 Enviar mensaje</a>
+          <button class="btn-secondary" onclick="openModal('modal-nueva-tarea')">➕ Nueva tarea</button>
+        </div>
+      </div>
+
+      <section class="card">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab-group="cliente-perfil" data-tab="resumen" onclick="switchTab('cliente-perfil','resumen')">Resumen</button>
+          <button class="tab-btn" data-tab-group="cliente-perfil" data-tab="entrenamiento" onclick="switchTab('cliente-perfil','entrenamiento')">Entrenamiento</button>
+          <button class="tab-btn" data-tab-group="cliente-perfil" data-tab="nutricion" onclick="switchTab('cliente-perfil','nutricion')">Nutrición</button>
+          <button class="tab-btn" data-tab-group="cliente-perfil" data-tab="agenda" onclick="switchTab('cliente-perfil','agenda')">Agenda</button>
+          <button class="tab-btn" data-tab-group="cliente-perfil" data-tab="progreso" onclick="switchTab('cliente-perfil','progreso')">Progreso</button>
+          <button class="tab-btn" data-tab-group="cliente-perfil" data-tab="formularios" onclick="switchTab('cliente-perfil','formularios')">Formularios</button>
+          <button class="tab-btn" data-tab-group="cliente-perfil" data-tab="archivos" onclick="switchTab('cliente-perfil','archivos')">Archivos</button>
+          <button class="tab-btn" data-tab-group="cliente-perfil" data-tab="pagos" onclick="switchTab('cliente-perfil','pagos')">Pagos</button>
+          <button class="tab-btn" data-tab-group="cliente-perfil" data-tab="historial" onclick="switchTab('cliente-perfil','historial')">Historial</button>
+        </div>
+
+        <div class="tab-panel active" data-tab-panel-group="cliente-perfil" data-tab-panel="resumen">
+          <div class="bottom-grid" style="grid-template-columns:repeat(2,1fr);">
+            <div class="mini-list-item"><div class="info"><strong>Objetivo</strong><span>Pérdida de grasa y tonificación general</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Plan actual</strong><span>Plan Premium · Entrenamiento + nutrición</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Profesional asignado</strong><span>Ana Martínez</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Cumplimiento del mes</strong><span>11% completado</span></div></div>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="entrenamiento">
+          <div class="empty-state">
+            <div class="empty-icon">💪</div>
+            <h3>Sin workouts asignados todavía</h3>
+            <p>Asigna un workout o programa desde la librería para que aparezca aquí.</p>
+            <a href="libreria.html?tab=workouts" class="btn-primary">Ir a la librería</a>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="nutricion">
+          <div class="empty-state">
+            <div class="empty-icon">🥗</div>
+            <h3>Sin plan nutricional asignado</h3>
+            <p>Crea o asigna un plan nutricional para este cliente.</p>
+            <a href="libreria.html?tab=nutricion" class="btn-primary">Ir a nutrición</a>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="agenda">
+          <div class="empty-state">
+            <div class="empty-icon">📅</div>
+            <h3>Sin sesiones agendadas</h3>
+            <p>Agenda la próxima sesión individual con este cliente.</p>
+            <a href="agenda.html?open=modal-nueva-sesion" class="btn-primary">Agendar sesión</a>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="progreso">
+          <div class="empty-state">
+            <div class="empty-icon">📈</div>
+            <h3>Aún no hay mediciones registradas</h3>
+            <p>Registra peso, fotos o medidas para ver la evolución del cliente.</p>
+            <button class="btn-primary">Registrar medición</button>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="formularios">
+          <div class="empty-state">
+            <div class="empty-icon">📝</div>
+            <h3>No se han enviado formularios</h3>
+            <p>Envía un formulario de feedback o valoración inicial.</p>
+            <a href="libreria.html?tab=formularios" class="btn-primary">Ir a formularios</a>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="archivos">
+          <div class="empty-state">
+            <div class="empty-icon">🗂️</div>
+            <h3>No hay archivos compartidos</h3>
+            <p>Comparte documentos, imágenes o vídeos con este cliente.</p>
+            <button class="btn-primary">Subir archivo</button>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="pagos">
+          <table class="data-table">
+            <thead>
+              <tr><th>Plan</th><th>Precio</th><th>Estado</th><th>Próximo cobro</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Plan Premium</td>
+                <td>49,00 €/mes</td>
+                <td><span class="status-dot">Al día</span></td>
+                <td>01/10/2026</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="historial">
+          <div class="mini-list">
+            <div class="mini-list-item"><div class="info"><strong>Cliente añadido a la cartera</strong><span>12/09/2026</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Invitación aceptada</strong><span>13/09/2026</span></div></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-nueva-tarea">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Nueva tarea</h2>
+        <button class="modal-close" onclick="closeModal('modal-nueva-tarea')">✕</button>
+      </div>
+      <label for="tarea-titulo">Título</label>
+      <input type="text" id="tarea-titulo" placeholder="Ej. Revisar progreso semanal" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <label for="tarea-fecha">Fecha límite</label>
+      <input type="date" id="tarea-fecha" style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="closeModal('modal-nueva-tarea')">Guardar tarea</button>
+    </div>
+  </div>
+
+  <script src="js/app.js?v=20260924.2"></script>
+  <script>
+    // Rellena la ficha según el cliente elegido en el listado (?id=bd|dr)
+    const clientesDemo = {
+      bd: { nombre: 'Blanco Demo', iniciales: 'BD' },
+      dr: { nombre: 'Dany Roca', iniciales: 'DR' },
+    };
+    const id = new URLSearchParams(location.search).get('id');
+    const cliente = clientesDemo[id] || clientesDemo.bd;
+    document.getElementById('cp-nombre').textContent = cliente.nombre;
+    document.getElementById('cp-nombre-2').textContent = cliente.nombre;
+    document.getElementById('cp-iniciales').textContent = cliente.iniciales;
+  </script>
+</body>
+</html>

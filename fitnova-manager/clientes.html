@@ -78,8 +78,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr onclick="location.href='#'">
-                <td><input type="checkbox" /></td>
+              <tr onclick="location.href='cliente-perfil.html?id=bd'">
+                <td><input type="checkbox" onclick="event.stopPropagation()" /></td>
                 <td class="cell-user">
                   <div class="avatar-sm">BD</div>
                   <div><strong>[DEMO] Blanco Demo</strong><span>blanco.demo@fitnova.app</span></div>
@@ -91,10 +91,10 @@
                 <td>12/09/2026</td>
                 <td><div class="progress-mini"><span style="width:11%"></span></div></td>
                 <td>Hace 2 días</td>
-                <td><button class="btn-ghost">Abrir →</button></td>
+                <td><a href="cliente-perfil.html?id=bd" class="btn-ghost" onclick="event.stopPropagation()">Abrir →</a></td>
               </tr>
-              <tr onclick="location.href='#'">
-                <td><input type="checkbox" /></td>
+              <tr onclick="location.href='cliente-perfil.html?id=dr'">
+                <td><input type="checkbox" onclick="event.stopPropagation()" /></td>
                 <td class="cell-user">
                   <div class="avatar-sm">DR</div>
                   <div><strong>[DEMO] Dany Roca</strong><span>dany.roca@fitnova.app</span></div>
@@ -106,7 +106,7 @@
                 <td>—</td>
                 <td><div class="progress-mini"><span style="width:0%"></span></div></td>
                 <td>Hace 5 días</td>
-                <td><button class="btn-ghost">Abrir →</button></td>
+                <td><a href="cliente-perfil.html?id=dr" class="btn-ghost" onclick="event.stopPropagation()">Abrir →</a></td>
               </tr>
             </tbody>
           </table>
