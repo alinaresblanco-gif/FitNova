@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1280, initial-scale=1.0" />
+<title>FitNova Manager · Librería</title>
+<link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
+<link rel="stylesheet" href="css/styles.css?v=20260924.1" />
+</head>
+<body data-view="libreria">
+
+  <header class="topbar">
+    <a href="index.html" class="topbar-brand">
+      <img src="../imagenes/LOGO FITNOVA MANAGER.png" alt="FitNova Manager" />
+    </a>
+    <nav class="topbar-nav">
+      <a href="index.html" class="topbar-link" data-view="dashboard"><span class="ico">🏠</span>Inicio</a>
+      <a href="clientes.html" class="topbar-link" data-view="clientes"><span class="ico">👥</span>Clientes<span class="chev">▾</span></a>
+      <a href="equipo.html" class="topbar-link" data-view="equipo"><span class="ico">🧑‍🤝‍🧑</span>Equipo<span class="chev">▾</span></a>
+      <a href="libreria.html" class="topbar-link" data-view="libreria"><span class="ico">📚</span>Librería<span class="chev">▾</span></a>
+      <a href="agenda.html" class="topbar-link" data-view="agenda"><span class="ico">📅</span>Agenda<span class="chev">▾</span></a>
+      <a href="negocio.html" class="topbar-link" data-view="negocio"><span class="ico">💼</span>Negocio<span class="chev">▾</span></a>
+    </nav>
+    <div class="topbar-actions">
+      <a href="chat.html" class="topbar-icon-btn" title="Chat" style="text-decoration:none;">💬<span class="badge">3</span></a>
+      <button class="topbar-icon-btn" title="Ayuda">❓</button>
+      <div class="topbar-avatar" title="Mi cuenta">
+        <div class="avatar-circle">B</div>
+        <span class="chev">▾</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <div class="page-header">
+      <p class="breadcrumb">Librería / Contenido</p>
+      <h1>Librería</h1>
+      <p class="subtitle">Workouts, programas, nutrición, recetas, vídeos y formularios en un mismo lugar.</p>
+    </div>
+
+    <div class="page-body single">
+      <section class="card">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab-group="lib" data-tab="workouts" onclick="switchTab('lib','workouts')">💪 Workouts <span class="count-pill">0</span></button>
+          <button class="tab-btn" data-tab-group="lib" data-tab="programas" onclick="switchTab('lib','programas')">📋 Programas <span class="count-pill">0</span></button>
+          <button class="tab-btn" data-tab-group="lib" data-tab="nutricion" onclick="switchTab('lib','nutricion')">🥗 Nutrición <span class="count-pill">0</span></button>
+          <button class="tab-btn" data-tab-group="lib" data-tab="recetas" onclick="switchTab('lib','recetas')">🍳 Recetas <span class="count-pill">0</span></button>
+          <button class="tab-btn" data-tab-group="lib" data-tab="videos" onclick="switchTab('lib','videos')">🎬 Vídeos <span class="count-pill">0</span></button>
+          <button class="tab-btn" data-tab-group="lib" data-tab="formularios" onclick="switchTab('lib','formularios')">📝 Formularios <span class="count-pill">0</span></button>
+        </div>
+
+        <div class="list-toolbar">
+          <div class="list-toolbar-left">
+            <div class="search-box">
+              <span class="ico">🔍</span>
+              <input type="text" placeholder="Buscar en la librería..." />
+            </div>
+            <button class="btn-outline">🧰 Filtros</button>
+          </div>
+          <div class="list-toolbar-right">
+            <button class="btn-outline">✨ Crear con IA</button>
+            <button class="btn-secondary" onclick="openModal('modal-crear-item')">➕ Crear nuevo</button>
+          </div>
+        </div>
+
+        <div class="tab-panel active" data-tab-panel-group="lib" data-tab-panel="workouts">
+          <div class="empty-state">
+            <div class="empty-icon">💪</div>
+            <h3>Todavía no has creado ningún workout</h3>
+            <p>Crea entrenamientos manuales o pide a la IA que genere uno en segundos para tus clientes.</p>
+            <div style="display:flex;gap:10px;justify-content:center;">
+              <button class="btn-outline">✨ Crear con IA</button>
+              <button class="btn-primary" onclick="openModal('modal-crear-item')">Crear workout</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-tab-panel-group="lib" data-tab-panel="programas">
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <h3>Aún no tienes programas</h3>
+            <p>Agrupa workouts en programas de varias semanas y multiplica tu tiempo x4.</p>
+            <button class="btn-primary" onclick="openModal('modal-crear-item')">Crear programa</button>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-tab-panel-group="lib" data-tab-panel="nutricion">
+          <div class="empty-state">
+            <div class="empty-icon">🥗</div>
+            <h3>No hay planes nutricionales</h3>
+            <p>Crea planes personalizados o utiliza el asistente de nutrición con IA.</p>
+            <button class="btn-primary" onclick="openModal('modal-crear-item')">Crear plan nutri</button>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-tab-panel-group="lib" data-tab-panel="recetas">
+          <div class="empty-state">
+            <div class="empty-icon">🍳</div>
+            <h3>Tu recetario está vacío</h3>
+            <p>Registra tus recetas y asócialas a los planes nutricionales de tus clientes.</p>
+            <button class="btn-primary" onclick="openModal('modal-crear-item')">Añadir receta</button>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-tab-panel-group="lib" data-tab-panel="videos">
+          <div class="empty-state">
+            <div class="empty-icon">🎬</div>
+            <h3>Sube tu primer vídeo</h3>
+            <p>Comparte contenido en vídeo con tus clientes para guiar sus entrenamientos.</p>
+            <button class="btn-primary" onclick="openModal('modal-crear-item')">Subir vídeo</button>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-tab-panel-group="lib" data-tab-panel="formularios">
+          <div class="empty-state">
+            <div class="empty-icon">📝</div>
+            <h3>No hay formularios creados</h3>
+            <p>Diseña formularios para recoger feedback y mejorar el seguimiento de tus clientes.</p>
+            <button class="btn-primary" onclick="openModal('modal-crear-item')">Crear formulario</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-crear-item">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Crear nuevo contenido</h2>
+        <button class="modal-close" onclick="closeModal('modal-crear-item')">✕</button>
+      </div>
+      <label for="item-nombre">Nombre</label>
+      <input type="text" id="item-nombre" placeholder="Ej. Rutina fuerza tren superior" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <label for="item-desc">Descripción</label>
+      <textarea id="item-desc" rows="3" placeholder="Describe el contenido..." style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;font-family:inherit;"></textarea>
+      <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="closeModal('modal-crear-item')">Guardar</button>
+    </div>
+  </div>
+
+  <script src="js/app.js?v=20260924.1"></script>
+</body>
+</html>

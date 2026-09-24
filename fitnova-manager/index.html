@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1280, initial-scale=1.0" />
+<title>FitNova Manager · Dashboard</title>
+<link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
+<link rel="stylesheet" href="css/styles.css?v=20260924.1" />
+</head>
+<body data-view="dashboard">
+
+  <!-- ===================== TOPBAR ===================== -->
+  <header class="topbar">
+    <a href="index.html" class="topbar-brand">
+      <img src="../imagenes/LOGO FITNOVA MANAGER.png" alt="FitNova Manager" />
+    </a>
+    <nav class="topbar-nav">
+      <a href="index.html" class="topbar-link" data-view="dashboard"><span class="ico">🏠</span>Inicio</a>
+      <a href="clientes.html" class="topbar-link" data-view="clientes"><span class="ico">👥</span>Clientes<span class="chev">▾</span></a>
+      <a href="equipo.html" class="topbar-link" data-view="equipo"><span class="ico">🧑‍🤝‍🧑</span>Equipo<span class="chev">▾</span></a>
+      <a href="libreria.html" class="topbar-link" data-view="libreria"><span class="ico">📚</span>Librería<span class="chev">▾</span></a>
+      <a href="agenda.html" class="topbar-link" data-view="agenda"><span class="ico">📅</span>Agenda<span class="chev">▾</span></a>
+      <a href="negocio.html" class="topbar-link" data-view="negocio"><span class="ico">💼</span>Negocio<span class="chev">▾</span></a>
+    </nav>
+    <div class="topbar-actions">
+      <a href="chat.html" class="topbar-icon-btn" title="Chat" style="text-decoration:none;">
+        💬<span class="badge">3</span>
+      </a>
+      <button class="topbar-icon-btn" title="Ayuda">❓</button>
+      <div class="topbar-avatar" title="Mi cuenta">
+        <div class="avatar-circle">B</div>
+        <span class="chev">▾</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <div class="page-header">
+      <p class="breadcrumb">FitNova Manager</p>
+      <h1>Es hora de recuperar tu tiempo. ¡Toma el control!</h1>
+      <p class="subtitle">Aquí tienes el resumen de tu negocio hoy, 24 de septiembre.</p>
+    </div>
+
+    <div class="page-body">
+
+      <!-- ===================== COLUMNA IZQUIERDA ===================== -->
+      <div>
+        <section class="card">
+          <div class="card-head">
+            <p class="card-title">Accesos rápidos</p>
+            <button class="icon-round" title="Configurar accesos rápidos">⚙️</button>
+          </div>
+          <div class="quick-access-list">
+            <div class="quick-access-item" onclick="openModal('modal-nuevo-cliente')">
+              <div class="quick-access-ico">✨</div>
+              <div class="quick-access-text"><strong>Crea con IA tu Workout</strong><span>Entrenamientos + rápido</span></div>
+            </div>
+            <div class="quick-access-item" onclick="openModal('modal-nuevo-cliente')">
+              <div class="quick-access-ico">✨</div>
+              <div class="quick-access-text"><strong>Crea con IA tu Programa</strong><span>Programas + rápido</span></div>
+            </div>
+            <div class="quick-access-item" onclick="openModal('modal-nuevo-cliente')">
+              <div class="quick-access-ico">➕</div>
+              <div class="quick-access-text"><strong>Añade un Cliente</strong><span>Nuevo cliente al instante</span></div>
+            </div>
+            <div class="quick-access-item" onclick="openModal('modal-nuevo-cliente')">
+              <div class="quick-access-ico">✨</div>
+              <div class="quick-access-text"><strong>Crea con IA un Plan Nutri</strong><span>Tu asistente de nutrición</span></div>
+            </div>
+            <div class="quick-access-item" onclick="openModal('modal-nuevo-cliente')">
+              <div class="quick-access-ico">📅</div>
+              <div class="quick-access-text"><strong>Agenda una Sesión</strong><span>Gestiona tu tiempo</span></div>
+            </div>
+            <div class="quick-access-item" onclick="openModal('modal-nuevo-cliente')">
+              <div class="quick-access-ico">🎬</div>
+              <div class="quick-access-text"><strong>Sube tus vídeos</strong><span>Carga tu contenido</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <p class="card-title" style="margin-bottom:12px;">Suscripciones</p>
+          <div class="empty-state" style="padding:18px 6px;">
+            <div class="empty-icon">💳</div>
+            <h3>Automatiza tus cobros</h3>
+            <p>Activa los pagos integrados y controla el estado de tus clientes sin hojas de cálculo.</p>
+            <button class="btn-secondary">Activa Pagos FitNova</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===================== COLUMNA DERECHA ===================== -->
+      <div>
+        <section class="card">
+          <div class="card-head">
+            <div class="card-head-left">
+              <p class="card-title">🕐 Actividad reciente <span class="count-pill">0</span></p>
+            </div>
+            <div class="card-head-tools">
+              <button class="icon-round" title="Buscar">🔍</button>
+              <button class="icon-round" title="Filtrar actividad">🧰</button>
+            </div>
+          </div>
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <h3>Aún no hay actividad por aquí</h3>
+            <p>Asigna tareas y descubre cómo tus clientes dan los primeros pasos hacia sus objetivos.</p>
+            <a href="clientes.html" class="btn-primary">Ver mis clientes</a>
+          </div>
+        </section>
+
+        <div class="promo-grid">
+          <div class="promo-card">
+            <div class="promo-ico">⏱️</div>
+            <h4>Gana tiempo</h4>
+            <strong class="stat">+2 días</strong>
+            <p>Ahorrados por semana automatizando tu gestión.</p>
+          </div>
+          <div class="promo-card">
+            <div class="promo-ico">📈</div>
+            <h4>Gana clientes</h4>
+            <strong class="stat">x3</strong>
+            <p>Profesionales que han escalado su negocio con FitNova.</p>
+          </div>
+          <div class="promo-card">
+            <div class="promo-ico">💰</div>
+            <h4>Gana más</h4>
+            <strong class="stat">30 días</strong>
+            <p>De prueba gratuita para automatizar tu operativa.</p>
+          </div>
+        </div>
+
+        <div class="bottom-grid">
+          <section class="card">
+            <p class="card-title">✅ Agendar tareas <span class="count-pill">0</span></p>
+            <div class="empty-state" style="padding:20px 4px;">
+              <div class="empty-icon" style="font-size:22px;width:52px;height:52px;">👍</div>
+              <h3 style="font-size:14px;">¡Vas por buen camino!</h3>
+              <p style="font-size:12.5px;">No tienes tareas planificadas pendientes.</p>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">
+              <p class="card-title">📆 Próximos eventos <span class="count-pill">2</span></p>
+            </div>
+            <div class="mini-list">
+              <div class="mini-list-item">
+                <div class="info"><strong>Sesión tren inferior</strong><span>Hoy · 18:00–19:00 · Entrenamiento personal</span></div>
+                <span class="tag">2/4</span>
+              </div>
+              <div class="mini-list-item">
+                <div class="info"><strong>Sesión inicial grupal</strong><span>Mañana · 09:00–10:00 · Clase grupal</span></div>
+                <span class="tag">2/8</span>
+              </div>
+            </div>
+            <a href="agenda.html" class="btn-ghost" style="margin-top:12px;width:100%;justify-content:center;">Ver lista de eventos completa</a>
+          </section>
+
+          <section class="card">
+            <p class="card-title">📊 Revisar cumplimiento <span class="count-pill">2</span></p>
+            <div class="compliance-item">
+              <div class="info"><strong style="font-size:13px;">Dany Roca</strong></div>
+              <div class="compliance-values">
+                <div><strong>0%</strong><span>Mes</span></div>
+                <div><strong>0%</strong><span>Semana</span></div>
+              </div>
+            </div>
+            <div class="compliance-item">
+              <div class="info"><strong style="font-size:13px;">Blanco Demo</strong></div>
+              <div class="compliance-values">
+                <div><strong>11%</strong><span>Mes</span></div>
+                <div><strong>20%</strong><span>Semana</span></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL: Nuevo cliente rápido ===================== -->
+  <div class="modal-overlay" id="modal-nuevo-cliente">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Añadir cliente</h2>
+        <button class="modal-close" onclick="closeModal('modal-nuevo-cliente')">✕</button>
+      </div>
+      <label for="nc-nombre">Nombre completo</label>
+      <input type="text" id="nc-nombre" placeholder="Ej. Ana Martínez" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <label for="nc-email">Correo electrónico</label>
+      <input type="email" id="nc-email" placeholder="ana@email.com" style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="closeModal('modal-nuevo-cliente')">Enviar invitación</button>
+    </div>
+  </div>
+
+  <script src="js/app.js?v=20260924.1"></script>
+</body>
+</html>

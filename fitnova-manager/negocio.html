@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1280, initial-scale=1.0" />
+<title>FitNova Manager · Negocio</title>
+<link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
+<link rel="stylesheet" href="css/styles.css?v=20260924.1" />
+</head>
+<body data-view="negocio">
+
+  <header class="topbar">
+    <a href="index.html" class="topbar-brand">
+      <img src="../imagenes/LOGO FITNOVA MANAGER.png" alt="FitNova Manager" />
+    </a>
+    <nav class="topbar-nav">
+      <a href="index.html" class="topbar-link" data-view="dashboard"><span class="ico">🏠</span>Inicio</a>
+      <a href="clientes.html" class="topbar-link" data-view="clientes"><span class="ico">👥</span>Clientes<span class="chev">▾</span></a>
+      <a href="equipo.html" class="topbar-link" data-view="equipo"><span class="ico">🧑‍🤝‍🧑</span>Equipo<span class="chev">▾</span></a>
+      <a href="libreria.html" class="topbar-link" data-view="libreria"><span class="ico">📚</span>Librería<span class="chev">▾</span></a>
+      <a href="agenda.html" class="topbar-link" data-view="agenda"><span class="ico">📅</span>Agenda<span class="chev">▾</span></a>
+      <a href="negocio.html" class="topbar-link" data-view="negocio"><span class="ico">💼</span>Negocio<span class="chev">▾</span></a>
+    </nav>
+    <div class="topbar-actions">
+      <a href="chat.html" class="topbar-icon-btn" title="Chat" style="text-decoration:none;">💬<span class="badge">3</span></a>
+      <button class="topbar-icon-btn" title="Ayuda">❓</button>
+      <div class="topbar-avatar" title="Mi cuenta">
+        <div class="avatar-circle">B</div>
+        <span class="chev">▾</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <div class="page-header">
+      <p class="breadcrumb">Negocio / Suscripciones y pagos</p>
+      <h1>Negocio</h1>
+      <p class="subtitle">Controla suscripciones, cobros y el rendimiento económico de tu operativa.</p>
+    </div>
+
+    <div class="page-body single">
+      <div class="promo-grid">
+        <div class="promo-card">
+          <div class="promo-ico">💶</div>
+          <h4>Ingresos del mes</h4>
+          <strong class="stat">0 €</strong>
+          <p>Activa los pagos integrados para empezar a cobrar automáticamente.</p>
+        </div>
+        <div class="promo-card">
+          <div class="promo-ico">👥</div>
+          <h4>Clientes con plan activo</h4>
+          <strong class="stat">1</strong>
+          <p>De 2 clientes en tu cartera actual.</p>
+        </div>
+        <div class="promo-card">
+          <div class="promo-ico">⚠️</div>
+          <h4>Pagos pendientes</h4>
+          <strong class="stat">1</strong>
+          <p>Cliente con un pago atrasado que requiere revisión.</p>
+        </div>
+      </div>
+
+      <section class="card">
+        <div class="card-head">
+          <p class="card-title">💳 Suscripciones</p>
+          <button class="btn-secondary">Activa Pagos FitNova</button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Plan</th>
+              <th>Precio</th>
+              <th>Estado</th>
+              <th>Próximo cobro</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="cell-user">
+                <div class="avatar-sm">BD</div>
+                <div><strong>Blanco Demo</strong></div>
+              </td>
+              <td>Plan Premium</td>
+              <td>49,00 €/mes</td>
+              <td><span class="status-dot">Al día</span></td>
+              <td>01/10/2026</td>
+              <td><button class="btn-ghost">Ver detalle</button></td>
+            </tr>
+            <tr>
+              <td class="cell-user">
+                <div class="avatar-sm">DR</div>
+                <div><strong>Dany Roca</strong></div>
+              </td>
+              <td>Plan Básico</td>
+              <td>25,00 €/mes</td>
+              <td><span class="status-dot warn">Pago pendiente</span></td>
+              <td>18/09/2026</td>
+              <td><button class="btn-ghost">Reclamar pago</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="bottom-grid" style="grid-template-columns:repeat(2,1fr);">
+        <section class="card">
+          <p class="card-title">📦 Planes y precios</p>
+          <div class="mini-list">
+            <div class="mini-list-item"><div class="info"><strong>Plan Básico</strong><span>25 €/mes · Acceso a entrenamientos</span></div><button class="btn-ghost">Editar</button></div>
+            <div class="mini-list-item"><div class="info"><strong>Plan Premium</strong><span>49 €/mes · Entrenamiento + nutrición</span></div><button class="btn-ghost">Editar</button></div>
+            <div class="mini-list-item"><div class="info"><strong>+ Nuevo plan</strong><span>Crea un plan personalizado</span></div><button class="btn-ghost">➕</button></div>
+          </div>
+        </section>
+        <section class="card">
+          <p class="card-title">🧾 Historial de pagos</p>
+          <div class="empty-state" style="padding:20px 4px;">
+            <div class="empty-icon" style="font-size:22px;width:52px;height:52px;">🧾</div>
+            <h3 style="font-size:14px;">Aún no hay pagos registrados</h3>
+            <p style="font-size:12.5px;">El historial aparecerá aquí en cuanto actives los cobros integrados.</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js?v=20260924.1"></script>
+</body>
+</html>

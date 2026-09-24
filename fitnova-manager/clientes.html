@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1280, initial-scale=1.0" />
+<title>FitNova Manager · Clientes</title>
+<link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
+<link rel="stylesheet" href="css/styles.css?v=20260924.1" />
+</head>
+<body data-view="clientes">
+
+  <header class="topbar">
+    <a href="index.html" class="topbar-brand">
+      <img src="../imagenes/LOGO FITNOVA MANAGER.png" alt="FitNova Manager" />
+    </a>
+    <nav class="topbar-nav">
+      <a href="index.html" class="topbar-link" data-view="dashboard"><span class="ico">🏠</span>Inicio</a>
+      <a href="clientes.html" class="topbar-link" data-view="clientes"><span class="ico">👥</span>Clientes<span class="chev">▾</span></a>
+      <a href="equipo.html" class="topbar-link" data-view="equipo"><span class="ico">🧑‍🤝‍🧑</span>Equipo<span class="chev">▾</span></a>
+      <a href="libreria.html" class="topbar-link" data-view="libreria"><span class="ico">📚</span>Librería<span class="chev">▾</span></a>
+      <a href="agenda.html" class="topbar-link" data-view="agenda"><span class="ico">📅</span>Agenda<span class="chev">▾</span></a>
+      <a href="negocio.html" class="topbar-link" data-view="negocio"><span class="ico">💼</span>Negocio<span class="chev">▾</span></a>
+    </nav>
+    <div class="topbar-actions">
+      <a href="chat.html" class="topbar-icon-btn" title="Chat" style="text-decoration:none;">💬<span class="badge">3</span></a>
+      <button class="topbar-icon-btn" title="Ayuda">❓</button>
+      <div class="topbar-avatar" title="Mi cuenta">
+        <div class="avatar-circle">B</div>
+        <span class="chev">▾</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <div class="page-header">
+      <p class="breadcrumb">Clientes / Mis clientes</p>
+      <h1>Mis clientes</h1>
+      <p class="subtitle">Gestiona tu cartera, invitaciones y seguimiento de cumplimiento.</p>
+    </div>
+
+    <div class="page-body single">
+      <section class="card">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab-group="clientes" data-tab="activos" onclick="switchTab('clientes','activos')">Activos <span class="count-pill">2</span></button>
+          <button class="tab-btn" data-tab-group="clientes" data-tab="invitaciones" onclick="switchTab('clientes','invitaciones')">Invitaciones enviadas <span class="count-pill">0</span></button>
+          <button class="tab-btn" data-tab-group="clientes" data-tab="archivados" onclick="switchTab('clientes','archivados')">Archivados <span class="count-pill">0</span></button>
+          <button class="tab-btn" data-tab-group="clientes" data-tab="leads" onclick="switchTab('clientes','leads')">Leads <span class="count-pill">0</span></button>
+        </div>
+
+        <div class="list-toolbar">
+          <div class="list-toolbar-left">
+            <div class="search-box">
+              <span class="ico">🔍</span>
+              <input type="text" placeholder="Buscar cliente..." />
+            </div>
+            <button class="btn-outline">🧰 Filtros</button>
+          </div>
+          <div class="list-toolbar-right">
+            <button class="btn-secondary" onclick="openModal('modal-nuevo-cliente')">➕ Añadir cliente</button>
+          </div>
+        </div>
+
+        <!-- Tab: Activos -->
+        <div class="tab-panel active" data-tab-panel-group="clientes" data-tab-panel="activos">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th><input type="checkbox" /></th>
+                <th>Cliente</th>
+                <th>Etiquetas</th>
+                <th>Profesional</th>
+                <th>Plan</th>
+                <th>Estado</th>
+                <th>Último pago</th>
+                <th>Cumplimiento</th>
+                <th>Última actividad</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr onclick="location.href='#'">
+                <td><input type="checkbox" /></td>
+                <td class="cell-user">
+                  <div class="avatar-sm">BD</div>
+                  <div><strong>[DEMO] Blanco Demo</strong><span>blanco.demo@fitnova.app</span></div>
+                </td>
+                <td><span class="tag">Demo</span></td>
+                <td>Ana Martínez</td>
+                <td>Plan Premium</td>
+                <td><span class="status-dot">Activo</span></td>
+                <td>12/09/2026</td>
+                <td><div class="progress-mini"><span style="width:11%"></span></div></td>
+                <td>Hace 2 días</td>
+                <td><button class="btn-ghost">Abrir →</button></td>
+              </tr>
+              <tr onclick="location.href='#'">
+                <td><input type="checkbox" /></td>
+                <td class="cell-user">
+                  <div class="avatar-sm">DR</div>
+                  <div><strong>[DEMO] Dany Roca</strong><span>dany.roca@fitnova.app</span></div>
+                </td>
+                <td><span class="tag">Demo</span></td>
+                <td>Ana Martínez</td>
+                <td>Plan Básico</td>
+                <td><span class="status-dot warn">Pendiente pago</span></td>
+                <td>—</td>
+                <td><div class="progress-mini"><span style="width:0%"></span></div></td>
+                <td>Hace 5 días</td>
+                <td><button class="btn-ghost">Abrir →</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Tab: Invitaciones -->
+        <div class="tab-panel" data-tab-panel-group="clientes" data-tab-panel="invitaciones">
+          <div class="empty-state">
+            <div class="empty-icon">✉️</div>
+            <h3>No hay invitaciones pendientes</h3>
+            <p>Cuando invites a un nuevo cliente, aparecerá aquí hasta que acepte el acceso.</p>
+            <button class="btn-primary" onclick="openModal('modal-nuevo-cliente')">Invitar cliente</button>
+          </div>
+        </div>
+
+        <!-- Tab: Archivados -->
+        <div class="tab-panel" data-tab-panel-group="clientes" data-tab-panel="archivados">
+          <div class="empty-state">
+            <div class="empty-icon">🗄️</div>
+            <h3>No tienes clientes archivados</h3>
+            <p>Los clientes que retires de tu cartera activa aparecerán en este listado.</p>
+          </div>
+        </div>
+
+        <!-- Tab: Leads -->
+        <div class="tab-panel" data-tab-panel-group="clientes" data-tab-panel="leads">
+          <div class="empty-state">
+            <div class="empty-icon">🎯</div>
+            <h3>Todavía no tienes leads</h3>
+            <p>Registra contactos potenciales y conviértelos en clientes cuando estén listos.</p>
+            <button class="btn-primary">Añadir lead</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-nuevo-cliente">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Añadir cliente</h2>
+        <button class="modal-close" onclick="closeModal('modal-nuevo-cliente')">✕</button>
+      </div>
+      <label for="nc-nombre">Nombre completo</label>
+      <input type="text" id="nc-nombre" placeholder="Ej. Ana Martínez" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <label for="nc-email">Correo electrónico</label>
+      <input type="email" id="nc-email" placeholder="ana@email.com" style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="closeModal('modal-nuevo-cliente')">Enviar invitación</button>
+    </div>
+  </div>
+
+  <script src="js/app.js?v=20260924.1"></script>
+</body>
+</html>

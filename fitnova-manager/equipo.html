@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1280, initial-scale=1.0" />
+<title>FitNova Manager · Equipo</title>
+<link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
+<link rel="stylesheet" href="css/styles.css?v=20260924.1" />
+</head>
+<body data-view="equipo">
+
+  <header class="topbar">
+    <a href="index.html" class="topbar-brand">
+      <img src="../imagenes/LOGO FITNOVA MANAGER.png" alt="FitNova Manager" />
+    </a>
+    <nav class="topbar-nav">
+      <a href="index.html" class="topbar-link" data-view="dashboard"><span class="ico">🏠</span>Inicio</a>
+      <a href="clientes.html" class="topbar-link" data-view="clientes"><span class="ico">👥</span>Clientes<span class="chev">▾</span></a>
+      <a href="equipo.html" class="topbar-link" data-view="equipo"><span class="ico">🧑‍🤝‍🧑</span>Equipo<span class="chev">▾</span></a>
+      <a href="libreria.html" class="topbar-link" data-view="libreria"><span class="ico">📚</span>Librería<span class="chev">▾</span></a>
+      <a href="agenda.html" class="topbar-link" data-view="agenda"><span class="ico">📅</span>Agenda<span class="chev">▾</span></a>
+      <a href="negocio.html" class="topbar-link" data-view="negocio"><span class="ico">💼</span>Negocio<span class="chev">▾</span></a>
+    </nav>
+    <div class="topbar-actions">
+      <a href="chat.html" class="topbar-icon-btn" title="Chat" style="text-decoration:none;">💬<span class="badge">3</span></a>
+      <button class="topbar-icon-btn" title="Ayuda">❓</button>
+      <div class="topbar-avatar" title="Mi cuenta">
+        <div class="avatar-circle">B</div>
+        <span class="chev">▾</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <div class="page-header">
+      <p class="breadcrumb">Equipo / Colaboradores</p>
+      <h1>Tu equipo</h1>
+      <p class="subtitle">Entrenadores, nutricionistas y colaboradores con acceso a tu operativa.</p>
+    </div>
+
+    <div class="page-body single">
+      <section class="card">
+        <div class="list-toolbar">
+          <div class="list-toolbar-left">
+            <div class="search-box">
+              <span class="ico">🔍</span>
+              <input type="text" placeholder="Buscar colaborador..." />
+            </div>
+            <button class="btn-outline">🧰 Filtros</button>
+          </div>
+          <div class="list-toolbar-right">
+            <button class="btn-secondary" onclick="openModal('modal-invitar')">➕ Invitar colaborador</button>
+          </div>
+        </div>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Colaborador</th>
+              <th>Rol</th>
+              <th>Clientes asignados</th>
+              <th>Estado</th>
+              <th>Última conexión</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="cell-user">
+                <div class="avatar-sm">AM</div>
+                <div><strong>Ana Martínez</strong><span>ana.martinez@fitnova.app</span></div>
+              </td>
+              <td><span class="tag">Administradora</span></td>
+              <td>2</td>
+              <td><span class="status-dot">Activo</span></td>
+              <td>Hoy · 09:12</td>
+              <td><button class="btn-ghost">Editar</button></td>
+            </tr>
+            <tr>
+              <td class="cell-user">
+                <div class="avatar-sm">JL</div>
+                <div><strong>Javier Lopez</strong><span>javier.lopez@fitnova.app</span></div>
+              </td>
+              <td><span class="tag">Entrenador</span></td>
+              <td>0</td>
+              <td><span class="status-dot off">Invitación enviada</span></td>
+              <td>—</td>
+              <td><button class="btn-ghost">Reenviar</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="bottom-grid" style="grid-template-columns:repeat(2,1fr);">
+        <section class="card">
+          <p class="card-title">🛡️ Roles y permisos</p>
+          <div class="mini-list">
+            <div class="mini-list-item"><div class="info"><strong>Administrador</strong><span>Acceso total a clientes, negocio y equipo</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Entrenador</strong><span>Gestiona sus clientes asignados y agenda</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Nutricionista</strong><span>Planes nutricionales y recetas</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Recepción</strong><span>Agenda y mensajería, sin datos de facturación</span></div></div>
+          </div>
+        </section>
+        <section class="card">
+          <p class="card-title">📨 Invitaciones pendientes <span class="count-pill">1</span></p>
+          <div class="mini-list">
+            <div class="mini-list-item">
+              <div class="info"><strong>Javier Lopez</strong><span>Enviada hace 2 días</span></div>
+              <button class="btn-ghost">Cancelar</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-invitar">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Invitar colaborador</h2>
+        <button class="modal-close" onclick="closeModal('modal-invitar')">✕</button>
+      </div>
+      <label for="inv-email">Correo electrónico</label>
+      <input type="email" id="inv-email" placeholder="colaborador@email.com" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <label for="inv-rol">Rol</label>
+      <select id="inv-rol" style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;">
+        <option>Entrenador</option>
+        <option>Nutricionista</option>
+        <option>Recepción</option>
+        <option>Administrador</option>
+      </select>
+      <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="closeModal('modal-invitar')">Enviar invitación</button>
+    </div>
+  </div>
+
+  <script src="js/app.js?v=20260924.1"></script>
+</body>
+</html>

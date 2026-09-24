@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1280, initial-scale=1.0" />
+<title>FitNova Manager · Chat</title>
+<link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
+<link rel="stylesheet" href="css/styles.css?v=20260924.1" />
+</head>
+<body data-view="chat">
+
+  <header class="topbar">
+    <a href="index.html" class="topbar-brand">
+      <img src="../imagenes/LOGO FITNOVA MANAGER.png" alt="FitNova Manager" />
+    </a>
+    <nav class="topbar-nav">
+      <a href="index.html" class="topbar-link" data-view="dashboard"><span class="ico">🏠</span>Inicio</a>
+      <a href="clientes.html" class="topbar-link" data-view="clientes"><span class="ico">👥</span>Clientes<span class="chev">▾</span></a>
+      <a href="equipo.html" class="topbar-link" data-view="equipo"><span class="ico">🧑‍🤝‍🧑</span>Equipo<span class="chev">▾</span></a>
+      <a href="libreria.html" class="topbar-link" data-view="libreria"><span class="ico">📚</span>Librería<span class="chev">▾</span></a>
+      <a href="agenda.html" class="topbar-link" data-view="agenda"><span class="ico">📅</span>Agenda<span class="chev">▾</span></a>
+      <a href="negocio.html" class="topbar-link" data-view="negocio"><span class="ico">💼</span>Negocio<span class="chev">▾</span></a>
+    </nav>
+    <div class="topbar-actions">
+      <a href="chat.html" class="topbar-icon-btn" title="Chat" style="text-decoration:none;">💬<span class="badge">3</span></a>
+      <button class="topbar-icon-btn" title="Ayuda">❓</button>
+      <div class="topbar-avatar" title="Mi cuenta">
+        <div class="avatar-circle">B</div>
+        <span class="chev">▾</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <div class="page-header">
+      <p class="breadcrumb">Mensajería</p>
+      <h1>Chat</h1>
+      <p class="subtitle">Conversaciones con clientes y colaboradores, todo en un mismo lugar.</p>
+    </div>
+
+    <div class="page-body single">
+      <div class="chat-shell">
+        <!-- Lista de conversaciones -->
+        <aside class="chat-list-panel">
+          <div class="chat-audience-switch">
+            <button class="chat-audience-btn active">Clientes</button>
+            <button class="chat-audience-btn">Colaboradores</button>
+          </div>
+          <div class="chat-search">
+            <div class="search-box">
+              <span class="ico">🔍</span>
+              <input type="text" placeholder="Buscar por nombre..." />
+            </div>
+          </div>
+          <div class="chat-filter-row">
+            <input type="checkbox" id="chk-asignados" checked />
+            <label for="chk-asignados">Ver solo mis clientes asignados</label>
+          </div>
+          <div class="chat-unread-note">Tienes 3 chats sin leer</div>
+
+          <div class="chat-conversations">
+            <div class="chat-conversation active" onclick="abrirConversacion('bd')">
+              <div class="avatar-sm">BD</div>
+              <div class="info">
+                <strong>Blanco Demo</strong>
+                <span>¿Podemos cambiar la sesión del jueves?</span>
+              </div>
+              <div class="meta">
+                <span class="time">10:24</span>
+                <span class="badge" style="position:static;border:none;">1</span>
+              </div>
+            </div>
+            <div class="chat-conversation" onclick="abrirConversacion('dr')">
+              <div class="avatar-sm">DR</div>
+              <div class="info">
+                <strong>Dany Roca</strong>
+                <span>Gracias por la planificación semanal 💪</span>
+              </div>
+              <div class="meta">
+                <span class="time">Ayer</span>
+              </div>
+            </div>
+            <div class="chat-conversation" onclick="abrirConversacion('am')">
+              <div class="avatar-sm">AM</div>
+              <div class="info">
+                <strong>Ana Martínez</strong>
+                <span>Actualizado el calendario de esta semana.</span>
+              </div>
+              <div class="meta">
+                <span class="time">Lun</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Panel de conversación -->
+        <section class="chat-panel">
+          <div class="chat-panel-header">
+            <div class="avatar-sm">BD</div>
+            <div class="info">
+              <strong>Blanco Demo</strong>
+              <span>Última conexión: hace 12 min</span>
+            </div>
+            <div style="margin-left:auto;display:flex;gap:6px;">
+              <button class="icon-round" title="Ver planificación">📋</button>
+              <button class="icon-round" title="Más opciones">⋯</button>
+            </div>
+          </div>
+          <div class="chat-messages">
+            <div class="chat-bubble in">Hola Ana, ¿podemos cambiar la sesión del jueves al viernes por la tarde?<span class="time-stamp">10:20</span></div>
+            <div class="chat-bubble out">¡Claro! Te la muevo al viernes a las 18:00.<span class="time-stamp">10:23</span></div>
+            <div class="chat-bubble in">Perfecto, muchas gracias 🙌<span class="time-stamp">10:24</span></div>
+          </div>
+          <div class="chat-input-row">
+            <button class="icon-round" title="Adjuntar">📎</button>
+            <input type="text" placeholder="Escribe un mensaje..." />
+            <button class="btn-secondary">Enviar</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js?v=20260924.1"></script>
+  <script>
+    function abrirConversacion(id) {
+      document.querySelectorAll('.chat-conversation').forEach((el) => el.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+    }
+  </script>
+</body>
+</html>

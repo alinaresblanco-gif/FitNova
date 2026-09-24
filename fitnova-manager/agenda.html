@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1280, initial-scale=1.0" />
+<title>FitNova Manager · Agenda</title>
+<link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
+<link rel="stylesheet" href="css/styles.css?v=20260924.1" />
+</head>
+<body data-view="agenda">
+
+  <header class="topbar">
+    <a href="index.html" class="topbar-brand">
+      <img src="../imagenes/LOGO FITNOVA MANAGER.png" alt="FitNova Manager" />
+    </a>
+    <nav class="topbar-nav">
+      <a href="index.html" class="topbar-link" data-view="dashboard"><span class="ico">🏠</span>Inicio</a>
+      <a href="clientes.html" class="topbar-link" data-view="clientes"><span class="ico">👥</span>Clientes<span class="chev">▾</span></a>
+      <a href="equipo.html" class="topbar-link" data-view="equipo"><span class="ico">🧑‍🤝‍🧑</span>Equipo<span class="chev">▾</span></a>
+      <a href="libreria.html" class="topbar-link" data-view="libreria"><span class="ico">📚</span>Librería<span class="chev">▾</span></a>
+      <a href="agenda.html" class="topbar-link" data-view="agenda"><span class="ico">📅</span>Agenda<span class="chev">▾</span></a>
+      <a href="negocio.html" class="topbar-link" data-view="negocio"><span class="ico">💼</span>Negocio<span class="chev">▾</span></a>
+    </nav>
+    <div class="topbar-actions">
+      <a href="chat.html" class="topbar-icon-btn" title="Chat" style="text-decoration:none;">💬<span class="badge">3</span></a>
+      <button class="topbar-icon-btn" title="Ayuda">❓</button>
+      <div class="topbar-avatar" title="Mi cuenta">
+        <div class="avatar-circle">B</div>
+        <span class="chev">▾</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <div class="page-header">
+      <p class="breadcrumb">Agenda / Sesiones y citas</p>
+      <h1>Agenda</h1>
+      <p class="subtitle">Sesiones individuales, clases grupales y tareas internas de tu operativa.</p>
+    </div>
+
+    <div class="page-body single">
+      <section class="card">
+        <div class="list-toolbar">
+          <div class="list-toolbar-left">
+            <div class="tabs" style="border-bottom:none;margin-bottom:0;">
+              <button class="tab-btn active" data-tab-group="agenda-vista" data-tab="lista" onclick="switchTab('agenda-vista','lista')">📃 Lista</button>
+              <button class="tab-btn" data-tab-group="agenda-vista" data-tab="calendario" onclick="switchTab('agenda-vista','calendario')">🗓️ Calendario</button>
+            </div>
+          </div>
+          <div class="list-toolbar-right">
+            <button class="btn-outline">🧰 Filtros</button>
+            <button class="btn-secondary" onclick="openModal('modal-nueva-sesion')">➕ Agendar sesión</button>
+          </div>
+        </div>
+
+        <!-- Vista lista -->
+        <div class="tab-panel active" data-tab-panel-group="agenda-vista" data-tab-panel="lista">
+          <p class="card-title" style="margin:8px 0 10px;color:var(--gris-texto-suave);font-size:12px;">ESTA SEMANA</p>
+          <div class="mini-list" style="margin-bottom:18px;">
+            <div class="mini-list-item">
+              <div class="info"><strong>Sesión tren inferior</strong><span>Hoy, 24 sept · 18:00–19:00 · Entrenamiento personal</span></div>
+              <span class="tag">2/4</span>
+            </div>
+            <div class="mini-list-item">
+              <div class="info"><strong>Sesión inicial grupal</strong><span>Mañana, 25 sept · 09:00–10:00 · Clase grupal</span></div>
+              <span class="tag">2/8</span>
+            </div>
+          </div>
+
+          <p class="card-title" style="margin:8px 0 10px;color:var(--gris-texto-suave);font-size:12px;">LA SEMANA QUE VIENE</p>
+          <div class="mini-list" style="margin-bottom:18px;">
+            <div class="mini-list-item">
+              <div class="info"><strong>Revisión de progreso · Dany Roca</strong><span>Lun, 29 sept · 17:30–18:00 · Seguimiento</span></div>
+              <span class="tag">1/1</span>
+            </div>
+          </div>
+
+          <p class="card-title" style="margin:8px 0 10px;color:var(--gris-texto-suave);font-size:12px;">MÁS ADELANTE</p>
+          <div class="empty-state" style="padding:20px 4px;">
+            <p style="font-size:13px;">No hay más eventos planificados todavía.</p>
+          </div>
+        </div>
+
+        <!-- Vista calendario (placeholder) -->
+        <div class="tab-panel" data-tab-panel-group="agenda-vista" data-tab-panel="calendario">
+          <div class="view-placeholder">
+            <div class="ico">🗓️</div>
+            <h3 style="margin:0 0 6px;color:var(--azul);">Vista de calendario mensual</h3>
+            <p style="margin:0;">Próximamente: visualización semanal y mensual con arrastrar y soltar.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-nueva-sesion">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Agendar sesión</h2>
+        <button class="modal-close" onclick="closeModal('modal-nueva-sesion')">✕</button>
+      </div>
+      <label for="ses-nombre">Nombre de la sesión</label>
+      <input type="text" id="ses-nombre" placeholder="Ej. Sesión tren superior" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <div style="display:flex;gap:12px;margin-bottom:14px;">
+        <div style="flex:1;">
+          <label for="ses-fecha">Fecha</label>
+          <input type="date" id="ses-fecha" style="width:100%;padding:10px;margin-top:6px;border-radius:10px;border:1px solid #D9D9D9;" />
+        </div>
+        <div style="flex:1;">
+          <label for="ses-hora">Hora</label>
+          <input type="time" id="ses-hora" style="width:100%;padding:10px;margin-top:6px;border-radius:10px;border:1px solid #D9D9D9;" />
+        </div>
+      </div>
+      <label for="ses-tipo">Tipo de servicio</label>
+      <select id="ses-tipo" style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;">
+        <option>Entrenamiento personal</option>
+        <option>Clase grupal</option>
+        <option>Seguimiento</option>
+      </select>
+      <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="closeModal('modal-nueva-sesion')">Guardar sesión</button>
+    </div>
+  </div>
+
+  <script src="js/app.js?v=20260924.1"></script>
+</body>
+</html>
