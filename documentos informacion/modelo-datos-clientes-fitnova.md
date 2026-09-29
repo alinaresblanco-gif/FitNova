@@ -47,13 +47,14 @@ Es la tabla común a las dos apps (identidad + estado de la relación comercial)
 | `genero` | enum(`no_especificado`,`hombre`,`mujer`) | Ventana 2 del onboarding / "Sobre mí" en Go |
 | `estado` | enum(`lead`,`invitacion_enviada`,`activo`,`archivado`) | Controla en qué pestaña aparece en Manager > Clientes |
 | `plan_id` | UUID (FK → `planes`) | Plan Básico / Premium (tabla de Negocio, ya prevista para más adelante) |
-| `entrenador_principal_id` | UUID (FK → `profesionales`) | Columna "Profesionales" de la tabla de Manager |
 | `fecha_alta` | timestamp | Cuando el entrenador pulsa "Añadir cliente" |
 | `fecha_activacion` | timestamp (nullable) | Cuando el cliente termina el onboarding en Go |
 | `ultima_actividad` | timestamp (nullable) | Columna "Última actividad" en Manager |
 | `creado_en` / `actualizado_en` | timestamp | Auditoría estándar |
 
-> Las **etiquetas** de cliente (columna "Etiquetas" en Manager) se guardan mejor en dos tablas auxiliares `etiquetas` (id, nombre) y `cliente_etiqueta` (cliente_id, etiqueta_id), porque un cliente puede tener varias.
+> Las **etiquetas** de cliente (columna "Etiquetas" en Manager) se guardan en `etiquetas` (`id`, `nombre`) y `cliente_etiqueta` (`cliente_id`, `etiqueta_id`), porque un cliente puede tener varias.
+
+> La asignación de profesionales se gestiona exclusivamente en `profesional_cliente`, que permite varios profesionales por cliente. No se duplica con un campo `entrenador_principal_id` en esta tabla.
 
 ---
 
@@ -65,7 +66,7 @@ Es la que de verdad conecta Manager con Go. Hoy el botón "Enviar invitación" n
 |---|---|---|
 | `id` | UUID (PK) | |
 | `cliente_id` | UUID (FK → `clientes.id`) | Se crea el cliente en estado `invitacion_enviada` a la vez que la invitación |
-| `token` | varchar (unique) | Token opaco (UUID v4) que va en la URL de instalación de Go |
+| `token_hash` | varchar (unique) | Hash del token opaco enviado en la URL; nunca se persiste el token original |
 | `entrenador_id` | UUID (FK → `profesionales`) | Quién la envió |
 | `email_destino` | varchar | Por si el cliente cambia el email al registrarse, queda constancia del original |
 | `canal` | enum(`email`,`whatsapp`,`push`) | Cómo se envió |
@@ -92,7 +93,7 @@ Cubre la ventana 3 (objetivo) + peso/altura del onboarding + lo que ya se ve en 
 | `notas_objetivo` | text (nullable) | Campo libre "Sobre mí" en Go |
 | `notas_lesiones` | text (nullable) | Campo libre "Lesiones, alergias u otras observaciones" en Go |
 
-> `peso_actual_kg` **no** se guarda aquí: se calcula como el último registro de `clientes_metricas` (evita datos duplicados/desincronizados).
+> `peso_actual_kg` **no** se guarda aquí ni en esta tabla de la hoja: se calcula como el último registro de `clientes_metricas` (evita datos duplicados/desincronizados).
 
 ---
 
@@ -204,10 +205,10 @@ El checkbox "Acepto términos y política de privacidad" de la ventana 1 no debe
 
 Hoy las dos apps son HTML/CSS/JS estáticos, sin servidor ni base de datos. Para que "Enviar invitación" haga algo de verdad hace falta:
 
-1. **Backend con base de datos** (Postgres/MySQL/Firestore/Supabase — a decidir) que contenga como mínimo las tablas `clientes` e `invitaciones` de este documento.
+1. **Backend con base de datos** (Postgres/MySQL/Firestore/Supabase — a decidir) que contenga como mínimo las tablas `clientes`, `invitaciones`, `etiquetas` y `cliente_etiqueta` de este documento.
 2. **API** con al menos estos endpoints:
    - `POST /invitaciones` (Manager crea cliente + invitación + token)
-   - `GET /invitaciones/:token` (Go valida el token y muestra el onboarding)
+   - `GET /invitaciones/:token` (Go calcula el hash del token recibido, lo compara con `token_hash` y muestra el onboarding si sigue vigente)
    - `POST /invitaciones/:token/completar` (Go guarda todos los datos del onboarding y marca la invitación como aceptada)
 3. **Servicio de envío de email** (SendGrid, Resend, Amazon SES...) para mandar el enlace real con el token.
 4. **Hash de contraseñas** (bcrypt/argon2) — nunca guardar en texto plano como se ve hoy de forma decorativa en `ajustes.html`.
