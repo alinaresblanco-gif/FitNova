@@ -41,7 +41,7 @@ Es la tabla común a las dos apps (identidad + estado de la relación comercial)
 | `nombre_avatar` | varchar | Alias visible en Go (`ajustes.html` → "Nombre de avatar") |
 | `email` | varchar (unique) | Clave de invitación y login |
 | `telefono` | varchar (nullable) | Se pide más adelante en Ajustes de Go, no en el alta |
-| `password_hash` | varchar (nullable) | Null mientras el estado es "invitación enviada"; se rellena al completar el registro. Nunca texto plano |
+| `auth_user_id` | UUID (nullable, unique) | Identificador de cuenta del proveedor de autenticación; null hasta que el cliente crea su cuenta. La contraseña no se guarda en esta tabla |
 | `foto_url` | varchar (nullable) | Foto de perfil (Go) |
 | `fecha_nacimiento` | date (nullable) | Ventana 4 del onboarding |
 | `genero` | enum(`no_especificado`,`hombre`,`mujer`) | Ventana 2 del onboarding / "Sobre mí" en Go |
@@ -67,7 +67,7 @@ Es la que de verdad conecta Manager con Go. Hoy el botón "Enviar invitación" n
 | `id` | UUID (PK) | |
 | `cliente_id` | UUID (FK → `clientes.id`) | Se crea el cliente en estado `invitacion_enviada` a la vez que la invitación |
 | `token_hash` | varchar (unique) | Hash del token opaco enviado en la URL; nunca se persiste el token original |
-| `entrenador_id` | UUID (FK → `profesionales`) | Quién la envió |
+| `profesional_id` | UUID (FK → `profesionales`) | Profesional que la envió |
 | `email_destino` | varchar | Por si el cliente cambia el email al registrarse, queda constancia del original |
 | `canal` | enum(`email`,`whatsapp`,`push`) | Cómo se envió |
 | `estado` | enum(`pendiente`,`aceptada`,`expirada`,`cancelada`) | |
@@ -88,12 +88,11 @@ Cubre la ventana 3 (objetivo) + peso/altura del onboarding + lo que ya se ve en 
 | `cliente_id` | UUID (PK, FK) | |
 | `objetivo_tipo` | enum(`perder_peso`,`ponerme_en_forma`,`ganar_musculo`) | Ventana 3 |
 | `altura_cm` | numeric | Ventana 6 |
-| `peso_inicial_kg` | numeric | Ventana 5 (primer peso registrado) |
 | `peso_objetivo_kg` | numeric (nullable) | Se define después, en Go (`modal-objetivo`) |
 | `notas_objetivo` | text (nullable) | Campo libre "Sobre mí" en Go |
 | `notas_lesiones` | text (nullable) | Campo libre "Lesiones, alergias u otras observaciones" en Go |
 
-> `peso_actual_kg` **no** se guarda aquí ni en esta tabla de la hoja: se calcula como el último registro de `clientes_metricas` (evita datos duplicados/desincronizados).
+> El peso inicial y el actual se consultan en `clientes_metricas`; no se duplican aquí. El primer registro de métricas se crea al completar el onboarding.
 
 ---
 
@@ -111,7 +110,6 @@ Las 7 preguntas de salud del onboarding (ventanas 7 a 10 del PDF), formato está
 | `alteracion_osea_articular` | boolean | "¿Tiene alguna alteración ósea o articular que podría agravarse con la actividad física?" |
 | `medicacion_presion_arterial` | boolean | "¿Le han recetado algún fármaco para la presión arterial u otro problema cardiocirculatorio?" |
 | `otra_razon_medica` | boolean | "¿Conoce alguna otra razón médica que le impida hacer ejercicio sin supervisión?" |
-| `requiere_supervision_medica` | boolean (calculado) | `true` si cualquiera de las anteriores es `true` — útil para avisar al entrenador |
 | `fecha_cumplimentado` | timestamp | |
 
 ---
@@ -125,7 +123,7 @@ Serie temporal de medidas corporales. Ya está maquetada en Go (`perfil.html` �
 | `id` | UUID (PK) |
 | `cliente_id` | UUID (FK) |
 | `fecha` | date |
-| `peso_kg` | numeric |
+| `peso_kg` | numeric (nullable en métricas posteriores; requerido en el registro inicial del onboarding) |
 | `grasa_corporal_pct` | numeric (nullable) |
 | `pecho_cm`, `cuello_cm`, `hombros_cm` | numeric (nullable) |
 | `biceps_izq_cm`, `biceps_der_cm` | numeric (nullable) |
@@ -133,7 +131,7 @@ Serie temporal de medidas corporales. Ya está maquetada en Go (`perfil.html` �
 | `cintura_cm`, `cadera_cm` | numeric (nullable) |
 | `muslo_izq_cm`, `muslo_der_cm` | numeric (nullable) |
 | `gemelo_izq_cm`, `gemelo_der_cm` | numeric (nullable) |
-| `origen` | enum(`cliente`,`entrenador`) | Quién registró la medición |
+| `origen` | enum(`cliente`,`profesional`) | Quién registró la medición |
 | `creado_en` | timestamp |
 
 ---
@@ -211,11 +209,106 @@ Hoy las dos apps son HTML/CSS/JS estáticos, sin servidor ni base de datos. Para
    - `GET /invitaciones/:token` (Go calcula el hash del token recibido, lo compara con `token_hash` y muestra el onboarding si sigue vigente)
    - `POST /invitaciones/:token/completar` (Go guarda todos los datos del onboarding y marca la invitación como aceptada)
 3. **Servicio de envío de email** (SendGrid, Resend, Amazon SES...) para mandar el enlace real con el token.
-4. **Hash de contraseñas** (bcrypt/argon2) — nunca guardar en texto plano como se ve hoy de forma decorativa en `ajustes.html`.
+4. **Autenticación gestionada por el proveedor elegido** — la app no debe guardar ni gestionar hashes de contraseñas en `clientes`; solo almacena el identificador de usuario que devuelve el proveedor.
 5. **Instalación directa de la PWA** al abrir el enlace: esto depende del `manifest.webmanifest` de Go y de cabeceras/comportamiento del navegador (Android permite "prompt" de instalación automática bajo ciertas condiciones; iOS no permite instalación silenciosa, habrá que prever una pantalla intermedia "Instala FitNova Go" para esos casos).
 
 ---
 
+## 13. Primer esquema de Clientes (v1)
+
+Este alcance cubre el flujo Manager → invitación → onboarding Go → cliente activo. Los tipos son compatibles con PostgreSQL; la referencia concreta a la tabla de usuarios se decide al elegir el proveedor de autenticación.
+
+### Convenciones
+
+- IDs `uuid`; fechas con hora `timestamptz` en UTC; cumpleaños `date`.
+- Medidas con `numeric`, no `float`.
+- Normalizar email con `lower(trim(email))` y exigir unicidad sin distinguir mayúsculas.
+- La aplicación nunca almacena contraseñas ni sus hashes; solo el identificador del usuario del proveedor.
+
+### Tablas v1
+
+#### `profesionales`
+
+Perfil mínimo del usuario de Manager que invita y atiende clientes.
+
+| Campo | Tipo y regla |
+|---|---|
+| `id` | `uuid` PK |
+| `auth_user_id` | `uuid` NOT NULL UNIQUE; FK al usuario del proveedor, pendiente de concretar |
+| `nombre` | `varchar(100)` NOT NULL |
+| `apellidos` | `varchar(150)` nullable |
+| `email` | `varchar(254)` NOT NULL, único normalizado |
+| `rol` | `text` NOT NULL; CHECK en `administrador`, `entrenador`, `nutricionista`, `colaborador` |
+| `creado_en`, `actualizado_en` | `timestamptz` NOT NULL, valor inicial del servidor |
+
+#### `clientes`
+
+| Campo | Tipo y regla |
+|---|---|
+| `id` | `uuid` PK |
+| `auth_user_id` | `uuid` nullable UNIQUE hasta que Go crea la cuenta |
+| `nombre` | `varchar(100)` NOT NULL |
+| `apellidos` | `varchar(150)` nullable hasta completar onboarding |
+| `nombre_avatar` | `varchar(40)` nullable |
+| `email` | `varchar(254)` NOT NULL, único normalizado |
+| `telefono` | `varchar(30)` nullable |
+| `foto_url` | `text` nullable |
+| `fecha_nacimiento` | `date` nullable; validar que no sea futura |
+| `genero` | `text` nullable; restringir a las opciones finales del onboarding |
+| `estado` | `text` NOT NULL DEFAULT `invitacion_enviada`; CHECK en `lead`, `invitacion_enviada`, `activo`, `archivado` |
+| `fecha_alta`, `creado_en`, `actualizado_en` | `timestamptz` NOT NULL, valores iniciales del servidor |
+| `fecha_activacion`, `ultima_actividad` | `timestamptz` nullable |
+
+No incluir `password_hash`, `entrenador_principal_id` ni `peso_actual_kg`. `plan_id` se añadirá cuando exista la tabla `planes` y se diseñe su flujo.
+
+#### `invitaciones`
+
+| Campo | Tipo y regla |
+|---|---|
+| `id` | `uuid` PK |
+| `cliente_id` | `uuid` NOT NULL FK → `clientes.id` |
+| `profesional_id` | `uuid` NOT NULL FK → `profesionales.id` |
+| `token_hash` | `char(64)` NOT NULL UNIQUE; SHA-256 del token aleatorio |
+| `email_destino` | `varchar(254)` NOT NULL |
+| `canal` | `text` NOT NULL DEFAULT `email`; CHECK = `email` en v1 |
+| `estado` | `text` NOT NULL; CHECK en `pendiente`, `enviada`, `aceptada`, `expirada`, `cancelada`, `fallida` |
+| `fecha_envio`, `fecha_aceptacion` | `timestamptz` nullable |
+| `fecha_expiracion`, `creado_en` | `timestamptz` NOT NULL |
+
+El token original solo va en el enlace del correo: no se persiste, es de un solo uso y caduca a los 7 días. Solo puede haber una invitación vigente por cliente; reenviar invalida la anterior o la cancela antes de crear otra.
+
+#### `profesional_cliente`
+
+Mantiene la asignación N:N. Campos: `id uuid PK`, `cliente_id uuid NOT NULL FK`, `profesional_id uuid NOT NULL FK`, `rol text NOT NULL CHECK (entrenador, nutricionista, recepcion)` y `fecha_asignacion timestamptz NOT NULL`. Añadir UNIQUE (`cliente_id`, `profesional_id`, `rol`). Es la relación canónica de profesionales.
+
+#### `clientes_objetivo`
+
+`cliente_id uuid PK/FK`; `objetivo_tipo text NOT NULL CHECK (perder_peso, ponerme_en_forma, ganar_musculo)`; `altura_cm numeric(5,2) NOT NULL`; `peso_objetivo_kg numeric(5,2)` nullable; `notas_objetivo text` y `notas_lesiones text` nullable. El rango de altura se validará según límites acordados para el producto.
+
+#### `clientes_salud_parq`
+
+Una fila por cliente (`cliente_id uuid PK/FK`) con siete respuestas `boolean NOT NULL` y `fecha_cumplimentado timestamptz NOT NULL`, creada al completar el cuestionario. `requiere_supervision_medica` se calcula a partir de las respuestas y no se guarda duplicado. Acceso solo para el cliente y profesionales autorizados.
+
+#### `clientes_metricas`
+
+`id uuid PK`; `cliente_id uuid NOT NULL FK`; `fecha timestamptz NOT NULL`; medidas como `numeric` nullable; `origen text NOT NULL CHECK (cliente, profesional)`; `creado_en timestamptz NOT NULL`. El peso es obligatorio en la medición inicial del onboarding. Las mediciones posteriores agregan filas y no sobrescriben el histórico.
+
+#### `consentimientos`
+
+`id uuid PK`; `cliente_id uuid NOT NULL FK`; `tipo text NOT NULL CHECK (terminos, privacidad, salud)`; `version_documento varchar(40) NOT NULL`; `fecha_aceptacion timestamptz NOT NULL`; `ip inet` nullable. UNIQUE (`cliente_id`, `tipo`, `version_documento`). La base legal y el consentimiento para tratar datos de salud requieren revisión legal antes de producción.
+
+#### `etiquetas` y `cliente_etiqueta`
+
+`etiquetas`: `id uuid PK`, `nombre varchar(50) NOT NULL UNIQUE` (normalizado). `cliente_etiqueta`: `cliente_id uuid NOT NULL FK`, `etiqueta_id uuid NOT NULL FK`, PK compuesta (`cliente_id`, `etiqueta_id`).
+
+### Tablas aplazadas
+
+`clientes_facturacion`, `metodos_pago`, `clientes_preferencias` y `planes` no son necesarios para completar el alta. Se implementarán con sus ventanas y controles propios. `clientes_metricas` entra en v1 para el peso inicial y el histórico básico.
+
+### Finalización atómica del onboarding
+
+La operación final guarda perfil, objetivo, PAR-Q, consentimientos y medida inicial; vincula `auth_user_id`; acepta la invitación y activa al cliente. Debe completarse en una transacción: si falla una parte, el cliente no queda parcialmente activado.
+
 ## Siguiente paso
 
-Confirmarme si esta tabla `clientes` + sus tablas relacionadas (invitaciones, objetivo, salud, métricas, facturación, pagos, preferencias, profesional_cliente, consentimientos) es lo que quieres usar como base. Cuando lo confirmes, seguimos con las tablas del resto de ventanas (sesiones/agenda, workouts, planes nutricionales, etc.) una a una, tal como pediste.
+No hay backend configurado en el proyecto. Recomiendo Supabase (PostgreSQL + Auth + políticas RLS) porque Manager y Go son apps estáticas que necesitan compartir cuentas y datos. Antes de crear una migración real, falta confirmar el proveedor; después definimos RLS y email y conectamos el flujo de invitación.
