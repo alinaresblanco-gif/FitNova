@@ -283,7 +283,7 @@ Mantiene la asignación N:N. Campos: `id uuid PK`, `cliente_id uuid NOT NULL FK`
 
 #### `clientes_objetivo`
 
-`cliente_id uuid PK/FK`; `objetivo_tipo text NOT NULL CHECK (perder_peso, ponerme_en_forma, ganar_musculo)`; `altura_cm numeric(5,2) NOT NULL`; `peso_objetivo_kg numeric(5,2)` nullable; `notas_objetivo text` y `notas_lesiones text` nullable. El rango de altura se validará según límites acordados para el producto.
+`cliente_id uuid PK/FK`; `objetivo_tipo text NOT NULL CHECK (perder_peso, ponerme_en_forma, ganar_musculo)`; `altura_cm numeric(5,2) NOT NULL`; `peso_objetivo_kg numeric(5,2)` nullable; `notas_objetivo text` y `notas_lesiones text` nullable. El rango de altura se validará según límites acordados para el producto. Objetivos y lesiones solo son visibles para el cliente y profesionales autorizados.
 
 #### `clientes_salud_parq`
 
@@ -291,7 +291,7 @@ Una fila por cliente (`cliente_id uuid PK/FK`) con siete respuestas `boolean NOT
 
 #### `clientes_metricas`
 
-`id uuid PK`; `cliente_id uuid NOT NULL FK`; `fecha timestamptz NOT NULL`; medidas como `numeric` nullable; `origen text NOT NULL CHECK (cliente, profesional)`; `creado_en timestamptz NOT NULL`. El peso es obligatorio en la medición inicial del onboarding. Las mediciones posteriores agregan filas y no sobrescriben el histórico.
+`id uuid PK`; `cliente_id uuid NOT NULL FK`; `fecha timestamptz NOT NULL`; medidas como `numeric` nullable; `origen text NOT NULL CHECK (cliente, profesional)`; `creado_en timestamptz NOT NULL`. El peso es obligatorio en la medición inicial del onboarding. Las mediciones posteriores agregan filas y no sobrescriben el histórico. Las medidas solo son visibles para el cliente y profesionales autorizados.
 
 #### `consentimientos`
 
@@ -311,4 +311,4 @@ La operación final guarda perfil, objetivo, PAR-Q, consentimientos y medida ini
 
 ## Siguiente paso
 
-No hay backend configurado en el proyecto. Recomiendo Supabase (PostgreSQL + Auth + políticas RLS) porque Manager y Go son apps estáticas que necesitan compartir cuentas y datos. Antes de crear una migración real, falta confirmar el proveedor; después definimos RLS y email y conectamos el flujo de invitación.
+Supabase está confirmado. La migración inicial está preparada en `supabase/migrations/20260929100000_clientes_core.sql`, con tablas y políticas RLS de lectura; las escrituras quedan reservadas al backend seguro. Todavía no se ha aplicado: el proyecto no tiene Supabase CLI, proyecto remoto ni credenciales. El siguiente paso es inicializar la CLI, crear/configurar el proyecto Supabase y después validar/aplicar la migración antes de implementar las funciones de invitación y email.
