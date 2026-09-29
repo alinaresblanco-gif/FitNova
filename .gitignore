@@ -1,0 +1,5 @@
+# Local credentials and environment configuration
+documentos informacion/contraseña_supabase
+.env
+.env.*
+!.env.example
