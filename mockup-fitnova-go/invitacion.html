@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitNova Go · Configura tu perfil</title>
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#0A1A2F" />
+<link rel="stylesheet" href="css/styles.css?v=20260930.1" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body>
+  <div class="app">
+
+    <header class="app-header">
+      <span style="width:42px;"></span>
+      <span style="font-weight:700;font-size:15px;">Configura tu perfil</span>
+      <span style="width:42px;"></span>
+    </header>
+
+    <main class="app-content">
+
+      <!-- Estado: comprobando token -->
+      <div id="paso-cargando" class="empty-state">
+        <p>Comprobando tu invitación...</p>
+      </div>
+
+      <!-- Estado: token inválido -->
+      <div id="paso-invalido" class="empty-state" style="display:none;">
+        <p id="paso-invalido-mensaje">Este enlace de invitación no es válido o ha caducado.</p>
+        <p style="font-size:13px;opacity:0.8;">Pide a tu entrenador que te envíe una invitación nueva.</p>
+      </div>
+
+      <!-- Ventana 1: cuenta -->
+      <section class="card" id="ventana-1" style="display:none;">
+        <p class="card-title">¡Bienvenido/a a FitNova!</p>
+        <p style="font-size:13px;color:#55606f;margin:0 0 14px;">Tu entrenador te ha invitado. Completa tu cuenta para empezar.</p>
+        <label for="v1-nombre">Nombre</label>
+        <input type="text" id="v1-nombre" readonly />
+        <label for="v1-apellidos">Apellidos</label>
+        <input type="text" id="v1-apellidos" placeholder="Tus apellidos" />
+        <label for="v1-email">Email</label>
+        <input type="email" id="v1-email" readonly />
+        <label for="v1-password">Crea una contraseña</label>
+        <input type="password" id="v1-password" placeholder="Mínimo 8 caracteres" />
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-top:10px;">
+          <input type="checkbox" id="v1-terminos" style="width:auto;" />
+          Acepto los <strong>términos y condiciones</strong> y la <strong>política de privacidad</strong>
+        </label>
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="pasoCrearCuenta()">Continuar</button>
+        <p id="v1-error" style="color:#E5484D;font-size:12.5px;margin-top:10px;"></p>
+      </section>
+
+      <!-- Ventana 2: género -->
+      <section class="card" id="ventana-2" style="display:none;">
+        <p class="card-title">Antes de empezar, cuéntanos un poco más</p>
+        <label>¿Cuál es tu sexo?</label>
+        <div class="chip-select" id="v2-genero">
+          <button data-value="mujer" onclick="selectChip(this)">Mujer</button>
+          <button data-value="hombre" onclick="selectChip(this)">Hombre</button>
+          <button data-value="no_especificado" onclick="selectChip(this)" class="active">Prefiero no decirlo</button>
+        </div>
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="irVentana(3)">Continuar</button>
+      </section>
+
+      <!-- Ventana 3: objetivo -->
+      <section class="card" id="ventana-3" style="display:none;">
+        <p class="card-title">¿Cuál es tu objetivo?</p>
+        <div class="chip-select" id="v3-objetivo" style="flex-direction:column;">
+          <button data-value="perder_peso" onclick="selectChip(this)" class="active">Perder peso · Quemar grasa y definir músculo</button>
+          <button data-value="ponerme_en_forma" onclick="selectChip(this)">Ponerme en forma · Recomposición corporal</button>
+          <button data-value="ganar_musculo" onclick="selectChip(this)">Ganar músculo · Ganar volumen y fuerza</button>
+        </div>
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="irVentana(4)">Continuar</button>
+      </section>
+
+      <!-- Ventana 4: fecha de nacimiento -->
+      <section class="card" id="ventana-4" style="display:none;">
+        <p class="card-title">¿Cuál es tu fecha de nacimiento?</p>
+        <input type="date" id="v4-nacimiento" />
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="irVentana(5)">Continuar</button>
+      </section>
+
+      <!-- Ventana 5: peso -->
+      <section class="card" id="ventana-5" style="display:none;">
+        <p class="card-title">¿Cuánto pesas ahora mismo?</p>
+        <label for="v5-peso">Peso (kg)</label>
+        <input type="number" id="v5-peso" step="0.1" placeholder="Ej. 76,4" />
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="irVentana(6)">Continuar</button>
+      </section>
+
+      <!-- Ventana 6: altura -->
+      <section class="card" id="ventana-6" style="display:none;">
+        <p class="card-title">¿Cuánto mides?</p>
+        <label for="v6-altura">Altura (cm)</label>
+        <input type="number" id="v6-altura" placeholder="Ej. 175" />
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="irVentana(7)">Continuar</button>
+      </section>
+
+      <!-- Ventanas 7-10: salud (PAR-Q) -->
+      <section class="card" id="ventana-7" style="display:none;">
+        <p class="card-title">Hablemos de tu estado de salud</p>
+        <p style="font-size:13px;color:#55606f;">¿Alguna vez te ha diagnosticado un médico una enfermedad cardíaca, recomendándote que solo hagas actividad física supervisada por personal sanitario?</p>
+        <div class="chip-select" id="parq-1"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)" class="active">No</button></div>
+        <p style="font-size:13px;color:#55606f;margin-top:16px;">¿Sufres dolor en el pecho cuando realizas actividad física?</p>
+        <div class="chip-select" id="parq-2"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)" class="active">No</button></div>
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="irVentana(8)">Continuar</button>
+      </section>
+
+      <section class="card" id="ventana-8" style="display:none;">
+        <p class="card-title">Sigamos con tu salud</p>
+        <p style="font-size:13px;color:#55606f;">¿Has notado dolor en el pecho durante el último mes mientras estabas en reposo?</p>
+        <div class="chip-select" id="parq-3"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)" class="active">No</button></div>
+        <p style="font-size:13px;color:#55606f;margin-top:16px;">¿Has perdido la consciencia o el equilibrio después de notar sensación de mareo?</p>
+        <div class="chip-select" id="parq-4"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)" class="active">No</button></div>
+        <p style="font-size:13px;color:#55606f;margin-top:16px;">¿Tienes alguna alteración ósea o articular que podría agravarse con la actividad física?</p>
+        <div class="chip-select" id="parq-5"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)" class="active">No</button></div>
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="irVentana(9)">Continuar</button>
+      </section>
+
+      <section class="card" id="ventana-9" style="display:none;">
+        <p class="card-title">Últimas preguntas de salud</p>
+        <p style="font-size:13px;color:#55606f;">¿Alguna vez te ha recetado el médico algún fármaco para la presión arterial u otro problema cardiocirculatorio?</p>
+        <div class="chip-select" id="parq-6"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)" class="active">No</button></div>
+        <p style="font-size:13px;color:#55606f;margin-top:16px;">¿Conoces alguna otra razón médica que te impida hacer ejercicio sin supervisión?</p>
+        <div class="chip-select" id="parq-7"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)" class="active">No</button></div>
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="finalizarOnboarding()">Finalizar</button>
+        <p id="v9-error" style="color:#E5484D;font-size:12.5px;margin-top:10px;"></p>
+      </section>
+
+      <!-- Estado final -->
+      <div id="paso-completado" class="empty-state" style="display:none;">
+        <p>¡Todo listo! Estamos preparando tu app...</p>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/invitacion.js?v=20260930.1"></script>
+</body>
+</html>

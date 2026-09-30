@@ -6,6 +6,7 @@
 <title>FitNova Manager · Perfil de cliente</title>
 <link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
 <link rel="stylesheet" href="css/styles.css?v=20260924.2" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body data-view="clientes" data-tab-group="cliente-perfil">
 
@@ -44,11 +45,11 @@
       <div class="client-header">
         <div class="avatar-lg" id="cp-iniciales">BD</div>
         <div class="client-info">
-          <h2 id="cp-nombre-2" style="margin:0 0 4px;font-size:20px;color:var(--azul);">Blanco Demo</h2>
+          <h2 id="cp-nombre-2" style="margin:0 0 4px;font-size:20px;color:var(--azul);">Cargando...</h2>
           <div class="client-meta">
-            <span class="status-dot">Activo</span>
-            <span class="tag">Demo</span>
-            <span>Última actividad: hace 2 días</span>
+            <span class="status-dot" id="cp-estado">Activo</span>
+            <span class="tag" id="cp-email"></span>
+            <span id="cp-actividad">Última actividad: —</span>
           </div>
         </div>
         <div class="client-actions">
@@ -72,10 +73,10 @@
 
         <div class="tab-panel active" data-tab-panel-group="cliente-perfil" data-tab-panel="resumen">
           <div class="bottom-grid" style="grid-template-columns:repeat(2,1fr);">
-            <div class="mini-list-item"><div class="info"><strong>Objetivo</strong><span>Pérdida de grasa y tonificación general</span></div></div>
-            <div class="mini-list-item"><div class="info"><strong>Plan actual</strong><span>Plan Premium · Entrenamiento + nutrición</span></div></div>
-            <div class="mini-list-item"><div class="info"><strong>Profesional asignado</strong><span>Ana Martínez</span></div></div>
-            <div class="mini-list-item"><div class="info"><strong>Cumplimiento del mes</strong><span>11% completado</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Objetivo</strong><span id="cp-objetivo">Sin datos de onboarding todavía</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Altura / peso objetivo</strong><span id="cp-medidas">—</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Teléfono</strong><span id="cp-telefono">—</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Fecha de alta</strong><span id="cp-alta">—</span></div></div>
           </div>
         </div>
 
@@ -174,17 +175,7 @@
   </div>
 
   <script src="js/app.js?v=20260924.2"></script>
-  <script>
-    // Rellena la ficha según el cliente elegido en el listado (?id=bd|dr)
-    const clientesDemo = {
-      bd: { nombre: 'Blanco Demo', iniciales: 'BD' },
-      dr: { nombre: 'Dany Roca', iniciales: 'DR' },
-    };
-    const id = new URLSearchParams(location.search).get('id');
-    const cliente = clientesDemo[id] || clientesDemo.bd;
-    document.getElementById('cp-nombre').textContent = cliente.nombre;
-    document.getElementById('cp-nombre-2').textContent = cliente.nombre;
-    document.getElementById('cp-iniciales').textContent = cliente.iniciales;
-  </script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/cliente-perfil.js?v=20260930.1"></script>
 </body>
 </html>

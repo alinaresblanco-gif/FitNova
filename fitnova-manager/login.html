@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1280, initial-scale=1.0" />
+<title>FitNova Manager · Acceso</title>
+<link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
+<link rel="stylesheet" href="css/styles.css?v=20260930.1" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body data-view="login" style="background:var(--azul);min-height:100vh;display:flex;align-items:center;justify-content:center;">
+
+  <section class="card" style="width:100%;max-width:400px;">
+    <div style="text-align:center;margin-bottom:18px;">
+      <img src="../imagenes/LOGO FITNOVA MANAGER.png" alt="FitNova Manager" style="height:64px;" />
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab-group="acceso" data-tab="entrar" onclick="switchTab('acceso','entrar')">Iniciar sesión</button>
+      <button class="tab-btn" data-tab-group="acceso" data-tab="crear" onclick="switchTab('acceso','crear')">Crear cuenta</button>
+    </div>
+
+    <!-- Iniciar sesión -->
+    <div class="tab-panel active" data-tab-panel-group="acceso" data-tab-panel="entrar">
+      <label for="li-email">Email</label>
+      <input type="email" id="li-email" placeholder="tu@email.com" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <label for="li-password">Contraseña</label>
+      <input type="password" id="li-password" placeholder="********" style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="iniciarSesion()">Entrar</button>
+      <p id="li-error" style="color:var(--rojo);font-size:12.5px;margin-top:10px;"></p>
+    </div>
+
+    <!-- Crear cuenta (primer acceso del profesional) -->
+    <div class="tab-panel" data-tab-panel-group="acceso" data-tab-panel="crear">
+      <label for="cr-nombre">Nombre</label>
+      <input type="text" id="cr-nombre" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <label for="cr-apellidos">Apellidos</label>
+      <input type="text" id="cr-apellidos" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <label for="cr-email">Email</label>
+      <input type="email" id="cr-email" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <label for="cr-password">Contraseña</label>
+      <input type="password" id="cr-password" placeholder="Mínimo 8 caracteres" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <label for="cr-rol">Rol</label>
+      <select id="cr-rol" style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;">
+        <option value="administrador">Administrador</option>
+        <option value="entrenador">Entrenador</option>
+        <option value="nutricionista">Nutricionista</option>
+        <option value="colaborador">Colaborador</option>
+      </select>
+      <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="crearCuenta()">Crear cuenta</button>
+      <p id="cr-error" style="color:var(--rojo);font-size:12.5px;margin-top:10px;"></p>
+      <p id="cr-info" style="color:var(--gris-texto);font-size:12.5px;margin-top:6px;"></p>
+    </div>
+  </section>
+
+  <script src="js/app.js?v=20260930.1"></script>
+  <script src="js/supabase-client.js"></script>
+  <script>
+    async function iniciarSesion() {
+      const email = document.getElementById('li-email').value.trim();
+      const password = document.getElementById('li-password').value;
+      const errorEl = document.getElementById('li-error');
+      errorEl.textContent = '';
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (error) { errorEl.textContent = error.message; return; }
+      window.location.href = 'index.html';
+    }
+
+    async function crearCuenta() {
+      const nombre = document.getElementById('cr-nombre').value.trim();
+      const apellidos = document.getElementById('cr-apellidos').value.trim();
+      const email = document.getElementById('cr-email').value.trim();
+      const password = document.getElementById('cr-password').value;
+      const rol = document.getElementById('cr-rol').value;
+      const errorEl = document.getElementById('cr-error');
+      const infoEl = document.getElementById('cr-info');
+      errorEl.textContent = '';
+      infoEl.textContent = '';
+
+      const { data, error } = await supabaseClient.auth.signUp({ email, password });
+      if (error) { errorEl.textContent = error.message; return; }
+
+      if (!data.session) {
+        infoEl.textContent = 'Cuenta creada. Revisa tu email para confirmar el acceso y después inicia sesión.';
+        return;
+      }
+
+      const { error: rpcError } = await supabaseClient.rpc('registrar_profesional_actual', {
+        p_nombre: nombre, p_apellidos: apellidos, p_rol: rol,
+      });
+      if (rpcError) { errorEl.textContent = rpcError.message; return; }
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

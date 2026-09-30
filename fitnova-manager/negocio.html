@@ -6,6 +6,7 @@
 <title>FitNova Manager · Negocio</title>
 <link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
 <link rel="stylesheet" href="css/styles.css?v=20260924.2" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body data-view="negocio">
 
@@ -86,7 +87,7 @@
               <td>49,00 €/mes</td>
               <td><span class="status-dot">Al día</span></td>
               <td>01/10/2026</td>
-              <td><a href="cliente-perfil.html?id=bd&tab=pagos" class="btn-ghost">Ver detalle</a></td>
+              <td><a href="clientes.html" class="btn-ghost">Ver detalle</a></td>
             </tr>
             <tr>
               <td class="cell-user">
@@ -97,7 +98,7 @@
               <td>25,00 €/mes</td>
               <td><span class="status-dot warn">Pago pendiente</span></td>
               <td>18/09/2026</td>
-              <td><a href="cliente-perfil.html?id=dr&tab=pagos" class="btn-ghost">Reclamar pago</a></td>
+              <td><a href="clientes.html" class="btn-ghost">Reclamar pago</a></td>
             </tr>
           </tbody>
         </table>
@@ -125,5 +126,6 @@
   </div>
 
   <script src="js/app.js?v=20260924.2"></script>
+  <script src="js/supabase-client.js"></script>
 </body>
 </html>

@@ -6,6 +6,7 @@
 <title>FitNova Manager · Dashboard</title>
 <link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
 <link rel="stylesheet" href="css/styles.css?v=20260924.2" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body data-view="dashboard">
 
@@ -59,10 +60,10 @@
               <div class="quick-access-ico">✨</div>
               <div class="quick-access-text"><strong>Crea con IA tu Programa</strong><span>Programas + rápido</span></div>
             </a>
-            <div class="quick-access-item" onclick="openModal('modal-nuevo-cliente')">
+            <a class="quick-access-item" href="clientes.html">
               <div class="quick-access-ico">➕</div>
               <div class="quick-access-text"><strong>Añade un Cliente</strong><span>Nuevo cliente al instante</span></div>
-            </div>
+            </a>
             <a class="quick-access-item" href="libreria.html?tab=nutricion">
               <div class="quick-access-ico">✨</div>
               <div class="quick-access-text"><strong>Crea con IA un Plan Nutri</strong><span>Tu asistente de nutrición</span></div>
@@ -160,14 +161,14 @@
           <section class="card">
             <p class="card-title">📊 Revisar cumplimiento <span class="count-pill">2</span></p>
             <div class="compliance-item">
-              <div class="info"><a href="cliente-perfil.html?id=dr" style="font-size:13px;font-weight:700;">Dany Roca</a></div>
+              <div class="info"><a href="clientes.html" style="font-size:13px;font-weight:700;">Dany Roca</a></div>
               <div class="compliance-values">
                 <div><strong>0%</strong><span>Mes</span></div>
                 <div><strong>0%</strong><span>Semana</span></div>
               </div>
             </div>
             <div class="compliance-item">
-              <div class="info"><a href="cliente-perfil.html?id=bd" style="font-size:13px;font-weight:700;">Blanco Demo</a></div>
+              <div class="info"><a href="clientes.html" style="font-size:13px;font-weight:700;">Blanco Demo</a></div>
               <div class="compliance-values">
                 <div><strong>11%</strong><span>Mes</span></div>
                 <div><strong>20%</strong><span>Semana</span></div>
@@ -179,21 +180,7 @@
     </div>
   </div>
 
-  <!-- ===================== MODAL: Nuevo cliente rápido ===================== -->
-  <div class="modal-overlay" id="modal-nuevo-cliente">
-    <div class="modal">
-      <div class="modal-header">
-        <h2>Añadir cliente</h2>
-        <button class="modal-close" onclick="closeModal('modal-nuevo-cliente')">✕</button>
-      </div>
-      <label for="nc-nombre">Nombre completo</label>
-      <input type="text" id="nc-nombre" placeholder="Ej. Ana Martínez" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
-      <label for="nc-email">Correo electrónico</label>
-      <input type="email" id="nc-email" placeholder="ana@email.com" style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;" />
-      <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="closeModal('modal-nuevo-cliente')">Enviar invitación</button>
-    </div>
-  </div>
-
   <script src="js/app.js?v=20260924.2"></script>
+  <script src="js/supabase-client.js"></script>
 </body>
 </html>

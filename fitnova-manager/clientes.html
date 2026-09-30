@@ -6,6 +6,7 @@
 <title>FitNova Manager · Clientes</title>
 <link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
 <link rel="stylesheet" href="css/styles.css?v=20260924.2" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body data-view="clientes">
 
@@ -67,58 +68,21 @@
               <tr>
                 <th><input type="checkbox" /></th>
                 <th>Cliente</th>
-                <th>Etiquetas</th>
-                <th>Profesional</th>
-                <th>Plan</th>
                 <th>Estado</th>
-                <th>Último pago</th>
-                <th>Cumplimiento</th>
                 <th>Última actividad</th>
                 <th></th>
               </tr>
             </thead>
-            <tbody>
-              <tr onclick="location.href='cliente-perfil.html?id=bd'">
-                <td><input type="checkbox" onclick="event.stopPropagation()" /></td>
-                <td class="cell-user">
-                  <div class="avatar-sm">BD</div>
-                  <div><strong>[DEMO] Blanco Demo</strong><span>blanco.demo@fitnova.app</span></div>
-                </td>
-                <td><span class="tag">Demo</span></td>
-                <td>Ana Martínez</td>
-                <td>Plan Premium</td>
-                <td><span class="status-dot">Activo</span></td>
-                <td>12/09/2026</td>
-                <td><div class="progress-mini"><span style="width:11%"></span></div></td>
-                <td>Hace 2 días</td>
-                <td><a href="cliente-perfil.html?id=bd" class="btn-ghost" onclick="event.stopPropagation()">Abrir →</a></td>
-              </tr>
-              <tr onclick="location.href='cliente-perfil.html?id=dr'">
-                <td><input type="checkbox" onclick="event.stopPropagation()" /></td>
-                <td class="cell-user">
-                  <div class="avatar-sm">DR</div>
-                  <div><strong>[DEMO] Dany Roca</strong><span>dany.roca@fitnova.app</span></div>
-                </td>
-                <td><span class="tag">Demo</span></td>
-                <td>Ana Martínez</td>
-                <td>Plan Básico</td>
-                <td><span class="status-dot warn">Pendiente pago</span></td>
-                <td>—</td>
-                <td><div class="progress-mini"><span style="width:0%"></span></div></td>
-                <td>Hace 5 días</td>
-                <td><a href="cliente-perfil.html?id=dr" class="btn-ghost" onclick="event.stopPropagation()">Abrir →</a></td>
-              </tr>
+            <tbody id="tabla-activos">
+              <tr><td colspan="5" style="text-align:center;color:var(--gris-texto-suave);">Cargando...</td></tr>
             </tbody>
           </table>
         </div>
 
         <!-- Tab: Invitaciones -->
         <div class="tab-panel" data-tab-panel-group="clientes" data-tab-panel="invitaciones">
-          <div class="empty-state">
-            <div class="empty-icon">✉️</div>
-            <h3>No hay invitaciones pendientes</h3>
-            <p>Cuando invites a un nuevo cliente, aparecerá aquí hasta que acepte el acceso.</p>
-            <button class="btn-primary" onclick="openModal('modal-nuevo-cliente')">Invitar cliente</button>
+          <div id="lista-invitaciones">
+            <p style="text-align:center;color:var(--gris-texto-suave);">Cargando...</p>
           </div>
         </div>
 
@@ -148,16 +112,33 @@
     <div class="modal">
       <div class="modal-header">
         <h2>Añadir cliente</h2>
-        <button class="modal-close" onclick="closeModal('modal-nuevo-cliente')">✕</button>
+        <button class="modal-close" onclick="cerrarModalCliente()">✕</button>
       </div>
-      <label for="nc-nombre">Nombre completo</label>
-      <input type="text" id="nc-nombre" placeholder="Ej. Ana Martínez" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
-      <label for="nc-email">Correo electrónico</label>
-      <input type="email" id="nc-email" placeholder="ana@email.com" style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;" />
-      <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="closeModal('modal-nuevo-cliente')">Enviar invitación</button>
+      <div id="nc-form">
+        <label for="nc-nombre">Nombre completo</label>
+        <input type="text" id="nc-nombre" placeholder="Ej. Ana Martínez" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+        <label for="nc-email">Correo electrónico</label>
+        <input type="email" id="nc-email" placeholder="ana@email.com" style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;" />
+        <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="enviarInvitacion()">Enviar invitación</button>
+        <p id="nc-error" style="color:var(--rojo);font-size:12.5px;margin-top:10px;"></p>
+      </div>
+      <div id="nc-resultado" style="display:none;">
+        <div class="empty-state" style="padding:10px 0 16px;">
+          <div class="empty-icon">✅</div>
+          <h3>Invitación creada</h3>
+          <p>Todavía no hay envío automático de email configurado. Copia este enlace y compártelo tú mismo con el cliente. Caduca en 7 días.</p>
+        </div>
+        <div class="search-box" style="width:100%;">
+          <input type="text" id="nc-link" readonly style="width:100%;" />
+        </div>
+        <button class="btn-primary" style="width:100%;justify-content:center;margin-top:12px;" onclick="copiarEnlaceInvitacion()">📋 Copiar enlace</button>
+        <button class="btn-outline" style="width:100%;justify-content:center;margin-top:10px;" onclick="cerrarModalCliente()">Cerrar</button>
+      </div>
     </div>
   </div>
 
   <script src="js/app.js?v=20260924.2"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/clientes.js?v=20260930.1"></script>
 </body>
 </html>
