@@ -15,13 +15,13 @@
       <img src="../imagenes/LOGO FITNOVA MANAGER.png" alt="FitNova Manager" style="height:64px;" />
     </div>
 
-    <div class="tabs">
+    <div class="tabs" id="acceso-tabs">
       <button class="tab-btn active" data-tab-group="acceso" data-tab="entrar" onclick="switchTab('acceso','entrar')">Iniciar sesión</button>
       <button class="tab-btn" data-tab-group="acceso" data-tab="crear" onclick="switchTab('acceso','crear')">Crear cuenta</button>
     </div>
 
     <!-- Iniciar sesión -->
-    <div class="tab-panel active" data-tab-panel-group="acceso" data-tab-panel="entrar">
+    <div class="tab-panel active" data-tab-panel-group="acceso" data-tab-panel="entrar" id="login-panel">
       <label for="li-email">Email</label>
       <input type="email" id="li-email" placeholder="tu@email.com" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
       <label for="li-password">Contraseña</label>
@@ -51,6 +51,24 @@
       <p id="cr-error" style="color:var(--rojo);font-size:12.5px;margin-top:10px;"></p>
       <p id="cr-info" style="color:var(--gris-texto);font-size:12.5px;margin-top:6px;"></p>
     </div>
+
+    <div id="perfil-profesional-pendiente" style="display:none;">
+      <h2>Completa tu perfil profesional</h2>
+      <p style="font-size:13px;color:var(--gris-texto);">Tu cuenta existe, pero falta vincularla a un perfil profesional para usar FitNova Manager.</p>
+      <label for="pp-nombre">Nombre</label>
+      <input type="text" id="pp-nombre" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <label for="pp-apellidos">Apellidos</label>
+      <input type="text" id="pp-apellidos" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <label for="pp-rol">Rol</label>
+      <select id="pp-rol" style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;">
+        <option value="administrador">Administrador</option>
+        <option value="entrenador">Entrenador</option>
+        <option value="nutricionista">Nutricionista</option>
+        <option value="colaborador">Colaborador</option>
+      </select>
+      <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="completarPerfilProfesional()">Completar perfil</button>
+      <p id="pp-error" style="color:var(--rojo);font-size:12.5px;margin-top:10px;"></p>
+    </div>
   </section>
 
   <script src="js/app.js?v=20260930.1"></script>
@@ -61,7 +79,43 @@
       const password = document.getElementById('li-password').value;
       const errorEl = document.getElementById('li-error');
       errorEl.textContent = '';
-      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (error) { errorEl.textContent = error.message; return; }
+
+      const { data: profesional, error: perfilError } = await supabaseClient
+        .from('profesionales')
+        .select('id')
+        .eq('auth_user_id', data.user.id)
+        .maybeSingle();
+      if (perfilError) { errorEl.textContent = perfilError.message; return; }
+
+      if (!profesional) {
+        document.getElementById('acceso-tabs').style.display = 'none';
+        document.querySelectorAll('[data-tab-panel-group="acceso"]').forEach((panel) => {
+          panel.style.display = 'none';
+        });
+        document.getElementById('perfil-profesional-pendiente').style.display = 'block';
+        return;
+      }
+
+      window.location.href = 'index.html';
+    }
+
+    async function completarPerfilProfesional() {
+      const nombre = document.getElementById('pp-nombre').value.trim();
+      const apellidos = document.getElementById('pp-apellidos').value.trim();
+      const rol = document.getElementById('pp-rol').value;
+      const errorEl = document.getElementById('pp-error');
+      errorEl.textContent = '';
+
+      if (!nombre) {
+        errorEl.textContent = 'Escribe tu nombre para continuar.';
+        return;
+      }
+
+      const { error } = await supabaseClient.rpc('registrar_profesional_actual', {
+        p_nombre: nombre, p_apellidos: apellidos || null, p_rol: rol,
+      });
       if (error) { errorEl.textContent = error.message; return; }
       window.location.href = 'index.html';
     }
@@ -81,7 +135,7 @@
       if (error) { errorEl.textContent = error.message; return; }
 
       if (!data.session) {
-        infoEl.textContent = 'Cuenta creada. Revisa tu email para confirmar el acceso y después inicia sesión.';
+        infoEl.textContent = 'Cuenta creada. Confirma el email y después inicia sesión; podrás completar tu perfil profesional al entrar.';
         return;
       }
 
