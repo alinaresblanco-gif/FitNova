@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitNova Go · Iniciar sesión</title>
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#0A1A2F" />
+<link rel="stylesheet" href="css/styles.css?v=20261111.1" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body data-view="login">
+  <div class="app">
+
+    <header class="app-header">
+      <span style="width:42px;"></span>
+      <div class="app-brand" aria-label="FitNova Go"><span>FitNova</span><strong>Go</strong></div>
+      <span style="width:42px;"></span>
+    </header>
+
+    <main class="app-content">
+
+      <div class="profile-summary" style="margin-top:24px;">
+        <img src="../imagenes/LOGO-FITNOVA USUARIO.png" alt="FitNova Go" style="width:72px;height:72px;border-radius:18px;" />
+        <h2>Bienvenido/a de nuevo</h2>
+      </div>
+
+      <section class="card">
+        <p class="card-title">Inicia sesión</p>
+
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" placeholder="tu@email.com" autocomplete="email" />
+
+        <label for="login-password">Contraseña</label>
+        <input type="password" id="login-password" placeholder="Tu contraseña" autocomplete="current-password" />
+
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="iniciarSesionGo()">Entrar</button>
+        <p id="login-error" style="color:#E5484D;font-size:12.5px;margin-top:10px;"></p>
+        <p id="login-info" style="color:#1da976;font-size:12.5px;margin-top:4px;"></p>
+
+        <button class="btn-link" style="margin-top:10px;" onclick="recuperarPassword()">He olvidado mi contraseña</button>
+      </section>
+
+      <section class="card">
+        <p style="font-size:13px;color:#55606f;margin:0;">
+          ¿Aún no tienes cuenta? Tu entrenador debe enviarte una <strong>invitación</strong>.
+          Abre el enlace que recibas y completa tu registro desde ahí.
+        </p>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="js/supabase-client.js?v=20261111.1"></script>
+  <script>
+    async function iniciarSesionGo() {
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const errorEl = document.getElementById('login-error');
+      const infoEl = document.getElementById('login-info');
+      errorEl.textContent = '';
+      infoEl.textContent = '';
+
+      if (!email || !password) {
+        errorEl.textContent = 'Escribe tu email y tu contraseña.';
+        return;
+      }
+
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (error) {
+        errorEl.textContent = error.message === 'Invalid login credentials'
+          ? 'Email o contraseña incorrectos.'
+          : error.message;
+        return;
+      }
+
+      window.location.href = 'index.html';
+    }
+
+    async function recuperarPassword() {
+      const email = document.getElementById('login-email').value.trim();
+      const errorEl = document.getElementById('login-error');
+      const infoEl = document.getElementById('login-info');
+      errorEl.textContent = '';
+      infoEl.textContent = '';
+
+      if (!email) {
+        errorEl.textContent = 'Escribe tu email y vuelve a pulsar "He olvidado mi contraseña".';
+        return;
+      }
+
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+      if (error) {
+        errorEl.textContent = error.message;
+        return;
+      }
+      infoEl.textContent = 'Te hemos enviado un email con instrucciones para restablecer la contraseña.';
+    }
+
+    // Si ya hay sesión, entra directamente.
+    document.addEventListener('DOMContentLoaded', async () => {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>

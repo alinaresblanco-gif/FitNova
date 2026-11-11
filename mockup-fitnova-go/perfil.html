@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0A1A2F" />
 <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body>
+<body data-auth="required">
   <div class="app">
 
     <!-- Cabecera -->
@@ -24,22 +24,22 @@
         <button class="icon-square" style="width:64px;height:64px;" title="Cambiar foto">
           <img src="../imagenes/LOGO-FITNOVA USUARIO.png" alt="Foto de perfil" />
         </button>
-        <h2>Ana Martínez</h2>
+        <h2 id="pf-nombre">—</h2>
       </div>
 
       <!-- Evolución -->
       <section class="card">
-        <p class="card-title">Evolución</p>
+        <p class="card-title">Evolución del peso</p>
         <div class="line-chart-wrap">
           <svg viewBox="0 0 300 100" preserveAspectRatio="none">
-            <polyline fill="none" stroke="#FF6A00" stroke-width="3"
-              points="0,70 50,65 100,55 150,58 200,40 250,35 300,25" />
-            <circle cx="300" cy="25" r="4" fill="#0A1A2F" />
+            <polyline id="pf-evolucion-linea" fill="none" stroke="#FF6A00" stroke-width="3" points="" />
+            <circle id="pf-evolucion-punto" r="4" fill="#0A1A2F" style="display:none;" />
           </svg>
         </div>
         <div class="row" style="font-size:11px;color:#8a93a1;">
-          <span>01 Ago</span><span style="text-align:right;">21 Sep</span>
+          <span id="pf-evolucion-desde"></span><span id="pf-evolucion-hasta" style="text-align:right;"></span>
         </div>
+        <p id="pf-evolucion-vacio" style="display:none;font-size:13px;color:#55606f;margin:8px 0 0;">Todavía no hay suficientes registros de peso para dibujar la evolución.</p>
       </section>
 
       <!-- Métricas -->
@@ -52,15 +52,8 @@
       <!-- Tus profesionales -->
       <section class="card">
         <p class="card-title">Tus profesionales</p>
-        <div class="professional-item">
-          <img class="avatar" src="https://via.placeholder.com/44" alt="" />
-          <div class="info"><strong>Carlos Ruiz</strong><span>Entrenador personal</span></div>
-          <button class="btn-link">Ver</button>
-        </div>
-        <div class="professional-item">
-          <img class="avatar" src="https://via.placeholder.com/44" alt="" />
-          <div class="info"><strong>Laura Gómez</strong><span>Nutricionista</span></div>
-          <button class="btn-link">Ver</button>
+        <div id="pf-profesionales">
+          <p style="font-size:13px;color:#55606f;margin:0;">Cargando...</p>
         </div>
       </section>
 
@@ -83,58 +76,69 @@
         </div>
 
         <label for="metrica-tipo">Selecciona la métrica</label>
-        <select id="metrica-tipo">
-          <option>Peso corporal</option>
-          <option>Grasa corporal</option>
-          <option>Pecho</option>
-          <option>Cuello</option>
-          <option>Hombros</option>
-          <option>Bíceps izq.</option>
-          <option>Bíceps der.</option>
-          <option>Antebrazo izq.</option>
-          <option>Antebrazo der.</option>
-          <option>Cintura</option>
-          <option>Cadera</option>
-          <option>Muslo izq.</option>
-          <option>Muslo der.</option>
-          <option>Gemelo izq.</option>
-          <option>Gemelo der.</option>
+        <select id="metrica-tipo" onchange="renderMetrica()">
+          <option value="peso_kg">Peso corporal (kg)</option>
+          <option value="grasa_corporal_pct">Grasa corporal (%)</option>
+          <option value="pecho_cm">Pecho (cm)</option>
+          <option value="cuello_cm">Cuello (cm)</option>
+          <option value="hombros_cm">Hombros (cm)</option>
+          <option value="biceps_izq_cm">Bíceps izq. (cm)</option>
+          <option value="biceps_der_cm">Bíceps der. (cm)</option>
+          <option value="antebrazo_izq_cm">Antebrazo izq. (cm)</option>
+          <option value="antebrazo_der_cm">Antebrazo der. (cm)</option>
+          <option value="cintura_cm">Cintura (cm)</option>
+          <option value="cadera_cm">Cadera (cm)</option>
+          <option value="muslo_izq_cm">Muslo izq. (cm)</option>
+          <option value="muslo_der_cm">Muslo der. (cm)</option>
+          <option value="gemelo_izq_cm">Gemelo izq. (cm)</option>
+          <option value="gemelo_der_cm">Gemelo der. (cm)</option>
         </select>
 
         <!-- Gráfica de evolución de la métrica -->
         <div class="card" style="margin-top:14px;">
           <div class="line-chart-wrap">
             <svg viewBox="0 0 300 100" preserveAspectRatio="none">
-              <polyline fill="none" stroke="#FF6A00" stroke-width="3"
-                points="0,80 50,75 100,68 150,60 200,55 250,48 300,42" />
+              <polyline id="metrica-linea" fill="none" stroke="#FF6A00" stroke-width="3" points="" />
             </svg>
           </div>
+          <p id="metrica-vacio" style="display:none;font-size:13px;color:#55606f;margin:8px 0 0;">Aún no hay registros de esta métrica.</p>
         </div>
 
-        <!-- Objetivo -->
+        <!-- Nuevo registro -->
         <div class="card" style="margin-top:14px;">
+          <p class="card-title">Nuevo registro</p>
+          <div class="field-row">
+            <div><label for="metrica-fecha">Fecha</label><input type="date" id="metrica-fecha" /></div>
+            <div><label for="metrica-valor">Valor</label><input type="number" id="metrica-valor" step="0.1" min="0" placeholder="Ej. 76,4" /></div>
+          </div>
+          <button class="btn-primary" style="margin-top:12px;width:100%;" onclick="guardarMetrica()">Guardar registro</button>
+          <p id="metrica-error" style="color:#E5484D;font-size:12.5px;margin-top:8px;"></p>
+        </div>
+
+        <!-- Objetivo (solo peso corporal) -->
+        <div class="card" style="margin-top:14px;" id="metrica-objetivo-card">
           <p class="card-title">
             Objetivo
             <button class="icon-btn" style="color:var(--azul);width:30px;height:30px;font-size:16px;" onclick="openModal('modal-objetivo')" title="Definir objetivo">⚖️</button>
           </p>
           <div class="row" style="align-items:center;">
             <div>
-              <div class="list-item"><span>Peso inicial</span><strong>82,0 kg</strong></div>
-              <div class="list-item"><span>Peso actual</span><strong>76,4 kg</strong></div>
-              <div class="list-item"><span>Peso objetivo</span><strong>70,0 kg</strong></div>
+              <div class="list-item"><span>Peso inicial</span><strong id="obj-peso-inicial">—</strong></div>
+              <div class="list-item"><span>Peso actual</span><strong id="obj-peso-actual">—</strong></div>
+              <div class="list-item"><span>Peso objetivo</span><strong id="obj-peso-objetivo">—</strong></div>
             </div>
-            <div class="circular-progress" style="--value:47;">
-              <span>47%</span>
+            <div class="circular-progress" id="obj-progreso" style="--value:0;">
+              <span>—</span>
             </div>
           </div>
         </div>
 
-        <!-- Registros del mes -->
+        <!-- Últimos registros -->
         <div class="card" style="margin-top:14px;">
-          <p class="card-title">Registros de este mes</p>
-          <div class="list-item"><span>21 sep · 76,4 kg</span><button class="delete-icon">🗑</button></div>
-          <div class="list-item"><span>14 sep · 77,1 kg</span><button class="delete-icon">🗑</button></div>
-          <div class="list-item"><span>07 sep · 78,0 kg</span><button class="delete-icon">🗑</button></div>
+          <p class="card-title">Últimos registros</p>
+          <div id="metrica-registros">
+            <p style="font-size:13px;color:#55606f;margin:0;">Cargando...</p>
+          </div>
         </div>
       </div>
     </div>
@@ -147,16 +151,20 @@
           <button class="modal-close" onclick="closeModal('modal-objetivo')">✕</button>
         </div>
         <label for="objetivo-peso">Peso objetivo (kg)</label>
-        <input type="number" id="objetivo-peso" step="0.1" value="70.0" />
+        <input type="number" id="objetivo-peso" step="0.1" min="0" placeholder="Ej. 70,0" />
         <div class="row" style="margin-top:18px;">
           <button class="btn-secondary" onclick="closeModal('modal-objetivo')">Cancelar</button>
-          <button class="btn-primary" onclick="closeModal('modal-objetivo')">Actualizar</button>
+          <button class="btn-primary" onclick="guardarObjetivo()">Actualizar</button>
         </div>
+        <p id="objetivo-error" style="color:#E5484D;font-size:12.5px;margin-top:8px;"></p>
       </div>
     </div>
 
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/supabase-client.js?v=20261111.1"></script>
   <script src="js/app.js"></script>
+  <script src="js/perfil.js?v=20261111.1"></script>
 </body>
 </html>

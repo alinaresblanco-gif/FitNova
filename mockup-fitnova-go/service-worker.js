@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fitnova-go-2026.09.23.18';
+const CACHE_NAME = 'fitnova-go-2026.11.11.1';
 const APP_SHELL = [
   './',
   './index.html',
@@ -7,8 +7,14 @@ const APP_SHELL = [
   './perfil.html',
   './ajustes.html',
   './placeholder.html',
+  './login.html',
+  './invitacion.html',
   './css/styles.css',
   './js/app.js',
+  './js/supabase-client.js',
+  './js/perfil.js',
+  './js/ajustes.js',
+  './js/invitacion.js',
   './manifest.webmanifest',
   '../imagenes/LOGO-FITNOVA%20USUARIO.png'
 ];
@@ -31,6 +37,9 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   const requestUrl = new URL(event.request.url);
+  // Nunca interceptar peticiones a otros orígenes (API de Supabase, CDNs...):
+  // deben ir siempre a la red para devolver datos frescos.
+  if (requestUrl.origin !== self.location.origin) return;
   if (requestUrl.pathname.endsWith('/service-worker.js')) {
     event.respondWith(fetch(event.request, { cache: 'no-store' }));
     return;

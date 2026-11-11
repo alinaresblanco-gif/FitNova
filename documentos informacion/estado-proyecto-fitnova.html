@@ -223,14 +223,14 @@
 <!-- ================= 4. PENDIENTE ================= -->
 <h2>4 · Lo que queda por hacer (orden sugerido)</h2>
 
-<div class="card todo">
-  <span class="badge todo">PENDIENTE</span>
-  <h3 style="margin-top:10px;">Para cerrar el ciclo del cliente (lo más inmediato)</h3>
+<div class="card ok">
+  <span class="badge ok">COMPLETADO · 11 nov</span>
+  <h3 style="margin-top:10px;">Ciclo del cliente cerrado (antes "lo más inmediato")</h3>
   <ol>
-    <li><strong>Login de cliente en Go</strong> + guarda de sesión (como ya hace Manager), y que Inicio/Perfil/Ajustes carguen datos reales de <code>clientes</code>, <code>clientes_objetivo</code> y <code>clientes_metricas</code> en vez de localStorage.</li>
-    <li><strong>Registro de métricas de Go contra Supabase</strong> (peso, medidas): la tabla ya existe y tiene RLS.</li>
-    <li><strong>Envío real del email de invitación</strong> (Resend/SendGrid vía Edge Function). Hoy el enlace se copia a mano. Además, el enlace generado usa una ruta relativa local (<code>../mockup-fitnova-go/invitacion.html</code>): habrá que apuntarlo a la URL pública de Go al desplegar.</li>
-    <li><strong>Caducidad automática de invitaciones</strong> (hoy caducan solo por validación en consulta; el estado <code>expirada</code> nunca se escribe) y botones de <strong>reenviar / cancelar invitación</strong> en Manager.</li>
+    <li>✅ <strong>Login de cliente en Go</strong> (<code>login.html</code>) + guarda de sesión en todas las páginas, y datos reales en Inicio (saludo), Perfil (evolución, métricas, objetivo, profesionales) y Ajustes (Mi perfil y Sobre mí con guardado real).</li>
+    <li>✅ <strong>Registro de métricas de Go contra Supabase</strong>: alta, listado y borrado de registros propios + peso objetivo editable. <em>Bug corregido:</em> el service worker cacheaba las respuestas de la API; ahora solo cachea recursos del propio origen.</li>
+    <li>⏳ <strong>Envío real del email de invitación</strong> (pendiente: requiere cuenta Resend/SendGrid y despliegue). La URL de Go ya es configurable (<code>FITNOVA_GO_URL</code> en el <code>supabase-client.js</code> de Manager).</li>
+    <li>✅ <strong>Ciclo de invitaciones en Manager</strong>: expiración automática al cargar la vista (<code>expirar_invitaciones_vencidas</code>), botones <strong>Reenviar</strong> (nuevo token, invalida el anterior) y <strong>Cancelar</strong> (<code>cancelar_invitacion</code>, el cliente vuelve a "lead").</li>
   </ol>
 </div>
 
@@ -264,18 +264,18 @@
   <h3>Grado de avance estimado</h3>
   <div class="progress-row">
     <div class="progress-label">Backend de clientes (v1)</div>
-    <div class="progress-bar"><div class="progress-fill" style="width:90%;background:var(--verde);"></div></div>
-    <div class="progress-pct">~90%</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:95%;background:var(--verde);"></div></div>
+    <div class="progress-pct">~95%</div>
   </div>
   <div class="progress-row">
     <div class="progress-label">Manager conectado a datos</div>
-    <div class="progress-bar"><div class="progress-fill" style="width:40%;"></div></div>
-    <div class="progress-pct">~40%</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:45%;"></div></div>
+    <div class="progress-pct">~45%</div>
   </div>
   <div class="progress-row">
     <div class="progress-label">Go conectado a datos</div>
-    <div class="progress-bar"><div class="progress-fill" style="width:20%;background:var(--ambar);"></div></div>
-    <div class="progress-pct">~20%</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:60%;background:var(--verde);"></div></div>
+    <div class="progress-pct">~60%</div>
   </div>
 </div>
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0A1A2F" />
 <link rel="stylesheet" href="css/styles.css?v=20260922.14" />
 </head>
-<body>
+<body data-auth="required">
   <div class="app">
     <header class="app-header">
       <a href="perfil.html" class="icon-square" title="Personalizar perfil"><img src="../imagenes/LOGO-FITNOVA USUARIO.png" alt="Perfil" /></a>
@@ -55,6 +55,8 @@
     <div class="modal-overlay" id="modal-chat"><div class="modal"><div class="modal-header"><h2>Chat</h2><button class="modal-close" onclick="closeModal('modal-chat')">✕</button></div><p>Tu equipo profesional está disponible para ayudarte.</p></div></div>
     <div class="modal-overlay" id="modal-notificaciones"><div class="modal"><div class="modal-header"><h2>Notificaciones</h2><button class="modal-close" onclick="closeModal('modal-notificaciones')">✕</button></div><div class="list-item"><span>Carlos te ha enviado una nueva rutina</span><span>Hoy</span></div></div></div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/supabase-client.js?v=20261111.1"></script>
   <script src="js/app.js?v=20260922.14"></script>
   <script>initVideos();</script>
 </body>

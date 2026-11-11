@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0A1A2F" />
 <link rel="stylesheet" href="css/styles.css?v=20260922.14" />
 </head>
-<body>
+<body data-auth="required">
   <div class="app">
 
     <!-- Cabecera -->
@@ -33,7 +33,7 @@
     <main class="app-content">
 
       <div class="greeting">
-        <h1>Buenos días, Ana</h1>
+        <h1 id="saludo">Hola 👋</h1>
       </div>
 
       <div class="empty-state">
@@ -218,7 +218,19 @@
 
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/supabase-client.js?v=20261111.1"></script>
   <script src="js/app.js?v=20260923.15"></script>
-  <script>checkForAppUpdate();</script>
+  <script>
+    checkForAppUpdate();
+    // Saludo personalizado con el nombre real del cliente
+    document.addEventListener('DOMContentLoaded', async () => {
+      const cliente = await cargarClienteActual();
+      if (!cliente) return;
+      const hora = new Date().getHours();
+      const saludo = hora < 13 ? 'Buenos días' : (hora < 21 ? 'Buenas tardes' : 'Buenas noches');
+      document.getElementById('saludo').textContent = `${saludo}, ${cliente.nombre_avatar || cliente.nombre}`;
+    });
+  </script>
 </body>
 </html>

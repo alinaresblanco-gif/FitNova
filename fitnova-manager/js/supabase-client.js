@@ -4,6 +4,11 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_C_dvWW90caDIlyU3vGjgDQ_0BzdVql1
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
+// URL base de FitNova Go para construir los enlaces de invitación.
+// Al desplegar en producción, sustituir por la URL pública de Go,
+// p. ej.: const FITNOVA_GO_URL = 'https://go.fitnova.app/';
+const FITNOVA_GO_URL = new URL('../mockup-fitnova-go/', window.location.href).toString();
+
 // Redirige a login.html si no hay sesión activa. Se llama desde cada página protegida.
 async function requireSession() {
   const { data: { session } } = await supabaseClient.auth.getSession();

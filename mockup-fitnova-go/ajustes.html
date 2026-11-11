@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0A1A2F" />
 <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body>
+<body data-auth="required">
   <div class="app">
 
     <header class="app-header">
@@ -31,19 +31,19 @@
 
           <p class="section-title">Datos personales</p>
           <div class="field-row">
-            <div><label for="perfil-nombre">Nombre</label><input id="perfil-nombre" value="Ana" /></div>
-            <div><label for="perfil-apellidos">Apellidos</label><input id="perfil-apellidos" value="Martínez" /></div>
+            <div><label for="perfil-nombre">Nombre</label><input id="perfil-nombre" /></div>
+            <div><label for="perfil-apellidos">Apellidos</label><input id="perfil-apellidos" /></div>
           </div>
           <label for="perfil-avatar">Nombre de avatar</label>
-          <input id="perfil-avatar" value="anafit" />
+          <input id="perfil-avatar" placeholder="Ej. anafit" />
           <div class="field-row">
             <div><label for="perfil-nacimiento">Fecha de nacimiento</label><input type="date" id="perfil-nacimiento" /></div>
             <div><label for="perfil-telefono">Teléfono</label><input id="perfil-telefono" placeholder="+34 600 000 000" /></div>
           </div>
           <label for="perfil-email">Email</label>
-          <input type="email" id="perfil-email" value="ana@example.com" />
-          <label for="perfil-password">Contraseña</label>
-          <input type="password" id="perfil-password" value="********" />
+          <input type="email" id="perfil-email" readonly style="opacity:.7;" />
+          <label for="perfil-password">Nueva contraseña (opcional)</label>
+          <input type="password" id="perfil-password" placeholder="Déjalo vacío para no cambiarla" autocomplete="new-password" />
 
           <p class="section-title">Datos de facturación</p>
           <div class="field-row">
@@ -59,7 +59,8 @@
           <label for="fact-pais">País</label>
           <input id="fact-pais" />
 
-          <button class="btn-primary" style="margin-top:16px;">Guardar cambios</button>
+          <button class="btn-primary" style="margin-top:16px;" onclick="guardarMiPerfil()">Guardar cambios</button>
+          <p id="perfil-msg" style="font-size:12.5px;margin-top:8px;"></p>
         </div>
       </div>
 
@@ -70,19 +71,21 @@
         </div>
         <div class="accordion-body">
           <label>Género</label>
-          <div class="chip-select">
-            <button class="active" onclick="selectChip(this)">Masculino</button>
-            <button onclick="selectChip(this)">Femenino</button>
+          <div class="chip-select" id="sobre-genero">
+            <button data-value="hombre" onclick="selectChip(this)">Hombre</button>
+            <button data-value="mujer" onclick="selectChip(this)">Mujer</button>
+            <button data-value="no_especificado" onclick="selectChip(this)">Prefiero no decirlo</button>
           </div>
           <div class="field-row">
-            <div><label for="sobre-altura">Altura (cm)</label><input type="number" id="sobre-altura" value="170" /></div>
-            <div><label for="sobre-peso">Peso inicial (kg)</label><input type="number" id="sobre-peso" value="82" /></div>
+            <div><label for="sobre-altura">Altura (cm)</label><input type="number" id="sobre-altura" min="0" /></div>
+            <div><label for="sobre-peso">Peso inicial (kg)</label><input type="number" id="sobre-peso" readonly style="opacity:.7;" title="Es tu primer registro de peso; se consulta en Métricas" /></div>
           </div>
           <label for="sobre-objetivo">Notas sobre tu objetivo</label>
           <textarea id="sobre-objetivo" placeholder="Ej. Quiero perder grasa y ganar tono muscular"></textarea>
           <label for="sobre-lesiones">Lesiones, alergias u otras observaciones</label>
           <textarea id="sobre-lesiones" placeholder="Ej. Molestia en rodilla derecha"></textarea>
-          <button class="btn-primary" style="margin-top:16px;">Guardar cambios</button>
+          <button class="btn-primary" style="margin-top:16px;" onclick="guardarSobreMi()">Guardar cambios</button>
+          <p id="sobre-msg" style="font-size:12.5px;margin-top:8px;"></p>
         </div>
       </div>
 
@@ -125,6 +128,14 @@
     </main>
   </div>
 
+  <!-- Cerrar sesión -->
+  <div style="max-width:430px;margin:0 auto;padding:0 16px 24px;">
+    <button class="btn-secondary" style="width:100%;" onclick="if (confirm('¿Cerrar sesión?')) cerrarSesionGo();">Cerrar sesión</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/supabase-client.js?v=20261111.1"></script>
   <script src="js/app.js"></script>
+  <script src="js/ajustes.js?v=20261111.1"></script>
 </body>
 </html>

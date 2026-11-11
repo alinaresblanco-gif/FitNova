@@ -9,6 +9,11 @@ function formatearFecha(iso) {
   return new Date(iso).toLocaleDateString('es-ES');
 }
 
+// Codifica un valor para incrustarlo en un atributo onclick (escapa también apóstrofes).
+function codificarParam(valor) {
+  return encodeURIComponent(valor).replace(/'/g, '%27');
+}
+
 async function cargarClientesActivos() {
   const tbody = document.getElementById('tabla-activos');
   const { data, error } = await supabaseClient
@@ -46,7 +51,7 @@ async function cargarInvitaciones() {
   const { data, error } = await supabaseClient
     .from('invitaciones')
     .select('id, estado, email_destino, fecha_envio, fecha_expiracion, clientes(nombre, email)')
-    .in('estado', ['pendiente', 'enviada'])
+    .in('estado', ['pendiente', 'enviada', 'expirada'])
     .order('fecha_envio', { ascending: false });
 
   if (error) {
@@ -67,21 +72,39 @@ async function cargarInvitaciones() {
 
   cont.innerHTML = `
     <table class="data-table">
-      <thead><tr><th>Cliente</th><th>Enviada</th><th>Caduca</th><th>Estado</th></tr></thead>
+      <thead><tr><th>Cliente</th><th>Enviada</th><th>Caduca</th><th>Estado</th><th>Acciones</th></tr></thead>
       <tbody>
-        ${data.map((inv) => `
+        ${data.map((inv) => {
+          const nombre = inv.clientes?.nombre || inv.email_destino;
+          const email = inv.clientes?.email || inv.email_destino;
+          const caducada = inv.estado === 'expirada';
+          return `
           <tr>
             <td class="cell-user">
               <div class="avatar-sm">${iniciales(inv.clientes?.nombre)}</div>
-              <div><strong>${inv.clientes?.nombre || inv.email_destino}</strong><span>${inv.clientes?.email || inv.email_destino}</span></div>
+              <div><strong>${nombre}</strong><span>${email}</span></div>
             </td>
             <td>${formatearFecha(inv.fecha_envio)}</td>
             <td>${formatearFecha(inv.fecha_expiracion)}</td>
-            <td><span class="status-dot warn">Pendiente</span></td>
-          </tr>
-        `).join('')}
+            <td><span class="status-dot ${caducada ? 'off' : 'warn'}">${caducada ? 'Caducada' : 'Pendiente'}</span></td>
+            <td style="white-space:nowrap;">
+              <button class="btn-ghost" onclick="reenviarInvitacion('${codificarParam(nombre)}', '${codificarParam(email)}')" title="Genera un enlace nuevo e invalida el anterior">🔁 Reenviar</button>
+              <button class="btn-ghost" style="color:var(--rojo);" onclick="cancelarInvitacion('${inv.id}')" title="Cancelar esta invitación">✕ Cancelar</button>
+            </td>
+          </tr>`;
+        }).join('')}
       </tbody>
     </table>`;
+}
+
+function mostrarEnlaceInvitacion(fila) {
+  const enlace = new URL('invitacion.html', FITNOVA_GO_URL);
+  enlace.searchParams.set('token', fila.token);
+
+  document.getElementById('nc-form').style.display = 'none';
+  document.getElementById('nc-resultado').style.display = 'block';
+  document.getElementById('nc-link').value = enlace.toString();
+  openModal('modal-nuevo-cliente');
 }
 
 async function enviarInvitacion() {
@@ -104,13 +127,39 @@ async function enviarInvitacion() {
     return;
   }
 
-  const fila = Array.isArray(data) ? data[0] : data;
-  const enlace = new URL('../mockup-fitnova-go/invitacion.html', window.location.href);
-  enlace.searchParams.set('token', fila.token);
+  mostrarEnlaceInvitacion(Array.isArray(data) ? data[0] : data);
+  cargarInvitaciones();
+}
 
-  document.getElementById('nc-form').style.display = 'none';
-  document.getElementById('nc-resultado').style.display = 'block';
-  document.getElementById('nc-link').value = enlace.toString();
+// Reenviar: crea una invitación nueva (la anterior queda cancelada automáticamente).
+async function reenviarInvitacion(nombreCodificado, emailCodificado) {
+  const nombre = decodeURIComponent(nombreCodificado);
+  const email = decodeURIComponent(emailCodificado);
+
+  const { data, error } = await supabaseClient.rpc('crear_invitacion', {
+    p_nombre: nombre, p_email: email,
+  });
+
+  if (error) {
+    alert(`No se pudo reenviar la invitación: ${error.message}`);
+    return;
+  }
+
+  mostrarEnlaceInvitacion(Array.isArray(data) ? data[0] : data);
+  cargarInvitaciones();
+}
+
+async function cancelarInvitacion(invitacionId) {
+  if (!confirm('¿Cancelar esta invitación? El enlace dejará de funcionar.')) return;
+
+  const { error } = await supabaseClient.rpc('cancelar_invitacion', {
+    p_invitacion_id: invitacionId,
+  });
+
+  if (error) {
+    alert(`No se pudo cancelar: ${error.message}`);
+    return;
+  }
 
   cargarInvitaciones();
 }
@@ -133,6 +182,8 @@ function cerrarModalCliente() {
 document.addEventListener('DOMContentLoaded', async () => {
   const session = await requireSession();
   if (!session) return;
+  // Marca como caducadas las invitaciones vencidas antes de listarlas.
+  await supabaseClient.rpc('expirar_invitaciones_vencidas').then(() => {}, () => {});
   cargarClientesActivos();
   cargarInvitaciones();
 });
