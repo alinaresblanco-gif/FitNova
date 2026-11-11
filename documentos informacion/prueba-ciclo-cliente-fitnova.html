@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Guía de prueba del alta de clientes en FitNova Manager y FitNova Go." />
+  <title>Prueba del ciclo del cliente · FitNova</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --azul: #1748c7;
+      --azul-oscuro: #112d70;
+      --fondo: #f3f6fb;
+      --texto: #263248;
+      --suave: #657189;
+      --borde: #dce3ee;
+      --verde: #147a52;
+      --ambar: #8a5700;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--fondo);
+      color: var(--texto);
+      font: 16px/1.65 "Segoe UI", system-ui, sans-serif;
+    }
+    main { width: min(900px, calc(100% - 32px)); margin: 32px auto 64px; }
+    header {
+      padding: 32px;
+      border-radius: 16px;
+      color: #fff;
+      background: linear-gradient(130deg, var(--azul-oscuro), var(--azul));
+    }
+    header h1 { margin: 0 0 8px; line-height: 1.2; font-size: clamp(26px, 5vw, 38px); }
+    header p { margin: 0; opacity: .9; }
+    section, .callout {
+      margin-top: 20px;
+      padding: 24px 28px;
+      border: 1px solid var(--borde);
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 2px 8px #1c31500a;
+    }
+    h2 { margin: 0 0 12px; font-size: 22px; }
+    h3 { margin: 20px 0 6px; font-size: 17px; }
+    p { margin: 10px 0; }
+    ol, ul { padding-left: 24px; }
+    li { margin: 8px 0; }
+    a { color: var(--azul); overflow-wrap: anywhere; }
+    .link-card {
+      display: block;
+      margin: 12px 0;
+      padding: 14px 16px;
+      border: 1px solid var(--borde);
+      border-radius: 10px;
+      text-decoration: none;
+    }
+    .link-card strong { display: block; color: var(--texto); }
+    .link-card span { font-size: 14px; }
+    .callout { border-left: 5px solid var(--ambar); }
+    .callout p { margin: 0; }
+    .ok { border-left: 5px solid var(--verde); }
+    code {
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: #edf1f7;
+      overflow-wrap: anywhere;
+    }
+    footer { padding: 22px 4px; color: var(--suave); font-size: 13px; text-align: center; }
+    @media (max-width: 600px) {
+      main { width: min(100% - 20px, 900px); margin-top: 10px; }
+      header, section, .callout { padding: 20px; }
+    }
+    @media print {
+      body { background: #fff; }
+      main { width: 100%; margin: 0; }
+      header { print-color-adjust: exact; }
+      section, .callout { box-shadow: none; break-inside: avoid; }
+      a { color: #1748c7; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Prueba del alta de un cliente</h1>
+    <p>Guía paso a paso para comprobar FitNova Manager, FitNova Go y el guardado en Supabase.</p>
+  </header>
+
+  <section class="ok">
+    <h2>Qué vamos a probar</h2>
+    <p>Un profesional inicia sesión en Manager, crea una invitación y comparte el enlace individual. El cliente abre ese enlace, crea su cuenta en Go y completa el onboarding. Al terminar, sus datos quedan guardados en el backend compartido de Supabase y el cliente aparece como activo en Manager.</p>
+    <p>Esta prueba cubre el ciclo de alta y acceso del cliente. Agenda, vídeos y otros módulos quedan fuera de esta primera prueba.</p>
+  </section>
+
+  <section>
+    <h2>Enlaces públicos</h2>
+    <a class="link-card" href="https://alinaresblanco-gif.github.io/FitNova/fitnova-manager/login.html">
+      <strong>FitNova Manager · acceso del profesional</strong>
+      <span>https://alinaresblanco-gif.github.io/FitNova/fitnova-manager/login.html</span>
+    </a>
+    <a class="link-card" href="https://alinaresblanco-gif.github.io/FitNova/mockup-fitnova-go/login.html">
+      <strong>FitNova Go · acceso del cliente registrado</strong>
+      <span>https://alinaresblanco-gif.github.io/FitNova/mockup-fitnova-go/login.html</span>
+    </a>
+    <div class="callout">
+      <p><strong>Importante:</strong> el enlace general de Go sirve para iniciar sesión después del alta. Para registrarse por primera vez, el cliente necesita su enlace de invitación único, que se genera en Manager siguiendo los pasos de abajo. No compartas la contraseña de Manager: el profesional debe acceder con su propia cuenta.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Antes de empezar</h2>
+    <ul>
+      <li>El profesional debe tener su cuenta de Manager y poder iniciar sesión.</li>
+      <li>El cliente debe tener acceso al correo que se escribirá en la invitación. La confirmación de correo está desactivada actualmente; el alta debería continuar sin esperar un email de confirmación.</li>
+      <li>Para una prueba controlada, usa un correo de prueba que puedas consultar. La cuenta y los datos introducidos se guardan en Supabase; no uses información de salud de otra persona sin su consentimiento.</li>
+      <li>Manager no envía automáticamente el email de invitación todavía: el profesional copia y comparte el enlace de forma privada.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Parte 1 · El profesional crea e invita al cliente</h2>
+    <ol>
+      <li>Abre el enlace de <strong>FitNova Manager</strong> e inicia sesión con la cuenta del profesional.</li>
+      <li>Entra en <strong>Clientes</strong> y pulsa <strong>Añadir cliente</strong>.</li>
+      <li>Escribe el nombre y el correo electrónico que utilizará el cliente en Go. Comprueba que el correo esté bien escrito.</li>
+      <li>Pulsa <strong>Enviar invitación</strong>. Manager crea el cliente y una invitación pendiente en Supabase.</li>
+      <li>En la ventana de resultado, pulsa <strong>Copiar enlace</strong> y envía ese enlace al cliente por un canal privado. El enlace contiene un token individual y caduca a los 7 días.</li>
+      <li>La fila aparecerá en <strong>Clientes → Invitaciones enviadas</strong>. Al completar el onboarding, pasará a la lista de clientes activos.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Parte 2 · El cliente se registra en FitNova Go</h2>
+    <ol>
+      <li>Abre el enlace de invitación recibido. No empieces desde la pantalla de login: el enlace de invitación identifica el alta creada por el profesional.</li>
+      <li>En la primera pantalla, verifica el correo precargado, escribe los apellidos y crea una contraseña de al menos 8 caracteres. Acepta los términos y la política para continuar.</li>
+      <li>Completa las pantallas de género, objetivo, fecha de nacimiento, peso y altura.</li>
+      <li>Responde las preguntas del cuestionario de salud y pulsa <strong>Finalizar</strong>.</li>
+      <li>Al terminar, Go guarda el perfil, objetivo, peso inicial, cuestionario y consentimientos en Supabase, activa el cliente y abre el inicio de la app.</li>
+      <li>Para comprobar un nuevo inicio de sesión, abre el enlace general de Go, inicia sesión con el correo invitado y la contraseña que acaba de crear.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Parte 3 · Comprobar el resultado</h2>
+    <ol>
+      <li>En Go, confirma que se abre el inicio con la cuenta del cliente. Revisa Perfil y Ajustes; la información debe corresponder al onboarding.</li>
+      <li>Vuelve a Manager, actualiza la lista de Clientes y confirma que el cliente aparece como <strong>Activo</strong>, ya no como invitación pendiente.</li>
+      <li>Abre su ficha desde Manager y comprueba la información disponible. La actividad reciente debe reflejar su acceso a Go.</li>
+      <li>Cierra sesión en Go y vuelve a entrar con las credenciales creadas para confirmar que la cuenta persiste entre sesiones.</li>
+    </ol>
+    <p>Ambas aplicaciones usan el mismo proyecto Supabase. Esto no es una simulación local: los cambios realizados durante la prueba persisten en la base de datos configurada para FitNova.</p>
+  </section>
+
+  <section>
+    <h2>Si algo falla</h2>
+    <ul>
+      <li><strong>Invitación no válida o caducada:</strong> pide al profesional que genere una nueva desde Manager y comparte el nuevo enlace.</li>
+      <li><strong>El cliente no aparece como activo:</strong> confirma que llegó a pulsar Finalizar y que no se mostró un error en la última pantalla.</li>
+      <li><strong>El cliente ya tenía una cuenta:</strong> no repitas el registro; prueba el inicio de sesión de Go. Para esta prueba de alta, es preferible usar un correo nuevo.</li>
+      <li><strong>Manager no deja entrar:</strong> verifica las credenciales del profesional. No uses la opción de crear cuenta salvo que se quiera registrar otro profesional.</li>
+    </ul>
+  </section>
+
+  <footer>
+    FitNova · Guía de prueba del ciclo del cliente · 11 de noviembre de 2026
+  </footer>
+</main>
+</body>
+</html>
