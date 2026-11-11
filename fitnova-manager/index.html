@@ -39,7 +39,7 @@
     <div class="page-header">
       <p class="breadcrumb">FitNova Manager</p>
       <h1>Es hora de recuperar tu tiempo. ¡Toma el control!</h1>
-      <p class="subtitle">Aquí tienes el resumen de tu negocio hoy, 24 de septiembre.</p>
+      <p class="subtitle" id="dashboard-fecha">Aquí tienes el resumen de tu negocio.</p>
     </div>
 
     <div class="page-body">
@@ -95,39 +95,36 @@
         <section class="card">
           <div class="card-head">
             <div class="card-head-left">
-              <p class="card-title">🕐 Actividad reciente <span class="count-pill">0</span></p>
+              <p class="card-title">🕐 Actividad reciente <span class="count-pill" id="dashboard-actividad-count">0</span></p>
             </div>
             <div class="card-head-tools">
               <button class="icon-round" title="Buscar">🔍</button>
               <button class="icon-round" title="Filtrar actividad">🧰</button>
             </div>
           </div>
-          <div class="empty-state">
-            <div class="empty-icon">📋</div>
-            <h3>Aún no hay actividad por aquí</h3>
-            <p>Asigna tareas y descubre cómo tus clientes dan los primeros pasos hacia sus objetivos.</p>
-            <a href="clientes.html" class="btn-primary">Ver mis clientes</a>
+          <div class="mini-list" id="dashboard-actividad">
+            <div class="empty-state"><div class="empty-icon">⏳</div><h3>Cargando actividad...</h3></div>
           </div>
         </section>
 
         <div class="promo-grid">
           <div class="promo-card">
             <div class="promo-ico">⏱️</div>
-            <h4>Gana tiempo</h4>
-            <strong class="stat">+2 días</strong>
-            <p>Ahorrados por semana automatizando tu gestión.</p>
+            <h4>Clientes activos</h4>
+            <strong class="stat" id="dashboard-clientes-activos">—</strong>
+            <p>Clientes actualmente activos en tu cartera.</p>
           </div>
           <div class="promo-card">
             <div class="promo-ico">📈</div>
-            <h4>Gana clientes</h4>
-            <strong class="stat">x3</strong>
-            <p>Profesionales que han escalado su negocio con FitNova.</p>
+            <h4>Invitaciones pendientes</h4>
+            <strong class="stat" id="dashboard-invitaciones">—</strong>
+            <p>Invitaciones todavía pendientes de completar.</p>
           </div>
           <div class="promo-card">
             <div class="promo-ico">💰</div>
-            <h4>Gana más</h4>
-            <strong class="stat">30 días</strong>
-            <p>De prueba gratuita para automatizar tu operativa.</p>
+            <h4>Leads</h4>
+            <strong class="stat" id="dashboard-leads">—</strong>
+            <p>Contactos potenciales registrados.</p>
           </div>
         </div>
 
@@ -143,36 +140,18 @@
 
           <section class="card">
             <div class="card-head">
-              <p class="card-title">📆 Próximos eventos <span class="count-pill">2</span></p>
+              <p class="card-title">📆 Próximos eventos <span class="count-pill">0</span></p>
             </div>
-            <div class="mini-list">
-              <div class="mini-list-item">
-                <div class="info"><strong>Sesión tren inferior</strong><span>Hoy · 18:00–19:00 · Entrenamiento personal</span></div>
-                <span class="tag">2/4</span>
-              </div>
-              <div class="mini-list-item">
-                <div class="info"><strong>Sesión inicial grupal</strong><span>Mañana · 09:00–10:00 · Clase grupal</span></div>
-                <span class="tag">2/8</span>
-              </div>
+            <div class="empty-state" style="padding:20px 4px;">
+              <p style="font-size:12.5px;">La agenda todavía no está conectada a sesiones reales.</p>
             </div>
             <a href="agenda.html" class="btn-ghost" style="margin-top:12px;width:100%;justify-content:center;">Ver lista de eventos completa</a>
           </section>
 
           <section class="card">
-            <p class="card-title">📊 Revisar cumplimiento <span class="count-pill">2</span></p>
-            <div class="compliance-item">
-              <div class="info"><a href="clientes.html" style="font-size:13px;font-weight:700;">Dany Roca</a></div>
-              <div class="compliance-values">
-                <div><strong>0%</strong><span>Mes</span></div>
-                <div><strong>0%</strong><span>Semana</span></div>
-              </div>
-            </div>
-            <div class="compliance-item">
-              <div class="info"><a href="clientes.html" style="font-size:13px;font-weight:700;">Blanco Demo</a></div>
-              <div class="compliance-values">
-                <div><strong>11%</strong><span>Mes</span></div>
-                <div><strong>20%</strong><span>Semana</span></div>
-              </div>
+            <p class="card-title">👥 Clientes recientes <span class="count-pill" id="dashboard-recientes-count">0</span></p>
+            <div class="mini-list" id="dashboard-recientes">
+              <p style="font-size:12.5px;color:var(--gris-texto-suave);">Cargando...</p>
             </div>
           </section>
         </div>
@@ -182,5 +161,6 @@
 
   <script src="js/app.js?v=20260924.2"></script>
   <script src="js/supabase-client.js"></script>
+  <script src="js/dashboard.js?v=20261111.1"></script>
 </body>
 </html>

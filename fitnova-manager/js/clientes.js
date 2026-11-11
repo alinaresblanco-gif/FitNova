@@ -14,36 +14,155 @@ function codificarParam(valor) {
   return encodeURIComponent(valor).replace(/'/g, '%27');
 }
 
-async function cargarClientesActivos() {
-  const tbody = document.getElementById('tabla-activos');
+let clientesCartera = [];
+let etiquetasDisponibles = [];
+let filtroBusqueda = '';
+let filtroEtiqueta = '';
+
+function escaparHTML(valor) {
+  return String(valor || '').replace(/[&<>'"]/g, (caracter) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',
+  })[caracter]);
+}
+
+function nombreCliente(cliente) {
+  return `${cliente.nombre || ''} ${cliente.apellidos || ''}`.trim() || cliente.email;
+}
+
+function obtenerEstadoNombre(estado) {
+  return { activo: 'Activo', invitacion_enviada: 'Invitación enviada', lead: 'Lead', archivado: 'Archivado' }[estado] || estado;
+}
+
+function clientePasaFiltros(cliente) {
+  const consulta = filtroBusqueda.toLocaleLowerCase('es');
+  const coincideTexto = !consulta
+    || nombreCliente(cliente).toLocaleLowerCase('es').includes(consulta)
+    || (cliente.email || '').toLocaleLowerCase('es').includes(consulta);
+  const coincideEtiqueta = !filtroEtiqueta
+    || cliente.etiquetas.some((etiqueta) => etiqueta.id === filtroEtiqueta);
+  return coincideTexto && coincideEtiqueta;
+}
+
+function htmlEtiquetasCliente(cliente) {
+  if (!etiquetasDisponibles.length) return '<span style="color:var(--gris-texto-suave);">—</span>';
+  return `<div class="cliente-etiquetas">${etiquetasDisponibles.map((etiqueta) => {
+    const asignada = cliente.etiquetas.some((actual) => actual.id === etiqueta.id);
+    return `<button type="button" class="cliente-etiqueta${asignada ? ' asignada' : ''}"
+      onclick="alternarEtiqueta('${cliente.id}', '${etiqueta.id}', ${asignada})"
+      title="${asignada ? 'Quitar etiqueta' : 'Asignar etiqueta'}">${escaparHTML(etiqueta.nombre)}</button>`;
+  }).join('')}</div>`;
+}
+
+function htmlFilaCliente(cliente, activo) {
+  return `<tr>
+    ${activo ? '<td><input type="checkbox" aria-label="Seleccionar cliente" /></td>' : ''}
+    <td class="cell-user">
+      <div class="avatar-sm">${escaparHTML(iniciales(nombreCliente(cliente)))}</div>
+      <div><strong>${escaparHTML(nombreCliente(cliente))}</strong><span>${escaparHTML(cliente.email)}</span></div>
+    </td>
+    <td><span class="status-dot ${cliente.estado === 'archivado' ? 'off' : ''}">${escaparHTML(obtenerEstadoNombre(cliente.estado))}</span></td>
+    <td>${formatearFecha(cliente.ultima_actividad)}</td>
+    <td>${htmlEtiquetasCliente(cliente)}</td>
+    <td><a href="cliente-perfil.html?id=${encodeURIComponent(cliente.id)}" class="btn-ghost">Abrir →</a></td>
+  </tr>`;
+}
+
+function renderClientes() {
+  const estados = [
+    { key: 'activo', id: 'tabla-activos', count: 'count-activos' },
+    { key: 'archivado', id: 'tabla-archivados', count: 'count-archivados' },
+    { key: 'lead', id: 'tabla-leads', count: 'count-leads' },
+  ];
+
+  estados.forEach(({ key, id, count }) => {
+    const filas = clientesCartera.filter((cliente) => cliente.estado === key && clientePasaFiltros(cliente));
+    const tbody = document.getElementById(id);
+    document.getElementById(count).textContent = clientesCartera.filter((cliente) => cliente.estado === key).length;
+    tbody.innerHTML = filas.length
+      ? filas.map((cliente) => htmlFilaCliente(cliente, key === 'activo')).join('')
+      : `<tr><td colspan="${key === 'activo' ? 6 : 5}" style="text-align:center;color:var(--gris-texto-suave);">${filtroBusqueda || filtroEtiqueta ? 'No hay resultados con estos filtros.' : `No tienes ${key === 'activo' ? 'clientes activos' : key === 'lead' ? 'leads' : 'clientes archivados'}.`}</td></tr>`;
+  });
+}
+
+async function cargarClientes() {
   const { data, error } = await supabaseClient
     .from('clientes')
     .select('id, nombre, apellidos, email, estado, ultima_actividad')
-    .eq('estado', 'activo')
     .order('nombre', { ascending: true });
-
   if (error) {
-    tbody.innerHTML = `<tr><td colspan="5" style="color:var(--rojo);text-align:center;">${error.message}</td></tr>`;
+    document.getElementById('tabla-activos').innerHTML =
+      `<tr><td colspan="6" style="color:var(--rojo);text-align:center;">${escaparHTML(error.message)}</td></tr>`;
     return;
   }
 
-  if (!data.length) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--gris-texto-suave);">Todavía no tienes clientes activos.</td></tr>';
+  const { data: relaciones, error: errorRelaciones } = await supabaseClient
+    .from('cliente_etiqueta')
+    .select('cliente_id, etiquetas(id, nombre)');
+  if (errorRelaciones) {
+    document.getElementById('tabla-activos').innerHTML =
+      `<tr><td colspan="6" style="color:var(--rojo);text-align:center;">${escaparHTML(errorRelaciones.message)}</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = data.map((c) => `
-    <tr onclick="location.href='cliente-perfil.html?id=${c.id}'">
-      <td><input type="checkbox" onclick="event.stopPropagation()" /></td>
-      <td class="cell-user">
-        <div class="avatar-sm">${iniciales(c.nombre)}</div>
-        <div><strong>${c.nombre} ${c.apellidos || ''}</strong><span>${c.email}</span></div>
-      </td>
-      <td><span class="status-dot">Activo</span></td>
-      <td>${formatearFecha(c.ultima_actividad)}</td>
-      <td><a href="cliente-perfil.html?id=${c.id}" class="btn-ghost" onclick="event.stopPropagation()">Abrir →</a></td>
-    </tr>
-  `).join('');
+  const porCliente = new Map();
+  (relaciones || []).forEach((relacion) => {
+    if (!porCliente.has(relacion.cliente_id)) porCliente.set(relacion.cliente_id, []);
+    if (relacion.etiquetas) porCliente.get(relacion.cliente_id).push(relacion.etiquetas);
+  });
+  clientesCartera = (data || []).map((cliente) => ({
+    ...cliente,
+    etiquetas: porCliente.get(cliente.id) || [],
+  }));
+  renderClientes();
+}
+
+async function cargarEtiquetas() {
+  const { data, error } = await supabaseClient
+    .from('etiquetas')
+    .select('id, nombre, profesional_id')
+    .order('nombre', { ascending: true });
+  if (error) {
+    document.getElementById('etiqueta-error').textContent = error.message;
+    return;
+  }
+
+  etiquetasDisponibles = (data || []).filter((etiqueta) => etiqueta.profesional_id);
+  const selector = document.getElementById('filtro-etiqueta');
+  selector.innerHTML = '<option value="">Todas las etiquetas</option>'
+    + etiquetasDisponibles.map((etiqueta) =>
+      `<option value="${etiqueta.id}">${escaparHTML(etiqueta.nombre)}</option>`).join('');
+}
+
+async function crearEtiqueta() {
+  const input = document.getElementById('nueva-etiqueta');
+  const errorEl = document.getElementById('etiqueta-error');
+  const nombre = input.value.trim();
+  errorEl.textContent = '';
+  if (!nombre) {
+    errorEl.textContent = 'Escribe el nombre de la etiqueta.';
+    return;
+  }
+
+  const { error } = await supabaseClient.rpc('crear_etiqueta', { p_nombre: nombre });
+  if (error) {
+    errorEl.textContent = error.message;
+    return;
+  }
+  input.value = '';
+  await cargarEtiquetas();
+  renderClientes();
+}
+
+async function alternarEtiqueta(clienteId, etiquetaId, asignada) {
+  const consulta = supabaseClient.from('cliente_etiqueta');
+  const resultado = asignada
+    ? await consulta.delete().eq('cliente_id', clienteId).eq('etiqueta_id', etiquetaId)
+    : await consulta.insert({ cliente_id: clienteId, etiqueta_id: etiquetaId });
+  if (resultado.error) {
+    alert(`No se pudo actualizar la etiqueta: ${resultado.error.message}`);
+    return;
+  }
+  await cargarClientes();
 }
 
 async function cargarInvitaciones() {
@@ -59,6 +178,7 @@ async function cargarInvitaciones() {
     return;
   }
 
+  document.getElementById('count-invitaciones').textContent = data.length;
   if (!data.length) {
     cont.innerHTML = `
       <div class="empty-state">
@@ -82,7 +202,7 @@ async function cargarInvitaciones() {
           <tr>
             <td class="cell-user">
               <div class="avatar-sm">${iniciales(inv.clientes?.nombre)}</div>
-              <div><strong>${nombre}</strong><span>${email}</span></div>
+              <div><strong>${escaparHTML(nombre)}</strong><span>${escaparHTML(email)}</span></div>
             </td>
             <td>${formatearFecha(inv.fecha_envio)}</td>
             <td>${formatearFecha(inv.fecha_expiracion)}</td>
@@ -183,7 +303,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   const session = await requireSession();
   if (!session) return;
   // Marca como caducadas las invitaciones vencidas antes de listarlas.
-  await supabaseClient.rpc('expirar_invitaciones_vencidas').then(() => {}, () => {});
-  cargarClientesActivos();
-  cargarInvitaciones();
+  const { error } = await supabaseClient.rpc('expirar_invitaciones_vencidas');
+  if (error) alert(`No se pudieron actualizar las invitaciones caducadas: ${error.message}`);
+  document.getElementById('buscar-cliente').addEventListener('input', (event) => {
+    filtroBusqueda = event.target.value.trim();
+    renderClientes();
+  });
+  document.getElementById('filtro-etiqueta').addEventListener('change', (event) => {
+    filtroEtiqueta = event.target.value;
+    renderClientes();
+  });
+  await Promise.all([cargarEtiquetas(), cargarClientes(), cargarInvitaciones()]);
+  renderClientes();
 });

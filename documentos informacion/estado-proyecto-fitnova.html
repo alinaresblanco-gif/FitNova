@@ -198,13 +198,15 @@
 </div>
 
 <!-- ================= 3. MAQUETA ================= -->
-<h2>3 · Lo que sigue siendo maqueta (sin datos reales)</h2>
+<h2>3 · Estado actual de las aplicaciones</h2>
 
 <div class="card warn">
   <span class="badge warn">MAQUETA</span>
   <h3 style="margin-top:10px;">FitNova Manager</h3>
   <ul>
-    <li><strong>Dashboard, Agenda, Chat, Equipo, Librería y Negocio</strong> — maquetados con buen diseño pero con datos ficticios en el HTML. Solo hay JS genérico de interfaz (modales, pestañas) en <code>app.js</code>.</li>
+    <li><strong>Dashboard</strong> — ya consulta clientes e invitaciones reales y muestra contadores, clientes recientes y actividad derivada de fechas de clientes/invitaciones. La agenda aún no alimenta los próximos eventos.</li>
+    <li><strong>Clientes</strong> — lista por estado, búsqueda por nombre/email y etiquetas con alta, asignación/quita y filtro. Contadores y búsqueda se validaron en navegador con una sesión real; queda probar las mutaciones de etiquetas y su flujo completo con RLS.</li>
+    <li><strong>Agenda, Chat, Equipo, Librería y Negocio</strong> — siguen siendo principalmente maquetas; conectar cada módulo requiere definir sus datos, permisos y flujos. Agenda, Equipo y Negocio necesitan además decisiones de producto/proveedor.</li>
     <li>En la <strong>ficha de cliente</strong>, solo el Resumen carga datos reales; el resto de pestañas (entrenamientos, nutrición, progreso, documentos…) son estáticas.</li>
   </ul>
 </div>
@@ -214,9 +216,8 @@
   <h3 style="margin-top:10px;">FitNova Go</h3>
   <ul>
     <li>Es una <strong>PWA ya montada</strong>: manifest, service worker y sistema de aviso de actualización de versión.</li>
-    <li><strong>Inicio, Agenda, Perfil, Vídeos y Ajustes</strong> funcionan en modo simulación: su <code>app.js</code> guarda actividades y métricas en <strong>localStorage</strong>, no en Supabase.</li>
-    <li>Lo único conectado a backend real es <strong><code>invitacion.html</code></strong> (el onboarding).</li>
-    <li>Tras el onboarding, el cliente aterriza en <code>index.html</code> pero <strong>no hay login de cliente ni carga de sus datos reales</strong>: la sesión creada durante el onboarding no se aprovecha en el resto de la app.</li>
+    <li><strong>Login, Inicio, Perfil, métricas y Ajustes</strong> están conectados a Supabase; algunas secciones como Agenda y Vídeos aún conservan comportamiento de maqueta/local.</li>
+    <li>El flujo de invitación y onboarding también está conectado. El correo se sigue compartiendo manualmente y los enlaces deben usar la URL pública cuando Go esté desplegada.</li>
   </ul>
 </div>
 
@@ -238,8 +239,7 @@
   <span class="badge todo">PENDIENTE</span>
   <h3 style="margin-top:10px;">Para Manager</h3>
   <ol start="5">
-    <li>Conectar el <strong>Dashboard</strong> a datos reales (contadores de clientes, actividad).</li>
-    <li><strong>Etiquetas de clientes</strong> (tablas ya creadas, sin UI funcional), buscador y filtros reales en la lista.</li>
+    <li>Completar pruebas de las <strong>etiquetas de clientes</strong> (crear, asignar/quitar, filtrar y verificar RLS en navegador); contadores y búsqueda ya se validaron.</li>
     <li>Ir conectando módulos: <strong>Agenda</strong> (requiere diseñar tablas de sesiones), <strong>Equipo</strong> (invitación de profesionales: la RPC actual solo permite autorregistro), <strong>Librería</strong>, <strong>Chat</strong> y <strong>Negocio</strong> (planes/pagos, tablas aplazadas a propósito en el diseño).</li>
   </ol>
 </div>
@@ -259,7 +259,7 @@
 <div class="resumen">
   <h2>5 · Resumen ejecutivo: ¿dónde estamos?</h2>
   <p><strong>Fase completada:</strong> diseño de producto + modelo de datos v1 + esquema completo en Supabase con seguridad RLS + el flujo crítico de negocio funcionando de verdad: <em>el entrenador invita desde Manager → el cliente completa el onboarding en Go → el cliente aparece como activo en Manager</em>, con transacciones atómicas y tokens seguros.</p>
-  <p><strong>Fase actual (donde lo dejaste):</strong> acababas de estabilizar <code>crear_invitacion</code> (los dos últimos fixes) y de enlazar la navegación de Manager. El siguiente paso natural es <strong>dar vida a FitNova Go después del onboarding</strong> (login de cliente + datos reales) y el <strong>envío real del email de invitación</strong>.</p>
+  <p><strong>Fase actual:</strong> el ciclo del cliente en Go está cerrado a nivel funcional, y ya se empezaron a conectar el Dashboard y la gestión de Clientes en Manager. La validación de la sesión actual confirmó los contadores/actividad del Dashboard y la búsqueda/listado de Clientes; falta probar la gestión de etiquetas de principio a fin. Después, el siguiente bloque de producto es definir y conectar módulos de Manager, empezando por Agenda.</p>
 
   <h3>Grado de avance estimado</h3>
   <div class="progress-row">
@@ -269,8 +269,8 @@
   </div>
   <div class="progress-row">
     <div class="progress-label">Manager conectado a datos</div>
-    <div class="progress-bar"><div class="progress-fill" style="width:45%;"></div></div>
-    <div class="progress-pct">~45%</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:60%;"></div></div>
+    <div class="progress-pct">~60%</div>
   </div>
   <div class="progress-row">
     <div class="progress-label">Go conectado a datos</div>

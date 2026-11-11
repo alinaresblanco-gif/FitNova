@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=1280, initial-scale=1.0" />
 <title>FitNova Manager · Clientes</title>
 <link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
-<link rel="stylesheet" href="css/styles.css?v=20260924.2" />
+<link rel="stylesheet" href="css/styles.css?v=20261111.1" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body data-view="clientes">
@@ -42,22 +42,32 @@
     <div class="page-body single">
       <section class="card">
         <div class="tabs">
-          <button class="tab-btn active" data-tab-group="clientes" data-tab="activos" onclick="switchTab('clientes','activos')">Activos <span class="count-pill">2</span></button>
-          <button class="tab-btn" data-tab-group="clientes" data-tab="invitaciones" onclick="switchTab('clientes','invitaciones')">Invitaciones enviadas <span class="count-pill">0</span></button>
-          <button class="tab-btn" data-tab-group="clientes" data-tab="archivados" onclick="switchTab('clientes','archivados')">Archivados <span class="count-pill">0</span></button>
-          <button class="tab-btn" data-tab-group="clientes" data-tab="leads" onclick="switchTab('clientes','leads')">Leads <span class="count-pill">0</span></button>
+          <button class="tab-btn active" data-tab-group="clientes" data-tab="activos" onclick="switchTab('clientes','activos')">Activos <span class="count-pill" id="count-activos">0</span></button>
+          <button class="tab-btn" data-tab-group="clientes" data-tab="invitaciones" onclick="switchTab('clientes','invitaciones')">Invitaciones enviadas <span class="count-pill" id="count-invitaciones">0</span></button>
+          <button class="tab-btn" data-tab-group="clientes" data-tab="archivados" onclick="switchTab('clientes','archivados')">Archivados <span class="count-pill" id="count-archivados">0</span></button>
+          <button class="tab-btn" data-tab-group="clientes" data-tab="leads" onclick="switchTab('clientes','leads')">Leads <span class="count-pill" id="count-leads">0</span></button>
         </div>
 
         <div class="list-toolbar">
           <div class="list-toolbar-left">
             <div class="search-box">
               <span class="ico">🔍</span>
-              <input type="text" placeholder="Buscar cliente..." />
+              <input type="search" id="buscar-cliente" placeholder="Buscar por nombre o email..." />
             </div>
-            <button class="btn-outline">🧰 Filtros</button>
+            <label for="filtro-etiqueta" style="font-size:12px;color:var(--gris-texto-suave);">Etiqueta</label>
+            <select id="filtro-etiqueta" style="padding:9px;border:1px solid var(--gris-borde);border-radius:8px;">
+              <option value="">Todas</option>
+            </select>
           </div>
           <div class="list-toolbar-right">
             <button class="btn-secondary" onclick="openModal('modal-nuevo-cliente')">➕ Añadir cliente</button>
+          </div>
+        </div>
+        <div class="list-toolbar" style="padding-top:0;">
+          <div class="list-toolbar-left">
+            <input type="text" id="nueva-etiqueta" placeholder="Nueva etiqueta" maxlength="50" style="padding:9px;border:1px solid var(--gris-borde);border-radius:8px;" />
+            <button class="btn-outline" onclick="crearEtiqueta()">➕ Crear etiqueta</button>
+            <span id="etiqueta-error" style="font-size:12px;color:var(--rojo);"></span>
           </div>
         </div>
 
@@ -70,11 +80,12 @@
                 <th>Cliente</th>
                 <th>Estado</th>
                 <th>Última actividad</th>
+                <th>Etiquetas</th>
                 <th></th>
               </tr>
             </thead>
             <tbody id="tabla-activos">
-              <tr><td colspan="5" style="text-align:center;color:var(--gris-texto-suave);">Cargando...</td></tr>
+              <tr><td colspan="6" style="text-align:center;color:var(--gris-texto-suave);">Cargando...</td></tr>
             </tbody>
           </table>
         </div>
@@ -88,21 +99,14 @@
 
         <!-- Tab: Archivados -->
         <div class="tab-panel" data-tab-panel-group="clientes" data-tab-panel="archivados">
-          <div class="empty-state">
-            <div class="empty-icon">🗄️</div>
-            <h3>No tienes clientes archivados</h3>
-            <p>Los clientes que retires de tu cartera activa aparecerán en este listado.</p>
-          </div>
+          <table class="data-table"><thead><tr><th>Cliente</th><th>Estado</th><th>Última actividad</th><th>Etiquetas</th><th></th></tr></thead>
+            <tbody id="tabla-archivados"><tr><td colspan="5">Cargando...</td></tr></tbody></table>
         </div>
 
         <!-- Tab: Leads -->
         <div class="tab-panel" data-tab-panel-group="clientes" data-tab-panel="leads">
-          <div class="empty-state">
-            <div class="empty-icon">🎯</div>
-            <h3>Todavía no tienes leads</h3>
-            <p>Registra contactos potenciales y conviértelos en clientes cuando estén listos.</p>
-            <button class="btn-primary">Añadir lead</button>
-          </div>
+          <table class="data-table"><thead><tr><th>Cliente</th><th>Estado</th><th>Última actividad</th><th>Etiquetas</th><th></th></tr></thead>
+            <tbody id="tabla-leads"><tr><td colspan="5">Cargando...</td></tr></tbody></table>
         </div>
       </section>
     </div>
@@ -139,6 +143,6 @@
 
   <script src="js/app.js?v=20260924.2"></script>
   <script src="js/supabase-client.js"></script>
-  <script src="js/clientes.js?v=20260930.1"></script>
+  <script src="js/clientes.js?v=20261111.1"></script>
 </body>
 </html>
