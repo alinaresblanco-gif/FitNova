@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Estado del proyecto FitNova · 11 nov 2026</title>
+<style>
+  :root {
+    --azul: #1f4fd8;
+    --azul-suave: #eef3ff;
+    --verde: #1da976;
+    --verde-suave: #e8f8f1;
+    --ambar: #c77d0a;
+    --ambar-suave: #fdf3e0;
+    --rojo: #d23c3c;
+    --gris-fondo: #f5f7fb;
+    --gris-borde: #e3e8f0;
+    --gris-texto: #2b3445;
+    --gris-texto-suave: #66708a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--gris-fondo);
+    color: var(--gris-texto);
+    line-height: 1.6;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 80px; }
+  header.hero {
+    background: linear-gradient(135deg, #16307f, var(--azul));
+    color: #fff;
+    border-radius: 16px;
+    padding: 36px 40px;
+    margin-bottom: 32px;
+  }
+  header.hero h1 { margin: 0 0 6px; font-size: 30px; }
+  header.hero p { margin: 0; opacity: .85; font-size: 15px; }
+  h2 {
+    font-size: 21px;
+    margin: 44px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--gris-borde);
+  }
+  h3 { font-size: 16px; margin: 24px 0 8px; }
+  p { margin: 10px 0; }
+  code {
+    background: #e9edf5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: Consolas, monospace;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(20,30,60,.08);
+    margin: 14px 0;
+    font-size: 14px;
+  }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--gris-borde); vertical-align: top; }
+  th { background: var(--azul-suave); color: var(--azul); font-size: 13px; text-transform: uppercase; letter-spacing: .4px; }
+  tr:last-child td { border-bottom: none; }
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 14px 0;
+    box-shadow: 0 1px 3px rgba(20,30,60,.08);
+    border-left: 5px solid var(--gris-borde);
+  }
+  .card.ok { border-left-color: var(--verde); }
+  .card.warn { border-left-color: var(--ambar); }
+  .card.todo { border-left-color: var(--rojo); }
+  .badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-right: 6px;
+  }
+  .badge.ok { background: var(--verde-suave); color: var(--verde); }
+  .badge.warn { background: var(--ambar-suave); color: var(--ambar); }
+  .badge.todo { background: #fdeaea; color: var(--rojo); }
+  ul, ol { margin: 8px 0 8px 4px; padding-left: 22px; }
+  li { margin: 6px 0; }
+  .flow {
+    background: #fff;
+    border-radius: 12px;
+    padding: 22px 26px;
+    box-shadow: 0 1px 3px rgba(20,30,60,.08);
+    margin: 14px 0;
+  }
+  .flow ol li { margin: 10px 0; }
+  .progress-row { display: flex; align-items: center; gap: 14px; margin: 12px 0; }
+  .progress-label { width: 220px; font-size: 14px; font-weight: 600; }
+  .progress-bar { flex: 1; height: 14px; background: #e4e9f2; border-radius: 999px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 999px; background: var(--azul); }
+  .progress-pct { width: 46px; text-align: right; font-size: 13px; color: var(--gris-texto-suave); }
+  .resumen {
+    background: var(--azul-suave);
+    border: 1px solid #ccd9ff;
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin-top: 18px;
+  }
+  .resumen h2 { border: none; margin-top: 0; color: var(--azul); }
+  footer { margin-top: 50px; font-size: 13px; color: var(--gris-texto-suave); text-align: center; }
+  @media print {
+    body { background: #fff; }
+    .card, table, .flow { box-shadow: none; border: 1px solid var(--gris-borde); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>Estado del proyecto FitNova</h1>
+  <p>Informe de situación · 11 de noviembre de 2026 · Repositorio alinaresblanco-gif/FitNova (rama main)</p>
+</header>
+
+<!-- ================= 1. VISIÓN GENERAL ================= -->
+<h2>1 · Visión general</h2>
+<p>El proyecto está formado por <strong>dos aplicaciones web conectadas por un backend común en Supabase</strong>. Ambas apps son HTML/CSS/JS estático (sin framework) y comparten el mismo proyecto de base de datos mediante la clave publicable, protegida por políticas RLS.</p>
+
+<table>
+  <thead><tr><th>Pieza</th><th>Qué es</th><th>Carpeta</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>FitNova Manager</strong></td>
+      <td>App del entrenador / profesional (escritorio): gestión de clientes, agenda, equipo, librería, negocio</td>
+      <td><code>fitnova-manager/</code></td>
+    </tr>
+    <tr>
+      <td><strong>FitNova Go</strong></td>
+      <td>App del cliente final (PWA móvil instalable): onboarding, perfil, métricas, vídeos, agenda</td>
+      <td><code>mockup-fitnova-go/</code></td>
+    </tr>
+    <tr>
+      <td><strong>Backend Supabase</strong></td>
+      <td>Postgres + autenticación + funciones RPC. Proyecto <code>fitnova-dev</code>, ya enlazado con la CLI</td>
+      <td><code>supabase/</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ================= 2. LO HECHO ================= -->
+<h2>2 · Lo que YA está hecho y funciona</h2>
+
+<div class="card ok">
+  <span class="badge ok">COMPLETADO</span>
+  <h3 style="margin-top:10px;">Backend: esquema de datos v1 + seguridad</h3>
+  <p>Hay <strong>4 migraciones SQL</strong> en <code>supabase/migrations/</code>:</p>
+  <ul>
+    <li><strong><code>clientes_core.sql</code></strong> — Todo el esquema v1: tablas <code>profesionales</code>, <code>clientes</code>, <code>invitaciones</code>, <code>profesional_cliente</code>, <code>clientes_objetivo</code>, <code>clientes_salud_parq</code> (cuestionario PAR-Q), <code>clientes_metricas</code>, <code>consentimientos</code>, <code>etiquetas</code> y <code>cliente_etiqueta</code>. <strong>RLS activado en las 10 tablas</strong>: el cliente solo ve lo suyo; el profesional solo ve sus clientes asignados; los datos de salud solo los ven entrenador y nutricionista.</li>
+    <li><strong><code>clientes_rpc.sql</code></strong> — Las 5 funciones que conectan las dos apps:
+      <ul>
+        <li><code>registrar_profesional_actual</code> — autorregistro del profesional tras crear cuenta</li>
+        <li><code>profesional_actual_id</code> — helper de identidad</li>
+        <li><code>crear_invitacion</code> — crea el cliente en estado <em>invitación enviada</em> + token único (SHA-256, caducidad 7 días, solo una invitación vigente por cliente)</li>
+        <li><code>obtener_invitacion</code> — Go valida el token sin necesidad de sesión</li>
+        <li><code>completar_onboarding</code> — <strong>transacción atómica</strong>: guarda perfil + objetivo + PAR-Q + peso inicial + consentimientos, vincula la cuenta y activa al cliente</li>
+      </ul>
+    </li>
+    <li><strong>Dos fixes de <code>crear_invitacion</code></strong> (ambigüedad de nombres de columna). La versión final devuelve <code>(invitacion_id, token, expira_en)</code>.</li>
+  </ul>
+</div>
+
+<div class="card ok">
+  <span class="badge ok">COMPLETADO</span>
+  <h3 style="margin-top:10px;">El flujo Manager ↔ Go (la relación entre las apps)</h3>
+  <p>Es el corazón del trabajo y <strong>ya funciona de punta a punta</strong>:</p>
+  <div class="flow" style="box-shadow:none;border:1px solid var(--gris-borde);margin:10px 0 0;">
+    <ol>
+      <li><strong>Manager</strong> — el profesional crea cuenta / inicia sesión (<code>login.html</code> con Supabase Auth real) y completa su perfil profesional.</li>
+      <li><strong>Manager → <code>clientes.js</code></strong> — el botón «Añadir cliente» llama a <code>crear_invitacion</code> y genera el <strong>enlace con token</strong> hacia <code>invitacion.html</code> de Go (hoy se copia manualmente; aún no se envía email).</li>
+      <li><strong>Go → <code>invitacion.js</code></strong> — valida el token y muestra el onboarding completo: crear cuenta con contraseña, género, objetivo, fecha de nacimiento, peso, altura y las 7 preguntas PAR-Q. Al finalizar llama a <code>completar_onboarding</code>.</li>
+      <li><strong>Resultado</strong> — el cliente pasa automáticamente de la pestaña «Invitaciones» a «Activos» en Manager.</li>
+      <li><strong>Manager</strong> — la lista de clientes activos, las invitaciones pendientes y la ficha de cliente (<code>cliente-perfil.js</code>) cargan <strong>datos reales de la base de datos</strong>.</li>
+    </ol>
+  </div>
+  <p style="margin-top:12px;">Además, todas las páginas de Manager tienen <strong>guarda de sesión</strong> (redirigen a login si no hay sesión) y botón de cerrar sesión en el avatar.</p>
+</div>
+
+<div class="card ok">
+  <span class="badge ok">COMPLETADO</span>
+  <h3 style="margin-top:10px;">Documentación de diseño</h3>
+  <ul>
+    <li><strong><code>modelo-datos-clientes-fitnova.md</code></strong> — diseño completo del modelo de datos. Es la «fuente de verdad»: casi todo lo de v1 ya está implementado.</li>
+    <li><strong><code>analisis-estructura-harbiz-para-fitnovamanager.md</code></strong> — análisis de Harbiz como referencia de estructura para Manager.</li>
+    <li>PDFs con las instrucciones originales y las ventanas del onboarding de Go.</li>
+  </ul>
+</div>
+
+<!-- ================= 3. MAQUETA ================= -->
+<h2>3 · Lo que sigue siendo maqueta (sin datos reales)</h2>
+
+<div class="card warn">
+  <span class="badge warn">MAQUETA</span>
+  <h3 style="margin-top:10px;">FitNova Manager</h3>
+  <ul>
+    <li><strong>Dashboard, Agenda, Chat, Equipo, Librería y Negocio</strong> — maquetados con buen diseño pero con datos ficticios en el HTML. Solo hay JS genérico de interfaz (modales, pestañas) en <code>app.js</code>.</li>
+    <li>En la <strong>ficha de cliente</strong>, solo el Resumen carga datos reales; el resto de pestañas (entrenamientos, nutrición, progreso, documentos…) son estáticas.</li>
+  </ul>
+</div>
+
+<div class="card warn">
+  <span class="badge warn">MAQUETA</span>
+  <h3 style="margin-top:10px;">FitNova Go</h3>
+  <ul>
+    <li>Es una <strong>PWA ya montada</strong>: manifest, service worker y sistema de aviso de actualización de versión.</li>
+    <li><strong>Inicio, Agenda, Perfil, Vídeos y Ajustes</strong> funcionan en modo simulación: su <code>app.js</code> guarda actividades y métricas en <strong>localStorage</strong>, no en Supabase.</li>
+    <li>Lo único conectado a backend real es <strong><code>invitacion.html</code></strong> (el onboarding).</li>
+    <li>Tras el onboarding, el cliente aterriza en <code>index.html</code> pero <strong>no hay login de cliente ni carga de sus datos reales</strong>: la sesión creada durante el onboarding no se aprovecha en el resto de la app.</li>
+  </ul>
+</div>
+
+<!-- ================= 4. PENDIENTE ================= -->
+<h2>4 · Lo que queda por hacer (orden sugerido)</h2>
+
+<div class="card todo">
+  <span class="badge todo">PENDIENTE</span>
+  <h3 style="margin-top:10px;">Para cerrar el ciclo del cliente (lo más inmediato)</h3>
+  <ol>
+    <li><strong>Login de cliente en Go</strong> + guarda de sesión (como ya hace Manager), y que Inicio/Perfil/Ajustes carguen datos reales de <code>clientes</code>, <code>clientes_objetivo</code> y <code>clientes_metricas</code> en vez de localStorage.</li>
+    <li><strong>Registro de métricas de Go contra Supabase</strong> (peso, medidas): la tabla ya existe y tiene RLS.</li>
+    <li><strong>Envío real del email de invitación</strong> (Resend/SendGrid vía Edge Function). Hoy el enlace se copia a mano. Además, el enlace generado usa una ruta relativa local (<code>../mockup-fitnova-go/invitacion.html</code>): habrá que apuntarlo a la URL pública de Go al desplegar.</li>
+    <li><strong>Caducidad automática de invitaciones</strong> (hoy caducan solo por validación en consulta; el estado <code>expirada</code> nunca se escribe) y botones de <strong>reenviar / cancelar invitación</strong> en Manager.</li>
+  </ol>
+</div>
+
+<div class="card todo">
+  <span class="badge todo">PENDIENTE</span>
+  <h3 style="margin-top:10px;">Para Manager</h3>
+  <ol start="5">
+    <li>Conectar el <strong>Dashboard</strong> a datos reales (contadores de clientes, actividad).</li>
+    <li><strong>Etiquetas de clientes</strong> (tablas ya creadas, sin UI funcional), buscador y filtros reales en la lista.</li>
+    <li>Ir conectando módulos: <strong>Agenda</strong> (requiere diseñar tablas de sesiones), <strong>Equipo</strong> (invitación de profesionales: la RPC actual solo permite autorregistro), <strong>Librería</strong>, <strong>Chat</strong> y <strong>Negocio</strong> (planes/pagos, tablas aplazadas a propósito en el diseño).</li>
+  </ol>
+</div>
+
+<div class="card todo">
+  <span class="badge todo">PENDIENTE</span>
+  <h3 style="margin-top:10px;">Transversal</h3>
+  <ol start="8">
+    <li><strong>Despliegue</strong>: ambas apps necesitan hosting (GitHub Pages / Netlify / Vercel) para que la PWA y el flujo de invitación funcionen fuera de tu máquina.</li>
+    <li>Pantalla intermedia de <strong>instalación de la PWA para iOS</strong> (prevista en el documento de diseño).</li>
+    <li>Guardar la <strong>IP en consentimientos</strong> (la columna existe pero no se rellena) y revisión legal de los textos RGPD.</li>
+    <li>El CSV <code>fitnova - consentimientos.csv</code> de la raíz está vacío (solo cabeceras); parece un export de prueba y se puede borrar.</li>
+  </ol>
+</div>
+
+<!-- ================= 5. RESUMEN ================= -->
+<div class="resumen">
+  <h2>5 · Resumen ejecutivo: ¿dónde estamos?</h2>
+  <p><strong>Fase completada:</strong> diseño de producto + modelo de datos v1 + esquema completo en Supabase con seguridad RLS + el flujo crítico de negocio funcionando de verdad: <em>el entrenador invita desde Manager → el cliente completa el onboarding en Go → el cliente aparece como activo en Manager</em>, con transacciones atómicas y tokens seguros.</p>
+  <p><strong>Fase actual (donde lo dejaste):</strong> acababas de estabilizar <code>crear_invitacion</code> (los dos últimos fixes) y de enlazar la navegación de Manager. El siguiente paso natural es <strong>dar vida a FitNova Go después del onboarding</strong> (login de cliente + datos reales) y el <strong>envío real del email de invitación</strong>.</p>
+
+  <h3>Grado de avance estimado</h3>
+  <div class="progress-row">
+    <div class="progress-label">Backend de clientes (v1)</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:90%;background:var(--verde);"></div></div>
+    <div class="progress-pct">~90%</div>
+  </div>
+  <div class="progress-row">
+    <div class="progress-label">Manager conectado a datos</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:40%;"></div></div>
+    <div class="progress-pct">~40%</div>
+  </div>
+  <div class="progress-row">
+    <div class="progress-label">Go conectado a datos</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:20%;background:var(--ambar);"></div></div>
+    <div class="progress-pct">~20%</div>
+  </div>
+</div>
+
+<footer>
+  Documento generado el 11/11/2026 · FitNova · <code>documentos informacion/estado-proyecto-fitnova.html</code>
+</footer>
+
+</div>
+</body>
+</html>
