@@ -420,6 +420,15 @@ textarea { resize: vertical; min-height: 60px; }
 .activity-item span { color: #55606f; font-size: 12px; margin-top: 3px; }
 .activity-item > span { color: var(--naranja); font-size: 20px; margin: 0; }
 .agenda-empty { color: #55606f; font-size: 14px; line-height: 1.5; margin: 22px 12px; text-align: center; }
+.sesion-go { border: 1px solid var(--gris); border-left: 4px solid var(--azul); border-radius: 10px; padding: 14px; margin: 12px 0; }
+.sesion-go h3 { margin: 0 0 8px; font-size: 16px; }
+.sesion-go p { margin: 6px 0; font-size: 13px; overflow-wrap: anywhere; }
+.sesion-go.cancelada { border-left-color: #8a93a1; }
+.sesion-go.completada { border-left-color: #147a52; }
+.sesion-error { color: #b42318; }
+.sesion-count { display: block; font-size: 9px; margin-top: 4px; }
+.agenda-local-aviso, #go-agenda-zona { font-size: 12px; color: #55606f; }
+#go-agenda-actualizar:disabled { opacity: .6; cursor: wait; }
 .agenda-add { align-items: center; background: var(--naranja); border: none; border-radius: 50%; bottom: 78px; box-shadow: 0 4px 12px rgba(255, 106, 0, 0.35); color: var(--blanco); cursor: pointer; display: flex; font-size: 28px; height: 56px; justify-content: center; position: fixed; right: max(20px, calc((100vw - 480px) / 2 + 20px)); width: 56px; z-index: 60; }
 
 /* ---------- Vídeos ---------- */

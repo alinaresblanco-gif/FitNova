@@ -53,8 +53,36 @@ async function cargarFichaCliente() {
   }
 }
 
+async function cargarSesionesFicha() {
+  const clienteId = new URLSearchParams(location.search).get('id');
+  const contenedor = document.getElementById('cp-sesiones');
+  if (!clienteId) {
+    contenedor.textContent = 'No se puede consultar la agenda sin identificar al cliente.';
+    document.getElementById('cp-agendar').hidden = true;
+    return;
+  }
+  document.getElementById('cp-agendar').href =
+    `agenda.html?cliente=${encodeURIComponent(clienteId)}&open=modal-nueva-sesion`;
+  try {
+    const { data, error } = await supabaseClient.rpc('profesional_actual_id');
+    if (error) throw new Error(error.message);
+    if (!data) throw new Error('No hay perfil profesional disponible.');
+    const sesiones = await FitNovaSesiones.consultar(supabaseClient, { profesionalId: data, clienteId });
+    contenedor.innerHTML = sesiones.length ? sesiones.map((sesion) => `
+      <article class="mini-list-item"><div class="info">
+        <strong>${FitNovaSesiones.escapar(sesion.titulo)} · ${FitNovaSesiones.estados[sesion.estado]}</strong>
+        <span>${FitNovaSesiones.escapar(FitNovaSesiones.horario(sesion))}</span>
+        <span>${FitNovaSesiones.escapar(sesion.lugar || 'Sin lugar indicado')}</span>
+        <a href="agenda.html?cliente=${encodeURIComponent(clienteId)}">Gestionar en Agenda</a>
+      </div></article>`).join('') : '<p>Este cliente no tiene sesiones agendadas.</p>';
+  } catch (error) {
+    contenedor.innerHTML = `<p style="color:var(--rojo);" role="alert">No se pudo cargar la agenda: ${FitNovaSesiones.escapar(error.message)}</p>`;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const session = await requireSession();
   if (!session) return;
   cargarFichaCliente();
+  cargarSesionesFicha();
 });

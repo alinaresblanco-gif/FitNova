@@ -1,10 +1,11 @@
 // Utilidades genéricas para el mockup de FitNova Go (sin backend, solo simulación visual)
 
 // Incrementar en cada cambio visible del mockup para que se muestre el aviso de actualización.
-const APP_VERSION = '2026.11.11.1';
+const APP_VERSION = '2026.11.23.2';
 const ACTIVITIES_KEY = 'fitnova_activities';
 const METRICS_KEY = 'fitnova_metrics';
 let selectedAgendaDay = '';
+let agendaFechaBase = new Date();
 
 // Comprueba si hay una versión nueva del mockup y muestra el modal de actualización en Inicio.
 function checkForAppUpdate() {
@@ -50,7 +51,7 @@ function aplicarActualizacion() {
 
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.register('./service-worker.js?v=20261111.1').then((registration) => {
+  navigator.serviceWorker.register('./service-worker.js?v=20261123.2').then((registration) => {
     registration.update();
   }).catch(() => {});
   navigator.serviceWorker.addEventListener('message', (event) => {
@@ -179,7 +180,8 @@ function openDayModal(date) {
   selectedAgendaDay = date;
   const activities = getActivities().filter((activity) => activity.date === date);
   document.getElementById('dia-modal-title').textContent = formatDate(date);
-  document.getElementById('dia-activity-list').innerHTML = activities.length ? activities.map((activity) => `
+  const citas = window.FitNovaAgendaGo ? window.FitNovaAgendaGo.htmlDia(date) : '';
+  document.getElementById('dia-activity-list').innerHTML = citas + (activities.length ? activities.map((activity) => `
     <div class="day-activity">
       <div class="day-activity-info" onclick="openActivityModal('${activity.id}')">
         <strong>${escapeHtml(activity.name)}</strong>
@@ -187,7 +189,7 @@ function openDayModal(date) {
       </div>
       <button class="day-activity-open" onclick="openActivityModal('${activity.id}')" title="Abrir actividad">›</button>
       <button class="day-activity-delete" onclick="deleteActivityById('${activity.id}')" title="Eliminar actividad">🗑</button>
-    </div>`).join('') : '<p class="agenda-empty">No hay actividades para este día.</p>';
+    </div>`).join('') : '<p class="agenda-empty">No hay actividades personales para este día.</p>');
   openModal('modal-dia');
 }
 
@@ -204,13 +206,21 @@ function toggleAgendaView() {
   renderAgenda();
 }
 
+function cambiarPeriodoAgenda(cambio) {
+  const calendar = document.getElementById('agenda-calendar');
+  if (calendar.dataset.view === 'month') {
+    agendaFechaBase = new Date(agendaFechaBase.getFullYear(), agendaFechaBase.getMonth() + cambio, 1);
+  } else agendaFechaBase.setDate(agendaFechaBase.getDate() + cambio * 7);
+  renderAgenda();
+}
+
 function initAgenda() {
   const calendar = document.getElementById('agenda-calendar');
   if (!calendar.dataset.view) calendar.dataset.view = 'week';
-  calendar.addEventListener('click', (event) => {
+  calendar.onclick = (event) => {
     const dayButton = event.target.closest('[data-agenda-date]');
     if (dayButton) openDayModal(dayButton.dataset.agendaDate);
-  });
+  };
   renderAgenda();
 }
 
@@ -300,24 +310,25 @@ function renderAgenda() {
     <button class="activity-item" onclick="openActivityModal('${activity.id}')">
       <span><strong>${escapeHtml(activity.name)}</strong><span>${formatDate(activity.date)}${activity.duration ? ` · ${escapeHtml(activity.duration)}` : ''}</span></span><span>›</span>
     </button>`).join('') : '<p class="agenda-empty">Hoy no hay planificado ninguna actividad, puedes incluir tu próxima actividad o tomarte un merecido descanso</p>';
+  if (window.FitNovaAgendaGo) window.FitNovaAgendaGo.render();
 }
 
 function renderWeek() {
-  const today = new Date(`${todayIso()}T12:00:00`);
+  const today = new Date(agendaFechaBase);
   const monday = new Date(today);
   const day = monday.getDay() || 7;
   monday.setDate(monday.getDate() - day + 1);
   const days = Array.from({ length: 7 }, (_, index) => {
     const date = new Date(monday);
     date.setDate(monday.getDate() + index);
-    const iso = date.toISOString().slice(0, 10);
+    const iso = FitNovaSesiones.fechaLocal(date);
     return `<button type="button" class="agenda-week-day${iso === todayIso() ? ' today' : ''}" data-agenda-date="${iso}">${date.toLocaleDateString('es-ES', { weekday: 'short' })}<strong>${date.getDate()}</strong></button>`;
   }).join('');
-  return `<div class="agenda-calendar-title"><span>Esta semana</span><span>${formatDate(todayIso())}</span></div><div class="agenda-week">${days}</div>`;
+  return `<div class="agenda-calendar-title"><span>Semana</span><span>${formatDate(FitNovaSesiones.fechaLocal(monday))}</span></div><div class="agenda-week">${days}</div>`;
 }
 
 function renderMonth() {
-  const today = new Date(`${todayIso()}T12:00:00`);
+  const today = new Date(agendaFechaBase);
   const year = today.getFullYear();
   const month = today.getMonth();
   const firstDay = (new Date(year, month, 1).getDay() || 7) - 1;
@@ -326,7 +337,7 @@ function renderMonth() {
     if (index < firstDay) return '<span></span>';
     const day = index - firstDay + 1;
     const iso = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    return `<button type="button" class="calendar-day${day === today.getDate() ? ' today' : ''}" data-agenda-date="${iso}">${day}</button>`;
+    return `<button type="button" class="calendar-day${iso === todayIso() ? ' today' : ''}" data-agenda-date="${iso}">${day}</button>`;
   }).join('');
   return `<div class="agenda-calendar-title"><span>${today.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</span><span>Mes</span></div><div class="calendar-grid"><span class="weekday">L</span><span class="weekday">M</span><span class="weekday">X</span><span class="weekday">J</span><span class="weekday">V</span><span class="weekday">S</span><span class="weekday">D</span>${cells}</div>`;
 }

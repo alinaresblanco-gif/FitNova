@@ -125,7 +125,31 @@ async function cargarDashboard() {
     : '<div class="empty-state"><div class="empty-icon">📋</div><h3>Aún no hay actividad</h3><p>La actividad de tus clientes e invitaciones aparecerá aquí.</p><a href="clientes.html" class="btn-primary">Ver mis clientes</a></div>';
 }
 
+async function cargarProximasSesionesDashboard() {
+  const contenedor = document.getElementById('dashboard-eventos');
+  try {
+    const { data, error } = await supabaseClient.rpc('profesional_actual_id');
+    if (error) throw new Error(error.message);
+    if (!data) throw new Error('No hay perfil profesional disponible.');
+    const sesiones = await FitNovaSesiones.consultar(supabaseClient, {
+      profesionalId: data, proximas: true, limite: 5,
+    });
+    document.getElementById('dashboard-eventos-count').textContent = sesiones.length;
+    contenedor.innerHTML = sesiones.length ? sesiones.map((sesion) => `
+      <div class="mini-list-item"><div class="info">
+        <strong><a href="agenda.html?cliente=${sesion.cliente_id}">${FitNovaSesiones.escapar(sesion.titulo)}</a></strong>
+        <span>${FitNovaSesiones.escapar(FitNovaSesiones.nombre(sesion.clientes))}</span>
+        <span>${FitNovaSesiones.escapar(FitNovaSesiones.horario(sesion))}</span>
+      </div></div>`).join('') : '<p>No hay próximas sesiones programadas.</p>';
+  } catch (error) {
+    contenedor.innerHTML = `<p style="color:var(--rojo);" role="alert">No se pudieron cargar las sesiones: ${FitNovaSesiones.escapar(error.message)}</p>`;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const session = await requireSession();
-  if (session) cargarDashboard();
+  if (session) {
+    cargarDashboard();
+    cargarProximasSesionesDashboard();
+  }
 });

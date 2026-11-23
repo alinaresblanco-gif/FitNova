@@ -155,7 +155,7 @@
 <div class="card ok">
   <span class="badge ok">COMPLETADO</span>
   <h3 style="margin-top:10px;">Backend: esquema de datos v1 + seguridad</h3>
-  <p>Hay <strong>4 migraciones SQL</strong> en <code>supabase/migrations/</code>:</p>
+  <p>Hay <strong>8 migraciones SQL</strong> en <code>supabase/migrations/</code>:</p>
   <ul>
     <li><strong><code>clientes_core.sql</code></strong> — Todo el esquema v1: tablas <code>profesionales</code>, <code>clientes</code>, <code>invitaciones</code>, <code>profesional_cliente</code>, <code>clientes_objetivo</code>, <code>clientes_salud_parq</code> (cuestionario PAR-Q), <code>clientes_metricas</code>, <code>consentimientos</code>, <code>etiquetas</code> y <code>cliente_etiqueta</code>. <strong>RLS activado en las 10 tablas</strong>: el cliente solo ve lo suyo; el profesional solo ve sus clientes asignados; los datos de salud solo los ven entrenador y nutricionista.</li>
     <li><strong><code>clientes_rpc.sql</code></strong> — Las 5 funciones que conectan las dos apps:
@@ -168,6 +168,9 @@
       </ul>
     </li>
     <li><strong>Dos fixes de <code>crear_invitacion</code></strong> (ambigüedad de nombres de columna). La versión final devuelve <code>(invitacion_id, token, expira_en)</code>.</li>
+    <li><strong>Permisos de Go e invitaciones</strong> — escritura de datos propios y gestión de caducidad/cancelación.</li>
+    <li><strong>Clientes y Dashboard de Manager</strong> — etiquetas por profesional y sus permisos.</li>
+    <li><strong>Dos migraciones de Agenda · 23 nov</strong> — sesiones individuales, escritura mediante RPC, lectura protegida por RLS y restricciones de solapamientos; privilegios explícitos para evitar escritura directa.</li>
   </ul>
 </div>
 
@@ -206,7 +209,8 @@
   <ul>
     <li><strong>Dashboard</strong> — ya consulta clientes e invitaciones reales y muestra contadores, clientes recientes y actividad derivada de fechas de clientes/invitaciones. La agenda aún no alimenta los próximos eventos.</li>
     <li><strong>Clientes</strong> — lista por estado, búsqueda por nombre/email y etiquetas con alta, asignación/quita y filtro. Contadores y búsqueda se validaron en navegador con una sesión real; queda probar las mutaciones de etiquetas y su flujo completo con RLS.</li>
-    <li><strong>Agenda, Chat, Equipo, Librería y Negocio</strong> — siguen siendo principalmente maquetas; conectar cada módulo requiere definir sus datos, permisos y flujos. Agenda, Equipo y Negocio necesitan además decisiones de producto/proveedor.</li>
+    <li><strong>Agenda individual · 23 nov</strong> — sesiones reales con alta, edición, cancelación y finalización; consulta en Go, ficha de cliente y próximos eventos del Dashboard. Las sesiones se guardan en Supabase con RLS y protección de solapamientos. <a href="siguiente-paso-agenda-fitnova.html">Guía de funcionamiento y pruebas</a>.</li>
+    <li><strong>Chat, Equipo, Librería y Negocio</strong> — siguen siendo principalmente maquetas; conectar cada módulo requiere definir sus datos, permisos y flujos.</li>
     <li>En la <strong>ficha de cliente</strong>, solo el Resumen carga datos reales; el resto de pestañas (entrenamientos, nutrición, progreso, documentos…) son estáticas.</li>
   </ul>
 </div>
@@ -216,7 +220,7 @@
   <h3 style="margin-top:10px;">FitNova Go</h3>
   <ul>
     <li>Es una <strong>PWA ya montada</strong>: manifest, service worker y sistema de aviso de actualización de versión.</li>
-    <li><strong>Login, Inicio, Perfil, métricas y Ajustes</strong> están conectados a Supabase; algunas secciones como Agenda y Vídeos aún conservan comportamiento de maqueta/local.</li>
+    <li><strong>Login, Inicio, Perfil, métricas y Ajustes</strong> están conectados a Supabase. Agenda ya consulta las citas del profesional en Supabase; sus actividades personales siguen locales y separadas. Vídeos continúa como maqueta.</li>
     <li>El flujo de invitación y onboarding también está conectado. El correo se sigue compartiendo manualmente y los enlaces deben usar la URL pública cuando Go esté desplegada.</li>
   </ul>
 </div>
@@ -240,7 +244,7 @@
   <h3 style="margin-top:10px;">Para Manager</h3>
   <ol start="5">
     <li>Completar pruebas de las <strong>etiquetas de clientes</strong> (crear, asignar/quitar, filtrar y verificar RLS en navegador); contadores y búsqueda ya se validaron.</li>
-    <li>Ir conectando módulos: <strong>Agenda</strong> (requiere diseñar tablas de sesiones), <strong>Equipo</strong> (invitación de profesionales: la RPC actual solo permite autorregistro), <strong>Librería</strong>, <strong>Chat</strong> y <strong>Negocio</strong> (planes/pagos, tablas aplazadas a propósito en el diseño).</li>
+    <li>Después de la <strong>Agenda individual ya conectada</strong>, avanzar con entrenamientos asignados desde <strong>Librería</strong>. Siguen pendientes <strong>Equipo</strong>, <strong>Chat</strong> y <strong>Negocio</strong>, además de clases grupales y ampliaciones de Agenda.</li>
   </ol>
 </div>
 
@@ -259,7 +263,7 @@
 <div class="resumen">
   <h2>5 · Resumen ejecutivo: ¿dónde estamos?</h2>
   <p><strong>Fase completada:</strong> diseño de producto + modelo de datos v1 + esquema completo en Supabase con seguridad RLS + el flujo crítico de negocio funcionando de verdad: <em>el entrenador invita desde Manager → el cliente completa el onboarding en Go → el cliente aparece como activo en Manager</em>, con transacciones atómicas y tokens seguros.</p>
-  <p><strong>Fase actual:</strong> el ciclo del cliente en Go está cerrado a nivel funcional, y ya se empezaron a conectar el Dashboard y la gestión de Clientes en Manager. La validación de la sesión actual confirmó los contadores/actividad del Dashboard y la búsqueda/listado de Clientes; falta probar la gestión de etiquetas de principio a fin. Después, el siguiente bloque de producto es definir y conectar módulos de Manager, empezando por Agenda.</p>
+  <p><strong>Fase actual · 23 nov:</strong> el ciclo del cliente está cerrado y Agenda individual está conectada entre Manager y Go, con datos persistentes en Supabase, ficha del cliente y próximos eventos del Dashboard. Se validaron las operaciones reales con cuentas sintéticas y las reglas de permisos/horarios en pruebas aisladas. El siguiente bloque recomendado es entrenamientos asignados desde Librería; la gestión de etiquetas mantiene sus pruebas pendientes de la fase anterior.</p>
 
   <h3>Grado de avance estimado</h3>
   <div class="progress-row">

@@ -44,5 +44,5 @@ document.addEventListener('DOMContentLoaded', () => {
   if (tab && group) switchTab(group, tab);
 
   const openId = params.get('open');
-  if (openId) openModal(openId);
+  if (openId && current !== 'agenda') openModal(openId);
 });

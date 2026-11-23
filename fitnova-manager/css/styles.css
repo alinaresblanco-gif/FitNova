@@ -529,6 +529,24 @@ button { font-family: inherit; }
 }
 .cliente-etiqueta:hover { border-color: var(--azul); }
 
+.sesion-form input, .sesion-form select, #agenda-cliente, #agenda-estado {
+  width: 100%; padding: 10px; margin: 6px 0 14px;
+  border: 1px solid var(--gris-borde); border-radius: 10px; font: inherit;
+}
+.sesion-card { padding: 16px; margin: 12px 0; border: 1px solid var(--gris-borde); border-radius: 12px; }
+.sesion-card h3 { margin: 0 0 6px; color: var(--azul); }
+.sesion-card p { margin: 6px 0; overflow-wrap: anywhere; }
+.sesion-acciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.sesion-error { color: var(--rojo); }
+.sesion-calendario { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
+.sesion-calendario button {
+  min-height: 64px; border: 1px solid var(--gris-borde); border-radius: 8px;
+  background: #fff; color: var(--azul); cursor: pointer;
+}
+.sesion-calendario small { display: block; margin-top: 6px; }
+.sesion-calendario .seleccionado { border: 2px solid var(--azul); background: var(--azul-suave); }
+button:disabled { opacity: .6; cursor: wait; }
+
 .status-dot { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; }
 .status-dot::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--verde); }
 .status-dot.off::before { background: var(--gris-texto-suave); }

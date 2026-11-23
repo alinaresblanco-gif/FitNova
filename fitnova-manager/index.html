@@ -140,10 +140,10 @@
 
           <section class="card">
             <div class="card-head">
-              <p class="card-title">📆 Próximos eventos <span class="count-pill">0</span></p>
+              <p class="card-title">📆 Próximos eventos <span class="count-pill" id="dashboard-eventos-count">—</span></p>
             </div>
-            <div class="empty-state" style="padding:20px 4px;">
-              <p style="font-size:12.5px;">La agenda todavía no está conectada a sesiones reales.</p>
+            <div id="dashboard-eventos">
+              <p>Cargando sesiones...</p>
             </div>
             <a href="agenda.html" class="btn-ghost" style="margin-top:12px;width:100%;justify-content:center;">Ver lista de eventos completa</a>
           </section>
@@ -161,6 +161,7 @@
 
   <script src="js/app.js?v=20260924.2"></script>
   <script src="js/supabase-client.js"></script>
-  <script src="js/dashboard.js?v=20261111.1"></script>
+  <script src="../js/sesiones.js?v=20261123.2"></script>
+  <script src="js/dashboard.js?v=20261123.1"></script>
 </body>
 </html>

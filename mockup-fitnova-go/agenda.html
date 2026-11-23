@@ -6,7 +6,7 @@
 <title>FitNova Go · Agenda</title>
 <link rel="manifest" href="manifest.webmanifest" />
 <meta name="theme-color" content="#0A1A2F" />
-<link rel="stylesheet" href="css/styles.css?v=20260922.14" />
+<link rel="stylesheet" href="css/styles.css?v=20261123.1" />
 </head>
 <body data-auth="required">
   <div class="app">
@@ -26,9 +26,21 @@
         <h1>Agenda</h1>
         <button id="agenda-view-toggle" class="agenda-view-toggle" onclick="toggleAgendaView()" title="Cambiar vista">▦</button>
       </div>
+      <div class="row">
+        <button class="btn-secondary" onclick="cambiarPeriodoAgenda(-1)" aria-label="Periodo anterior">←</button>
+        <button class="btn-secondary" id="go-agenda-actualizar">Actualizar citas</button>
+        <button class="btn-secondary" onclick="cambiarPeriodoAgenda(1)" aria-label="Periodo siguiente">→</button>
+      </div>
+      <p id="go-agenda-zona"></p>
       <section id="agenda-calendar" class="agenda-calendar"></section>
       <section class="agenda-activities">
-        <h2>Próximas actividades</h2>
+        <h2>Citas de mi profesional · Supabase</h2>
+        <p id="go-agenda-error" role="alert" class="sesion-error"></p>
+        <div id="go-agenda-sesiones"><p>Cargando citas...</p></div>
+      </section>
+      <section class="agenda-activities">
+        <h2>Mis actividades personales · solo en este navegador</h2>
+        <p class="agenda-local-aviso">Estas actividades todavía no se sincronizan con Manager. No son las citas del profesional.</p>
         <div id="agenda-activity-list"></div>
       </section>
     </main>
@@ -87,7 +99,8 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/supabase-client.js?v=20261111.1"></script>
-  <script src="js/app.js?v=20260922.14"></script>
-  <script>initAgenda();</script>
+  <script src="../js/sesiones.js?v=20261123.2"></script>
+  <script src="js/app.js?v=20261123.2"></script>
+  <script src="js/agenda.js?v=20261123.2"></script>
 </body>
 </html>

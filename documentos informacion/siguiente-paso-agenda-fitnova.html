@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitNova · Agenda compartida: funcionamiento y pruebas</title>
+  <style>
+    :root { color-scheme: light; --azul: #1748c7; --texto: #263248; --borde: #dce3ee; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f6fb; color: var(--texto); font: 16px/1.65 "Segoe UI", system-ui, sans-serif; }
+    main { width: min(940px, calc(100% - 32px)); margin: 28px auto 60px; }
+    header { padding: 32px; border-radius: 16px; background: #112d70; color: white; }
+    h1 { margin: 6px 0 12px; font-size: clamp(26px, 5vw, 36px); line-height: 1.25; }
+    header p { margin: 0; }
+    section { background: white; margin-top: 20px; padding: 24px 28px; border: 1px solid var(--borde); border-radius: 12px; }
+    h2 { margin: 0 0 12px; font-size: 23px; }
+    h3 { margin: 20px 0 8px; font-size: 18px; }
+    p { margin: 10px 0; }
+    li { margin: 8px 0; }
+    a { color: var(--azul); overflow-wrap: anywhere; }
+    .nota { background: #fff6e7; border-left: 5px solid #ac710b; }
+    .objetivo { border-left: 5px solid #147a52; }
+    .flujo { padding: 16px; border-radius: 8px; background: #edf3ff; font-weight: 600; }
+    .tabla { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    th, td { padding: 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--borde); }
+    th { background: #edf3ff; }
+    footer { padding: 24px 0; color: #657189; text-align: center; font-size: 13px; }
+    @media (max-width: 600px) { main { width: calc(100% - 20px); } header, section { padding: 20px; } }
+    @media print {
+      body { background: white; }
+      main { width: 100%; margin: 0; }
+      header { background: white; color: var(--texto); border-bottom: 2px solid var(--azul); }
+      h2, h3 { break-after: avoid; }
+      tr { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p>Guía de funcionamiento · 23 de noviembre de 2026</p>
+    <h1>Agenda compartida entre Manager y Go</h1>
+    <p>Sesiones individuales conectadas a Supabase y probadas con cuentas sintéticas. El alta del cliente se mantiene sin cambios.</p>
+  </header>
+
+  <section class="objetivo">
+    <h2>1. De dónde partimos</h2>
+    <p>El ciclo principal del cliente está funcionando y lo damos por cerrado: el profesional crea la invitación en Manager, el cliente entra en Go, se registra, completa el cuestionario inicial y queda activo. Ambas aplicaciones comparten los datos del cliente en Supabase.</p>
+    <p><strong>No vamos a repetir ni rediseñar ese registro.</strong> Ahora toca que el profesional pueda hacer algo útil con ese cliente activo y que el cliente vea el resultado en su app.</p>
+    <p>Ya hemos conectado <strong>sesiones individuales y citas de seguimiento</strong>. Es un bloque acotado, visible y comprobable desde dos dispositivos, sin necesitar todavía una librería completa de entrenamientos o vídeos.</p>
+  </section>
+
+  <section>
+    <h2>2. Qué puedes hacer ahora</h2>
+    <div class="flujo">Manager programa una sesión → Supabase la guarda → Go la muestra al cliente → Manager mantiene el seguimiento.</div>
+    <h3>Ejemplo de uso</h3>
+    <p>El profesional abre la ficha de un cliente activo y agenda una «Revisión inicial» para una fecha concreta, con una duración y un lugar. El cliente abre Go y ve esa cita en su Agenda. Si el profesional cambia la hora o cancela la sesión, el cliente ve el cambio al volver a cargar la agenda.</p>
+    <p>Tras realizar la cita, el profesional puede marcarla como completada. La sesión permanece en el historial, en lugar de desaparecer.</p>
+    <p><strong>Una cita no es una rutina:</strong> este bloque organiza cuándo se atiende al cliente; no incluye todavía ejercicios, series, repeticiones ni vídeos de entrenamiento.</p>
+  </section>
+
+  <section>
+    <h2>3. Qué está conectado</h2>
+    <div class="tabla">
+      <table>
+        <thead><tr><th>Pieza</th><th>Función disponible</th><th>Resultado</th></tr></thead>
+        <tbody>
+          <tr><td>Agenda de Manager</td><td>Lista, calendario mensual y filtros por cliente/estado.</td><td>Crear, editar, cancelar y completar sesiones reales.</td></tr>
+          <tr><td>Agenda de Go</td><td>Citas propias en lista, semana, mes y detalle del día.</td><td>Consulta Supabase; las actividades personales siguen separadas y locales.</td></tr>
+          <tr><td>Ficha de cliente</td><td>Sesiones propias del profesional en la pestaña Agenda.</td><td>Acceso a gestionar citas y alta con cliente preseleccionado.</td></tr>
+          <tr><td>Dashboard de Manager</td><td>Hasta cinco próximas sesiones programadas, incluidas las que están en curso.</td><td>Acceso directo a la agenda del cliente. El contador indica las tarjetas mostradas.</td></tr>
+          <tr><td>Supabase</td><td>Tabla de sesiones, RPC de escritura, RLS y restricciones de solapamiento.</td><td>Datos persistentes y permisos explícitos, sin escritura directa desde Go.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. Alcance de esta primera versión</h2>
+    <h3>En Manager</h3>
+    <ul>
+      <li>Seleccionar un cliente activo asignado al profesional.</li>
+      <li>Indicar título, tipo de cita, fecha, hora, duración y lugar o enlace de videollamada.</li>
+      <li>Guardar y consultar la sesión en Agenda y en la ficha del cliente.</li>
+      <li>Cambiar la fecha o los detalles, cancelar con estado visible y marcar como completada.</li>
+      <li>Mostrar próximas sesiones en el Dashboard.</li>
+    </ul>
+    <h3>En Go</h3>
+    <ul>
+      <li>Consultar las sesiones propias, tanto en calendario como en lista.</li>
+      <li>Ver título, profesional, horario, duración, lugar y estado.</li>
+      <li>Ver los cambios realizados por el profesional al actualizar o volver a abrir la pantalla.</li>
+      <li>No modificar ni borrar las citas del profesional en esta primera versión.</li>
+    </ul>
+    <h3>En Supabase</h3>
+    <p>Guardar cada sesión con su profesional responsable, cliente, inicio y fin, datos visibles y estado: programada, cancelada o completada. Las fechas deben guardar correctamente la zona horaria para que ambos vean el mismo momento.</p>
+    <p>Aplicar permisos RLS: cada cliente solo consulta sus sesiones; cada profesional gestiona las que le corresponden. La creación debe comprobar la relación profesional–cliente y la duración debe ser válida.</p>
+    <p><strong>Regla aplicada:</strong> no se permiten dos sesiones individuales programadas que se solapen para el mismo profesional o cliente. Supabase impone esa restricción incluso en escrituras concurrentes. Una sesión puede empezar justo cuando termina la anterior.</p>
+    <p>Solo las sesiones programadas se editan. Las canceladas y completadas se conservan sin reabrirse. El botón de completar aparece cuando ha terminado el horario y el backend también comprueba esa condición.</p>
+  </section>
+
+  <section class="nota">
+    <h2>5. Lo que no mezclaremos con este bloque</h2>
+    <ul>
+      <li>Clases grupales, aforo, reservas, recurrencias y sincronización con calendarios externos.</li>
+      <li>Notificaciones push, recordatorios por correo y actualización instantánea en tiempo real.</li>
+      <li>Rutinas, programas de entrenamiento, vídeos, nutrición, chat y pagos.</li>
+      <li>Confirmación de asistencia o cancelación iniciada por el cliente: requieren acordar reglas antes de implementarlas.</li>
+    </ul>
+    <p><strong>Actividades personales de Go:</strong> las actuales no deben borrarse ni presentarse como datos sincronizados. Se mantendrán separadas de las citas del profesional; pasar su registro a Supabase será un bloque posterior, con una decisión explícita sobre qué hacer con los datos locales existentes.</p>
+    <p>La verificación de correo sigue siendo un pendiente independiente. No es un requisito técnico para conectar Agenda, pero debe cerrarse antes de una apertura de producción más amplia.</p>
+  </section>
+
+  <section>
+    <h2>6. Paso a paso para el profesional y el cliente</h2>
+    <p><a href="https://alinaresblanco-gif.github.io/FitNova/fitnova-manager/login.html">Abrir Manager</a> · <a href="https://alinaresblanco-gif.github.io/FitNova/mockup-fitnova-go/login.html">Abrir Go</a></p>
+    <ol>
+      <li><strong>Profesional:</strong> inicia sesión en Manager con su propia cuenta y entra en Agenda. También puede abrir Clientes → ficha del cliente → Agenda → Agendar sesión.</li>
+      <li>Pulsa <strong>Agendar sesión</strong>, selecciona un cliente activo y rellena nombre, tipo, fecha, hora, duración en minutos y lugar opcional. El horario se interpreta en la zona local indicada en pantalla.</li>
+      <li>Pulsa <strong>Guardar sesión</strong>. Solo se cierra el formulario cuando Supabase confirma el guardado. Si hay un error o solapamiento, se muestra el mensaje y el formulario permanece disponible.</li>
+      <li><strong>Cliente:</strong> inicia sesión en Go con la cuenta que ya creó y abre Agenda → Citas de mi profesional. Si ya estaba en esa pantalla, pulsa <strong>Actualizar citas</strong>.</li>
+      <li>Consulta la cita en la lista o pulsa su día en el calendario. Las citas del profesional no tienen botones de edición o borrado en Go.</li>
+      <li><strong>Profesional:</strong> usa Editar para cambiar el horario o los detalles, o Cancelar sesión para anularla. El cliente pulsa Actualizar citas y ve el cambio.</li>
+      <li>Las cancelaciones y sesiones completadas se consultan en <strong>Historial y cancelaciones</strong>. En Go, pulsa ese encabezado para desplegarlas.</li>
+      <li>Después de realizar una cita y finalizar su horario, el profesional puede pulsar <strong>Marcar completada</strong> y confirmar.</li>
+    </ol>
+    <p>No hay actualización instantánea ni recordatorios automáticos en esta versión: utiliza Actualizar o vuelve a abrir la pantalla. Las actividades añadidas con el botón «+» de Go siguen siendo personales y locales, no crean sesiones en Manager.</p>
+  </section>
+
+  <section class="objetivo">
+    <h2>7. Cómo comprobarlo con tu cliente</h2>
+    <p>Este guion ya se puede usar para probar las sesiones compartidas:</p>
+    <ol>
+      <li>El profesional entra en Manager desde su ordenador y selecciona un cliente activo de prueba.</li>
+      <li>Crea una sesión futura con título, horario, duración y lugar conocidos.</li>
+      <li>El cliente entra en Go desde otro dispositivo con su propia cuenta: debe ver exactamente esa sesión.</li>
+      <li>El profesional cambia la hora; el cliente actualiza Go y comprueba el nuevo horario.</li>
+      <li>El profesional cancela la sesión; Go debe mostrarla como cancelada, no como una cita pendiente.</li>
+      <li>En otra sesión realizada, el profesional marca «Completada» y comprueba su historial.</li>
+      <li>Ambos cierran sesión y vuelven a entrar: los datos siguen presentes. También se comprueba con otro navegador, no solo con el mismo almacenamiento local.</li>
+      <li>En las pruebas técnicas, otro cliente no puede leer esa sesión y otro profesional no puede editarla, aunque conozcan su identificador.</li>
+      <li>Se prueban horarios inválidos, solapamientos y fallos de guardado: la app debe explicar el error y no mostrar una sesión como guardada si no lo está.</li>
+    </ol>
+    <p><strong>Resultado esperado:</strong> tu cliente ya podrá mostrar el siguiente avance real: «programo una cita en Manager y mi usuario la recibe en Go».</p>
+    <h3>Validaciones realizadas durante el desarrollo</h3>
+    <p>Pasaron 10 pruebas automatizadas en PostgreSQL aislado: permisos de cliente/profesional/anónimo, escritura por RPC, estados finales, duración, solapamientos de ambos participantes, intervalos contiguos, conversión horaria y medianoche.</p>
+    <p>En navegador, con las apps servidas localmente y el Supabase real, se verificaron un alta nueva de prueba, creación de cita, consulta en Go, edición de hora, rechazo de solapamiento, cancelación persistente tras recargar, sesión completada, Dashboard y ficha con cliente preseleccionado. También se comprobó el mensaje de fallo de red y la recuperación al reintentar.</p>
+    <p>Las cuentas sintéticas de prueba y el historial quedan en Supabase. Las citas futuras creadas para probar fueron canceladas; una cita pasada quedó completada. No se borraron datos existentes.</p>
+  </section>
+
+  <section>
+    <h2>8. Qué conectaremos después</h2>
+    <p>Con Agenda estable, el siguiente bloque recomendado será <strong>entrenamientos asignados</strong>: crear un entrenamiento en la librería, asignarlo a un cliente y mostrarlo en Go. Después añadiremos el registro de realización y los vídeos asociados. Nutrición, chat, equipo y negocio se abordarán como bloques separados.</p>
+    <p><strong>Resumen:</strong> el alta está cerrada y Agenda individual ya está conectada. Lo siguiente es validar su uso con tu cliente y, después, conectar los entrenamientos asignados.</p>
+    <h3>Repetir las pruebas técnicas</h3>
+    <p>Desde la raíz del repositorio: <code>npm ci --prefix supabase/tests</code> y después <code>npm --prefix supabase/tests test</code>. Las pruebas crean una base PostgreSQL aislada en memoria; no modifican el Supabase remoto.</p>
+  </section>
+  <footer>FitNova · Agenda individual conectada · Actualizado el 23/11/2026 · Clases grupales, vídeos y entrenamientos siguen fuera de este bloque.</footer>
+</main>
+</body>
+</html>

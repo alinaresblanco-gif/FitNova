@@ -99,12 +99,8 @@
         </div>
 
         <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="agenda">
-          <div class="empty-state">
-            <div class="empty-icon">📅</div>
-            <h3>Sin sesiones agendadas</h3>
-            <p>Agenda la próxima sesión individual con este cliente.</p>
-            <a href="agenda.html?open=modal-nueva-sesion" class="btn-primary">Agendar sesión</a>
-          </div>
+          <a id="cp-agendar" href="agenda.html" class="btn-primary">Agendar sesión</a>
+          <div id="cp-sesiones"><p>Cargando sesiones...</p></div>
         </div>
 
         <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="progreso">
@@ -176,6 +172,7 @@
 
   <script src="js/app.js?v=20260924.2"></script>
   <script src="js/supabase-client.js"></script>
-  <script src="js/cliente-perfil.js?v=20260930.1"></script>
+  <script src="../js/sesiones.js?v=20261123.2"></script>
+  <script src="js/cliente-perfil.js?v=20261123.1"></script>
 </body>
 </html>

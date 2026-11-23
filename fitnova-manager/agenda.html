@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=1280, initial-scale=1.0" />
 <title>FitNova Manager · Agenda</title>
 <link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
-<link rel="stylesheet" href="css/styles.css?v=20260924.2" />
+<link rel="stylesheet" href="css/styles.css?v=20261123.1" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body data-view="agenda" data-tab-group="agenda-vista">
@@ -36,7 +36,7 @@
     <div class="page-header">
       <p class="breadcrumb">Agenda / Sesiones y citas</p>
       <h1>Agenda</h1>
-      <p class="subtitle">Sesiones individuales, clases grupales y tareas internas de tu operativa.</p>
+      <p class="subtitle">Sesiones individuales y seguimiento compartidos con tus clientes en Go.</p>
     </div>
 
     <div class="page-body single">
@@ -49,46 +49,31 @@
             </div>
           </div>
           <div class="list-toolbar-right">
-            <button class="btn-outline">🧰 Filtros</button>
-            <button class="btn-secondary" onclick="openModal('modal-nueva-sesion')">➕ Agendar sesión</button>
+            <button class="btn-outline" id="agenda-actualizar">Actualizar</button>
+            <button class="btn-secondary" id="agenda-crear" onclick="abrirSesion()" disabled>➕ Agendar sesión</button>
           </div>
         </div>
-
-        <!-- Vista lista -->
+        <div class="list-toolbar">
+          <label>Cliente <select id="agenda-cliente"><option value="">Todos mis clientes</option></select></label>
+          <label>Estado <select id="agenda-estado">
+            <option value="">Todos</option><option value="programada">Programada</option>
+            <option value="cancelada">Cancelada</option><option value="completada">Completada</option>
+          </select></label>
+          <span id="agenda-zona"></span>
+        </div>
+        <p id="agenda-error" class="sesion-error" role="alert"></p>
+        <p id="agenda-info" role="status"></p>
         <div class="tab-panel active" data-tab-panel-group="agenda-vista" data-tab-panel="lista">
-          <p class="card-title" style="margin:8px 0 10px;color:var(--gris-texto-suave);font-size:12px;">ESTA SEMANA</p>
-          <div class="mini-list" style="margin-bottom:18px;">
-            <div class="mini-list-item">
-              <div class="info"><strong>Sesión tren inferior</strong><span>Hoy, 24 sept · 18:00–19:00 · Entrenamiento personal</span></div>
-              <span class="tag">2/4</span>
-            </div>
-            <div class="mini-list-item">
-              <div class="info"><strong>Sesión inicial grupal</strong><span>Mañana, 25 sept · 09:00–10:00 · Clase grupal</span></div>
-              <span class="tag">2/8</span>
-            </div>
-          </div>
-
-          <p class="card-title" style="margin:8px 0 10px;color:var(--gris-texto-suave);font-size:12px;">LA SEMANA QUE VIENE</p>
-          <div class="mini-list" style="margin-bottom:18px;">
-            <div class="mini-list-item">
-              <div class="info"><strong>Revisión de progreso · Dany Roca</strong><span>Lun, 29 sept · 17:30–18:00 · Seguimiento</span></div>
-              <span class="tag">1/1</span>
-            </div>
-          </div>
-
-          <p class="card-title" style="margin:8px 0 10px;color:var(--gris-texto-suave);font-size:12px;">MÁS ADELANTE</p>
-          <div class="empty-state" style="padding:20px 4px;">
-            <p style="font-size:13px;">No hay más eventos planificados todavía.</p>
-          </div>
+          <div id="agenda-sesiones"><p>Cargando sesiones...</p></div>
         </div>
-
-        <!-- Vista calendario (placeholder) -->
         <div class="tab-panel" data-tab-panel-group="agenda-vista" data-tab-panel="calendario">
-          <div class="view-placeholder">
-            <div class="ico">🗓️</div>
-            <h3 style="margin:0 0 6px;color:var(--azul);">Vista de calendario mensual</h3>
-            <p style="margin:0;">Próximamente: visualización semanal y mensual con arrastrar y soltar.</p>
+          <div class="list-toolbar">
+            <button class="btn-outline" id="agenda-anterior" aria-label="Mes anterior">←</button>
+            <h2 id="agenda-mes"></h2>
+            <button class="btn-outline" id="agenda-siguiente" aria-label="Mes siguiente">→</button>
           </div>
+          <div class="sesion-calendario" id="agenda-calendario"></div>
+          <div id="agenda-dia"></div>
         </div>
       </section>
     </div>
@@ -97,32 +82,44 @@
   <div class="modal-overlay" id="modal-nueva-sesion">
     <div class="modal">
       <div class="modal-header">
-        <h2>Agendar sesión</h2>
+        <h2 id="ses-modal-titulo">Agendar sesión</h2>
         <button class="modal-close" onclick="closeModal('modal-nueva-sesion')">✕</button>
       </div>
+      <form id="ses-form" class="sesion-form">
+      <input type="hidden" id="ses-id" />
+      <label for="ses-cliente">Cliente activo</label>
+      <select id="ses-cliente" required><option value="">Selecciona un cliente</option></select>
       <label for="ses-nombre">Nombre de la sesión</label>
-      <input type="text" id="ses-nombre" placeholder="Ej. Sesión tren superior" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <input type="text" id="ses-nombre" maxlength="150" required placeholder="Ej. Revisión inicial" />
       <div style="display:flex;gap:12px;margin-bottom:14px;">
         <div style="flex:1;">
           <label for="ses-fecha">Fecha</label>
-          <input type="date" id="ses-fecha" style="width:100%;padding:10px;margin-top:6px;border-radius:10px;border:1px solid #D9D9D9;" />
+          <input type="date" id="ses-fecha" required />
         </div>
         <div style="flex:1;">
           <label for="ses-hora">Hora</label>
-          <input type="time" id="ses-hora" style="width:100%;padding:10px;margin-top:6px;border-radius:10px;border:1px solid #D9D9D9;" />
+          <input type="time" id="ses-hora" required />
         </div>
       </div>
       <label for="ses-tipo">Tipo de servicio</label>
-      <select id="ses-tipo" style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;">
-        <option>Entrenamiento personal</option>
-        <option>Clase grupal</option>
-        <option>Seguimiento</option>
+      <select id="ses-tipo" required>
+        <option value="entrenamiento_personal">Entrenamiento personal</option>
+        <option value="seguimiento">Seguimiento</option>
       </select>
-      <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="closeModal('modal-nueva-sesion')">Guardar sesión</button>
+      <label for="ses-duracion">Duración (minutos)</label>
+      <input type="number" id="ses-duracion" min="1" step="1" value="60" required />
+      <label for="ses-lugar">Lugar o enlace de videollamada (opcional)</label>
+      <input type="text" id="ses-lugar" maxlength="500" />
+      <p id="ses-zona"></p>
+      <p id="ses-error" class="sesion-error" role="alert"></p>
+      <button type="submit" class="btn-secondary" id="ses-guardar">Guardar sesión</button>
+      </form>
     </div>
   </div>
 
-  <script src="js/app.js?v=20260924.2"></script>
+  <script src="js/app.js?v=20261123.1"></script>
   <script src="js/supabase-client.js"></script>
+  <script src="../js/sesiones.js?v=20261123.2"></script>
+  <script src="js/agenda.js?v=20261123.1"></script>
 </body>
 </html>

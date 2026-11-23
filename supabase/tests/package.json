@@ -1,0 +1,10 @@
+{
+  "name": "fitnova-agenda-tests",
+  "private": true,
+  "scripts": {
+    "test": "node --test agenda.test.cjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.6.0"
+  }
+}
