@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitNova Manager · Guía para probar Agenda</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f6fb; color: #263248; font: 16px/1.65 "Segoe UI", system-ui, sans-serif; }
+    main { max-width: 860px; margin: 28px auto 60px; padding: 0 18px; }
+    header { padding: 28px; border-radius: 14px; background: #112d70; color: #fff; }
+    header p { margin: 0; }
+    h1 { margin: 8px 0; font-size: clamp(25px, 5vw, 34px); line-height: 1.25; }
+    h2 { margin: 0 0 12px; font-size: 22px; }
+    section { margin-top: 18px; padding: 24px; border: 1px solid #dce3ee; border-radius: 12px; background: #fff; }
+    li { margin: 9px 0; }
+    a { color: #1748c7; overflow-wrap: anywhere; }
+    .boton { display: inline-block; padding: 10px 16px; border-radius: 8px; color: #fff; background: #1748c7; text-decoration: none; }
+    .ejemplo { margin: 16px 0; padding: 16px; background: #edf3ff; border-radius: 8px; }
+    .ejemplo p { margin: 5px 0; }
+    .resultado { color: #147a52; font-weight: 600; }
+    .nota { background: #fff6e7; border-left: 5px solid #ac710b; }
+    blockquote { margin: 14px 0; padding: 16px; border-left: 4px solid #1748c7; background: #edf3ff; }
+    footer { padding: 24px 0; text-align: center; color: #657189; font-size: 13px; }
+    @media print {
+      body { background: #fff; }
+      main { max-width: none; margin: 0; }
+      header { background: #fff; color: #263248; border-bottom: 2px solid #1748c7; }
+      h2 { break-after: avoid; }
+      .boton { background: none; color: #1748c7; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p>Para el profesional · Prueba guiada</p>
+    <h1>Programa una cita y comprueba que tu cliente la ve en Go</h1>
+    <p>Este es el segundo paso después del alta del cliente. No necesitas volver a registrarlo.</p>
+  </header>
+
+  <section>
+    <h2>Antes de empezar</h2>
+    <p><a class="boton" href="https://alinaresblanco-gif.github.io/FitNova/fitnova-manager/login.html">Abrir FitNova Manager</a></p>
+    <ul>
+      <li>Accede con tu cuenta de profesional. Tu cliente utilizará su propia cuenta en Go.</li>
+      <li>Comprueba en <strong>Clientes → Activos</strong> que ya aparece el cliente que participará en la prueba.</li>
+      <li>Si aún no está registrado, completa primero la <a href="prueba-ciclo-cliente-fitnova.html">guía de creación y registro del cliente</a>.</li>
+      <li>Acuerda la prueba con él. Las citas se guardan realmente: no uses una sesión real para probar su cancelación.</li>
+    </ul>
+    <p>Envíale la <a href="guia-agenda-go.html">guía de Agenda para el cliente en Go</a>. Podéis realizar la prueba desde tu ordenador y su móvil.</p>
+  </section>
+
+  <section>
+    <h2>1. Crea la cita de ejemplo</h2>
+    <ol>
+      <li>En Manager, abre <strong>Agenda</strong> y espera a que termine de cargar.</li>
+      <li>Pulsa <strong>Agendar sesión</strong> y selecciona al cliente activo.</li>
+      <li>Rellena el formulario usando el ejemplo de abajo.</li>
+      <li>Pulsa <strong>Guardar sesión</strong>. Si aparece un error, corrígelo antes de continuar.</li>
+    </ol>
+    <div class="ejemplo">
+      <p><strong>Cliente:</strong> el cliente activo con quien harás la prueba.</p>
+      <p><strong>Nombre de la sesión:</strong> PRUEBA · Revisión de progreso.</p>
+      <p><strong>Tipo de servicio:</strong> Seguimiento.</p>
+      <p><strong>Fecha:</strong> mañana, o una fecha futura acordada con el cliente.</p>
+      <p><strong>Hora:</strong> 18:00.</p>
+      <p><strong>Duración:</strong> 45 minutos.</p>
+      <p><strong>Lugar:</strong> Sala de prueba.</p>
+    </div>
+    <p>Comprueba la zona horaria indicada en pantalla. Si ambos estáis en la misma zona, la cita del ejemplo será de 18:00 a 18:45.</p>
+    <p class="resultado">Debes ver la cita en la lista, con el estado «Programada» y los datos que acabas de introducir.</p>
+  </section>
+
+  <section>
+    <h2>2. Comprueba el resultado con tu cliente</h2>
+    <ol>
+      <li>Pídele que abra Go, entre en <strong>Agenda</strong> y pulse <strong>Actualizar citas</strong>.</li>
+      <li>Debe encontrar «PRUEBA · Revisión de progreso» en <strong>Citas de mi profesional → Próximas citas</strong>.</li>
+      <li>Comparad la fecha, el horario, la duración y el lugar. Si está en otra zona horaria, Go mostrará su horario local para el mismo momento.</li>
+      <li>En Manager, abre <strong>Clientes → ficha del cliente → Agenda</strong>: allí también debe aparecer la sesión.</li>
+      <li>El Dashboard mostrará la cita entre sus próximos eventos si está entre las cinco más próximas de tu agenda.</li>
+    </ol>
+    <p class="resultado">La cita que has guardado en Manager debe ser la misma que consulta el cliente en Go.</p>
+  </section>
+
+  <section>
+    <h2>3. Prueba un cambio de hora</h2>
+    <ol>
+      <li>En la Agenda de Manager, localiza la cita y pulsa <strong>Editar</strong>.</li>
+      <li>Cambia la hora de 18:00 a <strong>19:00</strong> y mantén la duración en 45 minutos.</li>
+      <li>Pulsa <strong>Guardar sesión</strong>.</li>
+      <li>Pide al cliente que pulse <strong>Actualizar citas</strong> en Go.</li>
+    </ol>
+    <p class="resultado">En la misma zona horaria, ambos debéis ver 19:00–19:45. La cita se actualiza, no se duplica.</p>
+    <p>Si el horario coincide con otra sesión programada del profesional o del cliente, la app impedirá el guardado y explicará el solapamiento. Elegid otro horario.</p>
+  </section>
+
+  <section>
+    <h2>4. Cancela la cita de prueba</h2>
+    <ol>
+      <li>Comprueba que estás actuando sobre la sesión cuyo nombre empieza por <strong>PRUEBA</strong>.</li>
+      <li>Pulsa <strong>Cancelar sesión</strong> y confirma.</li>
+      <li>En Manager, búscala en <strong>Historial y cancelaciones</strong>, con el estado «Cancelada».</li>
+      <li>El cliente debe actualizar Go y desplegar <strong>Historial y cancelaciones</strong> para verla.</li>
+      <li>Actualizad las páginas: la cancelación debe seguir visible.</li>
+    </ol>
+    <p class="resultado">La cancelación se conserva en Supabase. La cita ya no cuenta como una próxima sesión programada, aunque puede seguir visible en su día del calendario.</p>
+    <p>No se reabre una cita cancelada. Si necesitáis otra, cread una sesión nueva.</p>
+  </section>
+
+  <section>
+    <h2>5. Cuando una sesión ya se haya realizado</h2>
+    <p>Este paso se hace sobre otra sesión programada, no sobre la cita cancelada.</p>
+    <ol>
+      <li>Una vez finalizado su horario, pulsa <strong>Marcar completada</strong> y confirma.</li>
+      <li>Comprueba que aparece como «Completada» en el historial de Manager.</li>
+      <li>Pide al cliente que actualice Go y consulte el historial.</li>
+    </ol>
+    <p>El botón no aparece antes de terminar el horario. Marcar como completada registra tu seguimiento; no acredita automáticamente la asistencia del cliente.</p>
+  </section>
+
+  <section class="nota">
+    <h2>Recordatorios importantes</h2>
+    <ul>
+      <li>Los cambios no aparecen instantáneamente: usa <strong>Actualizar</strong> en Manager y <strong>Actualizar citas</strong> en Go, o vuelve a abrir la pantalla.</li>
+      <li>No se envían recordatorios ni avisos automáticos al crear o cambiar una cita. Comunica el cambio al cliente por vuestro canal habitual.</li>
+      <li>El botón «+» de Go registra actividades personales locales; no crea citas compartidas.</li>
+      <li>Esta prueba cubre sesiones individuales y seguimiento, no rutinas, vídeos ni clases grupales.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Texto que puedes enviar a tu cliente</h2>
+    <blockquote>
+      He creado una cita de prueba en tu Agenda de FitNova Go. Entra con tu cuenta, abre Agenda y pulsa Actualizar citas.
+      Sigue esta guía para comprobar la cita, el cambio de hora y la cancelación:
+      <a href="https://alinaresblanco-gif.github.io/FitNova/documentos%20informacion/guia-agenda-go.html">https://alinaresblanco-gif.github.io/FitNova/documentos%20informacion/guia-agenda-go.html</a>.
+      No necesitas volver a registrarte ni utilizar otra invitación.
+    </blockquote>
+    <p><strong>Prueba finalizada:</strong> has creado una cita, tu cliente la ha visto, habéis comprobado una modificación y la cancelación queda en el historial.</p>
+  </section>
+  <footer>FitNova Manager · Guía de Agenda para el profesional · 23/11/2026</footer>
+</main>
+</body>
+</html>

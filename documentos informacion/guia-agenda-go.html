@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitNova Go · Cómo consultar tus citas</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f6fb; color: #263248; font: 16px/1.65 "Segoe UI", system-ui, sans-serif; }
+    main { max-width: 780px; margin: 24px auto 60px; padding: 0 16px; }
+    header { padding: 26px; border-radius: 14px; background: #0a1a2f; color: #fff; }
+    header p { margin: 0; }
+    h1 { margin: 8px 0; font-size: clamp(25px, 5vw, 34px); line-height: 1.25; }
+    h2 { margin: 0 0 12px; font-size: 21px; }
+    section { margin-top: 18px; padding: 22px; border: 1px solid #dce3ee; border-radius: 12px; background: #fff; }
+    li { margin: 9px 0; }
+    a { color: #1748c7; overflow-wrap: anywhere; }
+    .boton { display: inline-block; padding: 10px 16px; border-radius: 8px; color: #fff; background: #1748c7; text-decoration: none; }
+    .ejemplo { padding: 16px; background: #edf3ff; border-radius: 8px; }
+    .ejemplo p { margin: 5px 0; }
+    .resultado { color: #147a52; font-weight: 600; }
+    .nota { background: #fff6e7; border-left: 5px solid #ac710b; }
+    footer { padding: 24px 0; text-align: center; color: #657189; font-size: 13px; }
+    @media print {
+      body { background: #fff; }
+      main { max-width: none; margin: 0; }
+      header { background: #fff; color: #263248; border-bottom: 2px solid #1748c7; }
+      h2 { break-after: avoid; }
+      .boton { background: none; color: #1748c7; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p>Para el cliente · Tu Agenda en FitNova Go</p>
+    <h1>Consulta las citas que programa tu profesional</h1>
+    <p>Sigue estos pasos desde tu móvil o tu ordenador. Tu profesional te acompañará en la prueba.</p>
+  </header>
+
+  <section>
+    <h2>1. Entra con tu cuenta</h2>
+    <p><a class="boton" href="https://alinaresblanco-gif.github.io/FitNova/mockup-fitnova-go/login.html">Abrir FitNova Go</a></p>
+    <ol>
+      <li>Abre FitNova Go.</li>
+      <li>Introduce el correo y la contraseña que utilizaste al registrarte mediante la invitación de tu profesional.</li>
+      <li>Pulsa <strong>Entrar</strong>. Si ya tienes la sesión abierta, ve directamente a Agenda.</li>
+    </ol>
+    <p><strong>No necesitas registrarte otra vez.</strong> El enlace de invitación fue para tu alta inicial; ahora utilizas tu cuenta habitual.</p>
+    <p>Si todavía no has completado el registro y el cuestionario inicial, pide primero tu invitación al profesional. El enlace general de acceso no crea una cuenta nueva.</p>
+  </section>
+
+  <section>
+    <h2>2. Busca la cita de prueba</h2>
+    <ol>
+      <li>Pulsa <strong>Agenda</strong> en la barra inferior de Go.</li>
+      <li>Pulsa <strong>Actualizar citas</strong> y espera a que termine la carga.</li>
+      <li>Busca <strong>Citas de mi profesional → Próximas citas</strong>.</li>
+      <li>Localiza la sesión llamada <strong>PRUEBA · Revisión de progreso</strong>.</li>
+    </ol>
+    <div class="ejemplo">
+      <p><strong>Fecha:</strong> la fecha futura que habéis acordado.</p>
+      <p><strong>Hora inicial del ejemplo:</strong> 18:00–18:45, si ambos estáis en la misma zona horaria.</p>
+      <p><strong>Duración:</strong> 45 minutos.</p>
+      <p><strong>Lugar:</strong> Sala de prueba.</p>
+      <p><strong>Estado:</strong> Programada.</p>
+    </div>
+    <p>Comprueba también el nombre de tu profesional. Go muestra los horarios en la zona local indicada en pantalla; si estás en otra zona, la hora puede ser distinta a la de su ordenador.</p>
+    <p class="resultado">Avísale cuando encuentres la cita y confirma que sus datos son correctos.</p>
+  </section>
+
+  <section>
+    <h2>3. Consulta el calendario</h2>
+    <ol>
+      <li>Busca la fecha de la cita en el calendario. Los días con citas muestran una indicación como «1 cita(s)».</li>
+      <li>Pulsa ese día para ver sus detalles.</li>
+      <li>El botón junto al título Agenda cambia entre vista semanal y mensual. Las flechas permiten ir al periodo anterior o siguiente.</li>
+      <li>Cierra la ventana del día para volver a la Agenda.</li>
+    </ol>
+    <p>El detalle del día diferencia las <strong>citas del profesional</strong> de tus <strong>actividades personales</strong>. Una cita cancelada también puede seguir apareciendo en su día, siempre con el estado «Cancelada».</p>
+  </section>
+
+  <section>
+    <h2>4. Comprueba el cambio de hora</h2>
+    <ol>
+      <li>Espera a que tu profesional te avise de que ha cambiado la hora de la cita.</li>
+      <li>En Go, pulsa <strong>Actualizar citas</strong>.</li>
+      <li>Busca la misma sesión y revisa el nuevo horario.</li>
+    </ol>
+    <p class="resultado">En esta prueba, la hora pasa de 18:00 a 19:00 y mantiene 45 minutos de duración: 19:00–19:45 en la misma zona horaria.</p>
+    <p>No debes ver dos citas por ese cambio: es la misma sesión actualizada.</p>
+  </section>
+
+  <section>
+    <h2>5. Comprueba la cancelación de la cita de prueba</h2>
+    <ol>
+      <li>Espera a que tu profesional te confirme que ha cancelado la sesión de prueba.</li>
+      <li>Pulsa <strong>Actualizar citas</strong>.</li>
+      <li>Despliega <strong>Historial y cancelaciones</strong>.</li>
+      <li>Busca «PRUEBA · Revisión de progreso» y comprueba que indica <strong>Cancelada</strong>.</li>
+      <li>Vuelve a abrir la Agenda o recarga Go y consulta de nuevo el historial.</li>
+    </ol>
+    <p class="resultado">La cancelación permanece guardada. Esa cita ya no está pendiente de realizar; no acudas a ella como si siguiera programada.</p>
+  </section>
+
+  <section>
+    <h2>6. Después de una sesión realizada</h2>
+    <p>Cuando termine otra sesión y tu profesional la marque como <strong>Completada</strong>, pulsa Actualizar citas y comprueba ese estado en el historial.</p>
+    <p>No tienes que pulsar ningún botón para completarla. En esta versión, tu profesional gestiona las citas; tú las consultas.</p>
+  </section>
+
+  <section class="nota">
+    <h2>Qué debes tener en cuenta</h2>
+    <ul>
+      <li><strong>No puedes editar, cancelar ni borrar las citas del profesional desde Go.</strong> Si necesitas cambiar una, contacta con él.</li>
+      <li>No hay avisos automáticos de cambios en esta versión. Actualiza la Agenda cuando el profesional te comunique una modificación.</li>
+      <li>El botón <strong>«+»</strong> añade actividades personales que solo se guardan en ese navegador. No reserva una cita ni comunica una sesión al profesional.</li>
+      <li>Las citas del profesional sí están guardadas en el sistema compartido y puedes consultarlas desde otro dispositivo con tu cuenta.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Si no encuentras una cita</h2>
+    <ol>
+      <li>Comprueba que has entrado con el correo que utilizaste en la invitación.</li>
+      <li>Pulsa Actualizar citas y revisa tanto Próximas citas como Historial y cancelaciones.</li>
+      <li>Si aparece un error de carga, comprueba tu conexión y vuelve a intentarlo.</li>
+      <li>Si sigue sin aparecer, pide al profesional que confirme que la guardó para tu cuenta.</li>
+    </ol>
+    <p>No crees otra cuenta para solucionar el problema ni compartas tu contraseña.</p>
+    <p><strong>Prueba finalizada:</strong> has visto tu cita, su cambio de horario y su cancelación. Comunícale el resultado al profesional.</p>
+  </section>
+  <footer>FitNova Go · Guía de Agenda para el cliente · 23/11/2026</footer>
+</main>
+</body>
+</html>
