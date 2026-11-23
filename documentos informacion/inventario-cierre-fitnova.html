@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitNova · Inventario para terminar Go y Manager</title>
+<style>
+  :root { --navy:#0a1a2f; --orange:#ff6a00; --bg:#f4f6fa; --line:#dce3ec; --muted:#526176; }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; font-family:"Segoe UI",system-ui,sans-serif; color:var(--navy); background:var(--bg); line-height:1.65; }
+  main { max-width:1100px; margin:auto; padding:28px 22px 70px; }
+  header { padding:30px; background:var(--navy); color:white; border-radius:16px; }
+  h1 { font-size:30px; line-height:1.25; margin:8px 0 16px; }
+  h2 { margin:42px 0 16px; padding-bottom:8px; border-bottom:2px solid var(--line); }
+  h3 { margin:0 0 10px; font-size:19px; }
+  h4 { margin:18px 0 8px; }
+  p { margin:10px 0; }
+  a { color:#1955ac; overflow-wrap:anywhere; }
+  header a { color:#fff; }
+  nav, .card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:22px; margin:16px 0; }
+  nav ul { display:flex; flex-wrap:wrap; gap:12px 24px; list-style:none; padding:0; margin:0; }
+  .notice { padding:16px 20px; background:#fff3e9; border-left:4px solid var(--orange); border-radius:8px; margin:18px 0; }
+  .good { background:#eaf7f0; border-left-color:#20804d; }
+  .tag { display:inline-block; border-radius:6px; padding:2px 8px; font-size:12px; font-weight:700; background:#edf1f7; }
+  .real { background:#e3f4e9; color:#21673d; }
+  .partial { background:#fff0d6; color:#825000; }
+  .local { background:#e8ecff; color:#3541a0; }
+  .demo { background:#fce8e8; color:#9b2828; }
+  .optional { background:#edf1f7; color:#526176; }
+  .table-wrap { overflow-x:auto; margin:14px 0; }
+  table { border-collapse:collapse; width:100%; background:#fff; font-size:14px; }
+  th, td { text-align:left; vertical-align:top; padding:12px; border:1px solid var(--line); }
+  th { background:#eaf0f8; }
+  code { font-family:Consolas,monospace; background:#edf1f7; padding:1px 4px; border-radius:4px; overflow-wrap:anywhere; }
+  ul, ol { padding-left:24px; }
+  li { margin:6px 0; }
+  .source, .small { font-size:13px; color:var(--muted); }
+  .tasks { list-style:none; padding-left:0; }
+  .tasks li { padding-left:28px; position:relative; margin:10px 0; }
+  .tasks li::before { content:""; width:13px; height:13px; border:1.5px solid #6b7b91; position:absolute; left:0; top:7px; border-radius:2px; }
+  .tasks strong { color:#1955ac; }
+  .columns { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .columns .card { margin:0; }
+  footer { margin-top:36px; color:var(--muted); font-size:13px; }
+  @media (max-width:700px) { main { padding:16px 12px 40px; } header, nav, .card { padding:18px; } h1 { font-size:25px; } .columns { grid-template-columns:1fr; } }
+  @media print { body { background:white; } main { max-width:none; padding:0; } header { background:white; color:var(--navy); border:1px solid var(--line); } header a { color:#1955ac; } nav { display:none; } .card { break-inside:auto; } tr { break-inside:avoid; } .table-wrap { overflow:visible; } h2, h3 { break-after:avoid; } a { text-decoration:none; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p>Documento de trabajo · Revisión del 23 de noviembre de 2026</p>
+    <h1>Todo lo que falta para terminar<br />FitNova Go y FitNova Manager</h1>
+    <p>Inventario por pantalla, opción y ventana. Incluye qué está en Supabase, qué sigue en el navegador, qué es una maqueta y cómo comprobaremos el cierre de cada bloque.</p>
+    <p><a href="#go">Ir a Go</a> · <a href="#manager">Ir a Manager</a> · <a href="#orden">Orden de trabajo</a></p>
+  </header>
+
+  <nav aria-label="Índice del documento">
+    <ul>
+      <li><a href="#resumen">1. Situación real</a></li>
+      <li><a href="#go">2. Todas las pantallas de Go</a></li>
+      <li><a href="#metricas">3. Las 15 métricas</a></li>
+      <li><a href="#manager">4. Todas las pantallas de Manager</a></li>
+      <li><a href="#ventanas">5. Ventanas y formularios</a></li>
+      <li><a href="#persistencia">6. Local frente a Supabase</a></li>
+      <li><a href="#relacion">7. Relación entre apps</a></li>
+      <li><a href="#transversal">8. Cierre transversal</a></li>
+      <li><a href="#orden">9. Prioridades y dependencias</a></li>
+      <li><a href="#aceptacion">10. Pruebas de cierre</a></li>
+      <li><a href="#fuentes">11. Fuentes y alcance</a></li>
+    </ul>
+  </nav>
+
+  <section id="resumen">
+    <h2>1. Situación real: no empezamos de cero, pero no está todo terminado</h2>
+    <div class="notice good">
+      <strong>El alta del cliente y la Agenda individual compartida ya son bloques reales.</strong>
+      Manager crea la invitación; Go permite registrarse y completar el cuestionario; el cliente queda activo en Manager. Las citas se crean, editan, cancelan y completan en Manager y se consultan en Go. No hay que rehacer estos recorridos.
+    </div>
+    <div class="notice">
+      <strong>El principal pendiente inmediato es unificar el seguimiento.</strong>
+      Perfil de Go guarda sus métricas en Supabase, pero Evolución todavía muestra ejemplos y guarda su formulario en local. Manager no consulta esas métricas en su pestaña Progreso. Por eso puede haber datos reales guardados y, aun así, pantallas que aparenten no tenerlos o muestren cifras inventadas.
+    </div>
+    <p><strong>Qué se ha revisado:</strong> las 8 páginas HTML de Go y las 9 de Manager, sus scripts propios, el helper de Agenda, el service worker, el manifest y las 8 migraciones versionadas. Este informe es una revisión de implementación; no una nueva prueba completa de cada botón contra la base remota ni una auditoría legal o de seguridad especializada.</p>
+    <p><strong>Cómo leer los estados:</strong></p>
+    <ul>
+      <li><span class="tag real">SUPABASE</span> Hay lectura o escritura real implementada. No significa que todas las variantes estén probadas.</li>
+      <li><span class="tag partial">PARCIAL</span> Una parte funciona y otras opciones de esa misma pantalla no.</li>
+      <li><span class="tag local">LOCAL</span> Guarda datos solo en ese navegador; no los comparte con Manager ni con otro dispositivo.</li>
+      <li><span class="tag demo">MAQUETA</span> Contenido fijo, estado en memoria o botón sin operación real. Puede no guardar nada.</li>
+      <li><span class="tag optional">AMPLIACIÓN A DECIDIR</span> No es imprescindible para cerrar lo ya acordado. Se registra para no olvidarla, sin convertirla automáticamente en trabajo aprobado.</li>
+    </ul>
+    <p><strong>Los códigos G, M y T son referencias de tareas pendientes</strong>, no casillas de funciones ya terminadas. Este documento es una fotografía fechada: debe actualizarse al cerrar cada bloque; no se actualiza solo cuando cambia la aplicación.</p>
+    <div class="columns">
+      <div class="card">
+        <h3>Ya conectado</h3>
+        <ul>
+          <li>Autenticación de ambas apps y protección de páginas.</li>
+          <li>Invitación, registro, objetivo inicial, peso inicial y las 7 respuestas PAR-Q.</li>
+          <li>Datos personales y parte de Ajustes de Go.</li>
+          <li>Las 15 medidas desde Perfil de Go y el peso objetivo.</li>
+          <li>Profesionales asignados, lista de clientes, búsqueda y etiquetas.</li>
+          <li>Parte del Dashboard y Agenda individual compartida.</li>
+          <li>Hosting público de ambas apps en GitHub Pages.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Los bloques grandes pendientes</h3>
+        <ul>
+          <li>Evolución real en Go y Progreso real en Manager.</li>
+          <li>Actividades personales, resumen semanal y fotos.</li>
+          <li>Workouts, programas, vídeos y registro de realización.</li>
+          <li>Nutrición, recetas y diario alimentario.</li>
+          <li>Chat, notificaciones y tareas.</li>
+          <li>Equipo, archivos y formularios de seguimiento.</li>
+          <li>Negocio, facturación, pagos y preferencias.</li>
+          <li>Recuperación de cuentas, correo, instalación y cierre operativo/legal.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="go">
+    <h2>2. FitNova Go: repaso de todas las pantallas</h2>
+
+    <article class="card" id="g-acceso">
+      <h3>2.1. Acceso y recuperación de contraseña</h3>
+      <p><span class="tag partial">PARCIAL</span> El login usa Supabase Auth, conserva la sesión y redirige al Inicio. El botón «He olvidado mi contraseña» llama realmente al servicio de recuperación.</p>
+      <ul class="tasks">
+        <li><strong>G01 · Cerrar la recuperación:</strong> configurar el retorno público del email y ofrecer una pantalla/estado específico para establecer la nueva contraseña al abrirlo. No hay un recorrido de recuperación propio completo en las páginas actuales. Comprobar solicitud, recepción, enlace válido/caducado y acceso con la nueva clave.</li>
+        <li><strong>G02 · Cuenta autenticada sin ficha de cliente:</strong> sustituir pantallas vacías por una explicación y una salida útil: retomar la invitación, completar el alta o contactar con el profesional. Actualmente la carga de cliente puede devolver null sin avisar.</li>
+        <li><strong>G03 · Correo verificado:</strong> preparar confirmación, reenvío y retorno antes de activar la exigencia de verificación. Está desactivada según el estado conocido; activar el interruptor no resuelve por sí solo el onboarding.</li>
+      </ul>
+      <p class="source">Fuentes: <a href="../mockup-fitnova-go/login.html">Acceso Go</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/mockup-fitnova-go/js/supabase-client.js#L19">Carga de cliente y sesión</a>.</p>
+    </article>
+
+    <article class="card" id="g-invitacion">
+      <h3>2.2. Invitación y cuestionario inicial</h3>
+      <p><span class="tag real">SUPABASE</span> Recorrido normal completado: validación del token, creación de cuenta, género, objetivo, nacimiento, peso, altura y salud. La RPC guarda los datos y activa al cliente.</p>
+      <p><strong>Ventanas presentes:</strong> 1 cuenta y aceptación; 2 género; 3 objetivo; 4 nacimiento; 5 peso; 6 altura; 7 preguntas PAR-Q 1–2; 8 preguntas 3–5; 9 preguntas 6–7 y finalización. Además: comprobando invitación, enlace inválido/caducado y alta completada. Son 9 pasos de formulario, aunque un comentario antiguo habla de 10.</p>
+      <ul class="tasks">
+        <li><strong>G04 · Reanudación de un alta interrumpida:</strong> la cuenta se crea antes de terminar el cuestionario y el borrador está en memoria. Preparar retorno con cuenta ya existente, recarga, cierre de pestaña y futura confirmación de correo, sin repetir signUp ni dejar al usuario bloqueado.</li>
+        <li><strong>G05 · Validación y navegación:</strong> comprobar cada dato en su paso, permitir volver y corregir, y diferenciar fallo de red de invitación inválida. Revisar las respuestas de salud preseleccionadas en «No» para que la aceptación sea consciente.</li>
+      </ul>
+      <p>Los datos de salud ya se guardan; lo pendiente no es volver a crear la tabla, sino su consulta y revisión posterior y el tratamiento legal correspondiente.</p>
+      <p class="source">Fuentes: <a href="../mockup-fitnova-go/invitacion.html">Invitación Go</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/mockup-fitnova-go/js/invitacion.js#L21">Creación y finalización</a>.</p>
+    </article>
+
+    <article class="card" id="g-inicio">
+      <h3>2.3. Inicio</h3>
+      <p><span class="tag partial">PARCIAL</span> El saludo carga el nombre/alias real. El aviso de actualización tiene lógica local. El resto de tarjetas no constituye todavía un panel de seguimiento real.</p>
+      <ul class="tasks">
+        <li><strong>G06 · Estado de hoy y resumen semanal:</strong> quitar las barras fijas y el mensaje permanente «no has registrado actividad». Calcularlos con datos reales; definir qué cuenta como actividad, su unidad y la semana mostrada. Actualizar el resumen después de guardar.</li>
+        <li><strong>G07 · Registrar actividad:</strong> pasar nombre, fecha, duración, distancia y comentario a Supabase; permitir consulta, edición y borrado coherentes desde Inicio y Agenda. Inicializar fecha de hoy y limpiar el formulario; Inicio ahora abre directamente el modal, sin la preparación que sí usa Agenda.</li>
+        <li><strong>G08 · Pasos, calorías y foto de ruta:</strong> los pasos y calorías son estimaciones fijas derivadas de kilómetros, no lecturas de un dispositivo. No se almacenan como campos propios del registro local. Definir si se conservan, su procedencia y la advertencia de estimación. La caja «Subir foto» no selecciona ni sube archivos: requiere carga real y almacenamiento privado.</li>
+        <li><strong>G09 · Registrar nutrición:</strong> guardar fecha, tipo de comida, alimentos y vasos de agua, y permitir consultar/modificar el diario. Hoy «Guardar» solo cierra la ventana; no guarda ni siquiera en local.</li>
+        <li><strong>G10 · Conectar dispositivo:</strong> el botón no tiene integración. Elegir primero proveedor y alcance: Strava, un dispositivo concreto o registro manual. Requiere autorización, importación sin duplicados, desconexión y gestión de errores. Es ampliación, no requisito del registro manual.</li>
+      </ul>
+      <p class="source">Fuentes: <a href="../mockup-fitnova-go/index.html">Inicio Go y sus formularios</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/mockup-fitnova-go/js/app.js#L99">Actividades y cálculos locales</a>.</p>
+    </article>
+
+    <article class="card" id="g-agenda">
+      <h3>2.4. Agenda</h3>
+      <p><span class="tag real">SUPABASE: CITAS</span> <span class="tag local">LOCAL: ACTIVIDADES</span> Semana/mes, navegación por fechas, detalles del día, próximas citas, historial y actualización funcionan para sesiones del profesional.</p>
+      <ul class="tasks">
+        <li><strong>G11 · Unificar actividades personales:</strong> conectar las actividades del «+» al mismo backend que G07, separándolas de las citas. Migrar datos locales solo mediante un proceso explícito y ligado a la cuenta correcta; comprobar recarga y segundo dispositivo.</li>
+        <li><strong>G12 · Ampliaciones de Agenda:</strong> decidir reservas, solicitud de cambio/cancelación, confirmación del cliente, grupos, aforo, recurrencias y calendario externo. Ninguna está implementada; no hace falta introducirlas para dar por cerrado el bloque individual ya probado.</li>
+      </ul>
+      <p><strong>No confundir:</strong> una sesión «completada» solo indica su estado en Agenda. No contiene ejercicios, series, repeticiones ni resultados del entrenamiento. Los cambios se ven al actualizar; no hay sincronización en tiempo real ni recordatorio automático.</p>
+      <p class="source">Fuentes: <a href="../mockup-fitnova-go/agenda.html">Agenda Go</a> · <a href="guia-agenda-go.html">Guía ya publicada</a>.</p>
+    </article>
+
+    <article class="card" id="g-videos">
+      <h3>2.5. Vídeos</h3>
+      <p><span class="tag demo">MAQUETA</span> «Todos», «Mis favoritos», buscador y filtro por nombre/fecha/actividad operan sobre cuatro objetos de ejemplo escritos en JavaScript. La estrella cambia en memoria y se pierde al recargar. La miniatura no reproduce un vídeo real.</p>
+      <ul class="tasks">
+        <li><strong>G13 · Catálogo y reproducción:</strong> recibir vídeos publicados/asignados por Manager, mostrar título, fecha, categoría, duración y miniatura reales; abrir reproductor y gestionar vídeos retirados o sin acceso.</li>
+        <li><strong>G14 · Favoritos persistentes:</strong> guardarlos por cliente en Supabase y aplicar búsqueda/filtros a contenido real. Comprobar recarga, dos dispositivos y que retirar una asignación no deje acceso indebido al recurso.</li>
+      </ul>
+      <p>Requiere cerrar también Librería de Manager y decidir dónde se alojará el vídeo; guardar un título o una URL no equivale a disponer de una plataforma de reproducción.</p>
+      <p class="source">Fuentes: <a href="../mockup-fitnova-go/videos.html">Vídeos Go</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/mockup-fitnova-go/js/app.js#L353">Catálogo fijo y favoritos en memoria</a>.</p>
+    </article>
+
+    <article class="card" id="g-evolucion">
+      <h3>2.6. Evolución: Métricas y Fotos</h3>
+      <p><span class="tag demo">GRÁFICOS Y OBJETIVO DE EJEMPLO</span> <span class="tag local">FORMULARIO EN LOCAL</span> Esta es la pantalla abierta desde la barra inferior, alojada actualmente en <a href="../mockup-fitnova-go/placeholder.html?vista=Evoluci%C3%B3n">Evolución</a>. No carga el script de Perfil que sí consulta Supabase.</p>
+      <ul class="tasks">
+        <li><strong>G15 · Una única fuente de métricas:</strong> conectar selector, gráfico, objetivo y registros a <code>clientes_metricas</code> y <code>clientes_objetivo</code>; reutilizar la lógica de Perfil. Eliminar pesos 82/76,4/70, porcentaje 47% y registros de septiembre de ejemplo.</li>
+        <li><strong>G16 · Formulario completo de 15 medidas:</strong> sustituir <code>saveMetrics</code> local por escritura validada a Supabase; rechazar formularios sin ninguna medida, conservar campos omitidos como null y refrescar ambas vistas tras éxito. Los nombres locales no coinciden con las columnas: ver la tabla de métricas.</li>
+        <li><strong>G17 · Historial y correcciones:</strong> dar función real a las papeleras, filtrar de verdad por mes/periodo y decidir edición o corrección de registros. Si las 15 medidas se guardan en una misma fila, definir si borrar una medida elimina solo ese valor o toda la medición: hoy Perfil borra la fila completa.</li>
+        <li><strong>G18 · Fotos de progreso:</strong> ahora solo se leen archivos y se añaden imágenes al DOM; desaparecen al recargar. Implementar subida privada, fecha, listado, visualización, eliminación y acceso del profesional autorizado; definir límites de tamaño, formatos y retención.</li>
+      </ul>
+      <p>El modal «Definir objetivo» de Evolución solo se cierra al pulsar Actualizar; el de Perfil sí escribe el peso objetivo. Ambos deben acabar mostrando y modificando el mismo dato.</p>
+      <p class="source">Fuentes: <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/mockup-fitnova-go/placeholder.html#L29">Pantalla Evolución</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/mockup-fitnova-go/js/app.js#L227">Gráficos, fotos y guardado local</a>.</p>
+    </article>
+
+    <article class="card" id="g-perfil">
+      <h3>2.7. Perfil y modal Métrica</h3>
+      <p><span class="tag real">SUPABASE</span> Nombre, evolución del peso, alta/borrado de medidas, peso objetivo y profesionales asignados tienen conexión real. Es la base a reutilizar, no un módulo que falte entero.</p>
+      <ul class="tasks">
+        <li><strong>G19 · Fiabilidad de las lecturas:</strong> la consulta de métricas convierte errores en lista vacía, y la de profesionales puede mostrar «no tienes profesionales» también cuando falla. Mostrar error y reintento, distinguir sin datos de fallo y evitar que parezca perdido un registro guardado.</li>
+        <li><strong>G20 · Historial completo y gráficos:</strong> añadir paginación/consulta por periodos; la lectura no pagina y la lista solo enseña 12 registros por métrica. Comprobar una sola medida, muchos registros, fechas iguales y límites del servidor; un punto único puede no verse en el gráfico de Métrica.</li>
+        <li><strong>G21 · Reglas de métricas y objetivo:</strong> armonizar valores válidos, fechas, unidades y correcciones. Revisar cómo borrar o añadir un registro anterior modifica el «peso inicial» y el porcentaje. El porcentaje actual es una comparación de pesos, no una evaluación general del estado físico.</li>
+        <li><strong>G22 · Foto de perfil:</strong> el botón «Cambiar foto» no tiene acción, aunque <code>foto_url</code> exista. Completar selección, subida, reemplazo, borrado y visualización de la foto real en todas las cabeceras que corresponda.</li>
+        <li><strong>G23 · Ayuda y legales:</strong> Ayudas al usuario, Privacidad, Términos y Aviso legal son filas sin enlace. Crear documentos/pantallas accesibles y enlazarlos también desde el consentimiento del registro.</li>
+      </ul>
+      <p class="source">Fuentes: <a href="../mockup-fitnova-go/perfil.html">Perfil Go</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/mockup-fitnova-go/js/perfil.js#L50">Consultas, gráficos y escrituras</a>.</p>
+    </article>
+
+    <article class="card" id="g-ajustes">
+      <h3>2.8. Ajustes: los cuatro desplegables</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Desplegable</th><th>Real actualmente</th><th>Pendiente</th></tr></thead>
+          <tbody>
+            <tr><td>Mi perfil</td><td>Nombre, apellidos, alias, nacimiento y teléfono en <code>clientes</code>; nueva contraseña en Auth. Email de solo lectura.</td><td>Foto, facturación y robustez del guardado. El botón común no guarda los campos de facturación que aparecen debajo.</td></tr>
+            <tr><td>Sobre mí</td><td>Género, altura, notas del objetivo y lesiones/observaciones; peso inicial consultado, no editable.</td><td>Errores explícitos, validación de altura y resultado coherente de las dos escrituras. No existe cambio del tipo de objetivo desde esta interfaz.</td></tr>
+            <tr><td>Métodos de pago</td><td>Nada conectado. Las dos tarjetas son ejemplos.</td><td>Pasarela, métodos tokenizados, alta/baja y método predeterminado; botón de nueva forma de pago sin acción.</td></tr>
+            <tr><td>Ajustes</td><td>Solo selección visual de unidades, notificaciones e idioma.</td><td>Persistencia por cuenta, aplicación efectiva de unidades/traducciones y enlace con permisos y preferencias de notificación.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="tasks">
+        <li><strong>G24 · Facturación:</strong> diseñar e implementar persistencia de DNI/NIF, código postal, dirección, ciudad, región y país, con permisos apropiados y validación. No están incluidos en <code>guardarMiPerfil</code> ni existe su tabla en las migraciones actuales.</li>
+        <li><strong>G25 · Guardados parciales:</strong> validar contraseña antes de actualizar datos personales y avisar si una parte se guardó y otra falló. En «Sobre mí», no ignorar una altura inválida ni anunciar guardado de notas si no se pudo cargar el objetivo.</li>
+        <li><strong>G26 · Preferencias:</strong> crear persistencia para sistema métrico/imperial, idioma y notificaciones. Mantener unidades canónicas en la base, convertir al mostrar/introducir y traducir realmente los textos. No basta con recordar el selector.</li>
+        <li><strong>G27 · Métodos de pago:</strong> sustituir tarjetas ficticias por datos de una pasarela y desarrollar alta, eliminación y selección predeterminada. Nunca guardar número completo, CVV ni credenciales de pago en tablas de cliente.</li>
+        <li><strong>G28 · Gestión de cuenta:</strong> definir cambio de email con verificación, solicitud de baja/eliminación y exportación de datos si forman parte de la versión final. Cerrar sesión ya existe; comprobar el aislamiento de datos locales al cambiar de usuario.</li>
+      </ul>
+      <p class="source">Fuentes: <a href="../mockup-fitnova-go/ajustes.html">Ajustes Go</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/mockup-fitnova-go/js/ajustes.js#L19">Campos que realmente se guardan</a>.</p>
+    </article>
+
+    <article class="card" id="g-comunicacion">
+      <h3>2.9. Chat, notificaciones y nuevas vistas necesarias</h3>
+      <p><span class="tag demo">MAQUETA</span> Los modales de Chat muestran profesionales ficticios o un texto informativo. Las campanas y sus contadores muestran mensajes de ejemplo. No hay conversación real ni bandeja de notificaciones.</p>
+      <ul class="tasks">
+        <li><strong>G29 · Chat:</strong> lista de profesionales reales, conversación, envío/recepción, estados pendientes/fallidos, lectura, historial y adjuntos si se incluyen. Conectar a las mismas conversaciones de Manager.</li>
+        <li><strong>G30 · Notificaciones:</strong> sustituir ejemplos y badges fijos por eventos reales y lectura/no lectura. Separar bandeja interna, correo y push; cada canal requiere implementación y pruebas propias.</li>
+        <li><strong>G31 · Entrenamientos asignados:</strong> no existe aún una pantalla funcional para consultar un workout/programa y registrar ejercicios, series, repeticiones, cargas, duración y feedback. Diseñarla con Librería y ficha de Manager; la cita de Agenda no sustituye esta vista.</li>
+        <li><strong>G32 · Plan nutricional, formularios y archivos:</strong> prever las vistas de recepción/consulta y, donde corresponda, respuesta del cliente. El modal del diario alimentario no sustituye un plan, un formulario ni un repositorio de documentos.</li>
+      </ul>
+    </article>
+  </section>
+
+  <section id="metricas">
+    <h2>3. Inventario completo de métricas corporales</h2>
+    <p>Las siguientes <strong>15 métricas ya tienen columna en Supabase y alta/consulta desde Perfil</strong>. Todas aparecen también en el formulario de Evolución, pero allí su guardado sigue siendo local. En Manager, Progreso todavía no las consulta. La altura pertenece a <code>clientes_objetivo.altura_cm</code>; no es una decimosexta serie histórica en <code>clientes_metricas</code>.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Métrica</th><th>Columna Supabase</th><th>Nombre local en Evolución</th><th>Unidad</th></tr></thead>
+        <tbody>
+          <tr><td>Peso corporal</td><td><code>peso_kg</code></td><td><code>weight</code></td><td>kg</td></tr>
+          <tr><td>Grasa corporal</td><td><code>grasa_corporal_pct</code></td><td><code>fat</code></td><td>%</td></tr>
+          <tr><td>Pecho</td><td><code>pecho_cm</code></td><td><code>chest</code></td><td>cm</td></tr>
+          <tr><td>Cuello</td><td><code>cuello_cm</code></td><td><code>neck</code></td><td>cm</td></tr>
+          <tr><td>Hombros</td><td><code>hombros_cm</code></td><td><code>shoulders</code></td><td>cm</td></tr>
+          <tr><td>Bíceps izquierdo</td><td><code>biceps_izq_cm</code></td><td><code>bicepsLeft</code></td><td>cm</td></tr>
+          <tr><td>Bíceps derecho</td><td><code>biceps_der_cm</code></td><td><code>bicepsRight</code></td><td>cm</td></tr>
+          <tr><td>Antebrazo izquierdo</td><td><code>antebrazo_izq_cm</code></td><td><code>forearmLeft</code></td><td>cm</td></tr>
+          <tr><td>Antebrazo derecho</td><td><code>antebrazo_der_cm</code></td><td><code>forearmRight</code></td><td>cm</td></tr>
+          <tr><td>Cintura</td><td><code>cintura_cm</code></td><td><code>waist</code></td><td>cm</td></tr>
+          <tr><td>Cadera</td><td><code>cadera_cm</code></td><td><code>hip</code></td><td>cm</td></tr>
+          <tr><td>Muslo izquierdo</td><td><code>muslo_izq_cm</code></td><td><code>thighLeft</code></td><td>cm</td></tr>
+          <tr><td>Muslo derecho</td><td><code>muslo_der_cm</code></td><td><code>thighRight</code></td><td>cm</td></tr>
+          <tr><td>Gemelo izquierdo</td><td><code>gemelo_izq_cm</code></td><td><code>calfLeft</code></td><td>cm</td></tr>
+          <tr><td>Gemelo derecho</td><td><code>gemelo_der_cm</code></td><td><code>calfRight</code></td><td>cm</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>Qué falta cerrar para las 15, no solo para el peso</h3>
+    <ul>
+      <li>Guardar en Evolución, mostrar lo mismo en Perfil y Manager y conservarlo al entrar desde otro dispositivo.</li>
+      <li>Fecha local coherente: el formulario usa un día sin hora y la tabla usa <code>timestamptz</code>. Definir conversión y comprobar que otra zona no desplaza el día de medición.</li>
+      <li>Valores positivos para peso/medidas; porcentaje dentro del rango permitido. La base permite grasa 0–100 y Perfil exige más de cero: armonizar la regla, sin convertirlo en recomendación clínica.</li>
+      <li>Al menos un valor por medición, límites razonables a decidir con el profesional, mensajes claros y protección frente a doble envío.</li>
+      <li>Corrección/borrado con política explícita para filas que contengan varias medidas; preservar procedencia cliente/profesional.</li>
+      <li>Lectura del historial completo por periodos y gráficos con fechas/valores comprensibles; ahora la separación horizontal es por posición del registro, no por distancia temporal.</li>
+      <li>Alta por profesional: el campo <code>origen='profesional'</code> existe, pero no hay UI de Manager ni un flujo de escritura profesional implementado para ello en las migraciones revisadas.</li>
+      <li>Ayudas «?» de medición ya abren textos informativos en Evolución; revisar coherencia y accesibilidad, no rehacerlas como si no existieran.</li>
+    </ul>
+    <p><strong>No hay implementación de otras series corporales</strong> como IMC, masa muscular, frecuencia cardíaca o presión arterial. Añadirlas sería una decisión nueva, no un pendiente oculto de las 15 actuales. Pasos, kilómetros, duración, calorías y agua pertenecen al seguimiento de actividades/nutrición descrito arriba.</p>
+    <p class="source">Fuentes: <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/supabase/migrations/20260929100000_clientes_core.sql#L109">Esquema de las 15 medidas</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/mockup-fitnova-go/perfil.html#L82">Selector conectado</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/mockup-fitnova-go/placeholder.html#L105">Formulario completo local</a>.</p>
+  </section>
+
+  <section id="manager">
+    <h2>4. FitNova Manager: repaso de todas las pantallas</h2>
+
+    <article class="card" id="m-acceso">
+      <h3>4.1. Acceso, crear cuenta y perfil profesional pendiente</h3>
+      <p><span class="tag real">SUPABASE</span> Login, creación de cuenta y autorregistro del perfil profesional funcionan con Auth y RPC. Existe una ventana para completar el perfil cuando la cuenta ya está creada.</p>
+      <ul class="tasks">
+        <li><strong>M01 · Recuperación y cuenta profesional:</strong> añadir recuperación de contraseña y su retorno, edición de perfil/cuenta y cambio de contraseña/email según alcance. La cabecera «Mi cuenta» actualmente se usa para cerrar sesión, no abre ajustes.</li>
+        <li><strong>M02 · Registro y roles:</strong> diferenciar dueño de negocio que se registra de colaborador invitado. Hoy el usuario elige rol en su autorregistro; no representa todavía un sistema de equipo, pertenencia a negocio o permisos administrados por un dueño.</li>
+      </ul>
+      <p class="source">Fuentes: <a href="../fitnova-manager/login.html">Acceso Manager</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/supabase/migrations/20260930090000_clientes_rpc.sql#L22">Autorregistro profesional</a>.</p>
+    </article>
+
+    <article class="card" id="m-dashboard">
+      <h3>4.2. Dashboard / Inicio</h3>
+      <p><span class="tag partial">PARCIAL</span> Activos, leads, invitaciones, clientes recientes y actividad de altas/accesos usan datos reales. Próximos eventos muestra hasta cinco sesiones reales, incluidas las que están en curso. El contador de eventos es el de tarjetas mostradas, no el total de toda la Agenda.</p>
+      <ul class="tasks">
+        <li><strong>M03 · Contadores fiables a escala:</strong> el contador de invitaciones se calcula sobre las últimas 50, y clientes se consulta sin paginación. Usar conteos/consultas que no trunquen los totales; tratar vencidas aunque no se haya abierto Clientes. Aclarar que «Invitación enviada» no prueba entrega de email.</li>
+        <li><strong>M04 · Actividad reciente completa:</strong> hoy deriva de fechas de clientes e invitaciones; no registra de forma general entrenamientos, medidas, nutrición, mensajes o cambios de cita. Incorporar eventos reales a medida que se cierre cada módulo. Los botones Buscar y Filtrar de esta tarjeta no actúan.</li>
+        <li><strong>M05 · Tareas y configuración:</strong> la tarjeta Agendar tareas es fija y su contador es 0; conectar tareas con la ficha. El botón de configurar accesos rápidos no funciona; decidir si se implementa o se elimina de la versión inicial.</li>
+        <li><strong>M06 · Accesos IA y pagos:</strong> los enlaces llevan a Librería/Negocio, pero esas capacidades no están hechas. Etiquetarlos como pendientes o activarlos únicamente cuando exista el flujo correspondiente; no prometer generación/cobro real.</li>
+      </ul>
+      <p>«Última actividad» indica acceso de navegación registrado por Go, no que el cliente haya entrenado. No usar ese dato como adherencia o cumplimiento de un programa.</p>
+      <p class="source">Fuentes: <a href="../fitnova-manager/index.html">Dashboard</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/fitnova-manager/js/dashboard.js#L23">Consultas, límites y actividad</a>.</p>
+    </article>
+
+    <article class="card" id="m-clientes">
+      <h3>4.3. Clientes: Activos, Invitaciones, Archivados y Leads</h3>
+      <p><span class="tag partial">PARCIAL</span> Listado, apertura de ficha, búsqueda por nombre/email, filtro por etiqueta, creación y asignación/quita de etiquetas están conectados. Añadir cliente crea invitación real; reenviar genera nuevo enlace y cancelar invalida el anterior.</p>
+      <ul class="tasks">
+        <li><strong>M07 · Archivo y leads:</strong> listar estados existe, pero no hay acciones para archivar/reactivar ni un alta/gestión propia de leads. Diseñarlas con reglas de acceso, Agenda pendiente e historial; no equivalen a borrar el cliente.</li>
+        <li><strong>M08 · Etiquetas:</strong> probar de extremo a extremo crear, asignar, quitar, filtrar y recargar; definir renombrado/eliminación. Revisar nombres iguales entre profesionales: el índice único global original sigue presente aunque después se añadió el índice por profesional.</li>
+        <li><strong>M09 · Listado y filtros completos:</strong> paginar clientes/etiquetas/invitaciones; los filtros actuales se aplican a la cartera, no a la tabla de invitaciones. Los checkboxes no tienen selección masiva funcional. Decidir las operaciones masivas antes de activarlos.</li>
+        <li><strong>M10 · Refresco tras cambios:</strong> actualizar coherentemente las cuatro pestañas y contadores tras cancelar/reenviar/crear; se refrescan invitaciones, pero no toda la cartera en esas acciones. Completar mensajes de error y resultado del copiado al portapapeles.</li>
+        <li><strong>M11 · Envío real y caducidad programada:</strong> integrar proveedor de correo y función de servidor; registrar entrega/fallo y reintentos. La caducidad se valida por fecha y se escribe al cargar Clientes mediante RPC, no mediante tarea periódica independiente. Programarla si se requiere estado actualizado sin visitas.</li>
+      </ul>
+      <p><strong>Enlace público resuelto:</strong> hoy se construye desde la ubicación de Manager hacia la carpeta pública de Go y funciona en GitHub Pages. No está limitado a localhost. Si se separan dominios, habrá que configurar la nueva base.</p>
+      <p class="source">Fuentes: <a href="../fitnova-manager/clientes.html">Clientes</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/fitnova-manager/js/clientes.js#L87">Listas y acciones</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/supabase/migrations/20260929100000_clientes_core.sql#L151">Índice original de etiquetas</a>.</p>
+    </article>
+
+    <article class="card" id="m-ficha">
+      <h3>4.4. Ficha del cliente: las nueve pestañas</h3>
+      <p><span class="tag partial">PARCIAL</span> Cabecera, datos básicos, objetivo/altura/peso objetivo y Agenda tienen lectura real. Las demás pestañas no están conectadas por el hecho de tener un cliente activo.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Pestaña</th><th>Estado actual</th><th>Cierre pendiente</th></tr></thead>
+          <tbody>
+            <tr><td>Resumen</td><td>Nombre, email, estado, teléfono, actividad, alta y parte del objetivo reales.</td><td><strong>M12:</strong> completar nacimiento, género, peso inicial/actual, observaciones/lesiones y revisión PAR-Q con permisos adecuados. No confundir «sin datos» con errores de consulta.</td></tr>
+            <tr><td>Entrenamiento</td><td>Estado vacío fijo y enlace a Librería.</td><td><strong>M13:</strong> asignar workouts/programas al cliente, fechas/versiones, ver ejecución y feedback; conservar el cliente seleccionado al llegar a Librería.</td></tr>
+            <tr><td>Nutrición</td><td>Estado vacío fijo y enlace a Librería.</td><td><strong>M14:</strong> asignar plan, consultar diario real de Go, revisar adherencia/comentarios y cambios.</td></tr>
+            <tr><td>Agenda</td><td>Sesiones reales y enlace de alta con cliente preseleccionado.</td><td>Bloque individual hecho. Ampliaciones opcionales de M20 y tratamiento de sesiones al archivar/desasignar.</td></tr>
+            <tr><td>Progreso</td><td>Siempre afirma que no hay mediciones; botón sin acción.</td><td><strong>M15:</strong> mostrar las 15 medidas de Go, gráficos, periodos, objetivo y fotos. Añadir registro por profesional con escritura autorizada, si se incluye; no crear otra tabla paralela de pesos.</td></tr>
+            <tr><td>Formularios</td><td>Estado vacío fijo y enlace a Librería.</td><td><strong>M16:</strong> enviar, ver pendientes, respuestas y fecha. Separar formularios nuevos del PAR-Q inicial, que ya existe en la base.</td></tr>
+            <tr><td>Archivos</td><td>Estado vacío fijo; «Subir archivo» sin acción.</td><td><strong>M17:</strong> subida, listado, acceso privado, descarga, eliminación y destinatario; recepción en Go.</td></tr>
+            <tr><td>Pagos</td><td>Plan, precio, fecha y estado ficticios.</td><td><strong>M18:</strong> cargar suscripción, pagos y próximo cobro reales del módulo Negocio; no mostrar «Al día» sin fuente.</td></tr>
+            <tr><td>Historial</td><td>Dos eventos con fechas fijas de ejemplo.</td><td><strong>M19:</strong> historial real de alta, aceptación y futuras acciones, con autor/fecha. Decidir qué se conserva y quién lo consulta.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Acciones de cabecera:</strong> Enviar mensaje lleva al Chat genérico, sin conversación del cliente; Nueva tarea abre un modal cuyo Guardar solo cierra. Requieren M25 y M28 respectivamente.</p>
+      <p class="source">Fuentes: <a href="../fitnova-manager/cliente-perfil.html">Ficha Manager</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/fitnova-manager/js/cliente-perfil.js#L8">Datos realmente consultados</a>.</p>
+    </article>
+
+    <article class="card" id="m-agenda">
+      <h3>4.5. Agenda: lista, calendario y formulario de sesión</h3>
+      <p><span class="tag real">SUPABASE</span> Alta para clientes activos propios; edición; cancelación; finalización una vez terminada; filtros cliente/estado; historial; calendario mensual; prevención de solapamientos de profesional y cliente. Está conectado con Go, ficha y Dashboard.</p>
+      <ul class="tasks">
+        <li><strong>M20 · Ampliaciones a decidir:</strong> grupos/aforo, sesiones recurrentes, disponibilidad/reservas, confirmación o cambio iniciado en Go, recordatorios, calendario externo y vista semanal de Manager. No forman parte del bloque individual cerrado.</li>
+        <li><strong>M21 · Ciclo de relación:</strong> al introducir archivo/reactivación o retirada de un profesional, definir qué pasa con citas futuras y acceso al historial. No añadir esas acciones sin resolver antes este efecto.</li>
+      </ul>
+      <p>Cancelada/completada no se borran ni se reabren desde la interfaz actual. La finalización no se produce automáticamente al pasar la hora; la marca el profesional.</p>
+      <p class="source">Fuentes: <a href="../fitnova-manager/agenda.html">Agenda Manager</a> · <a href="guia-agenda-manager.html">Guía de prueba publicada</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/supabase/migrations/20261123160000_agenda_sesiones.sql#L6">Sesiones y reglas</a>.</p>
+    </article>
+
+    <article class="card" id="m-libreria">
+      <h3>4.6. Librería: las seis pestañas</h3>
+      <p><span class="tag demo">MAQUETA</span> Las seis pestañas muestran vacíos fijos y contadores 0. Crear nuevo abre el mismo formulario de nombre/descripción para todas. Guardar solo cierra; buscador, Filtros y Crear con IA no tienen lógica funcional.</p>
+      <ul class="tasks">
+        <li><strong>M22 · Contenido y asignación:</strong> crear modelo, permisos y CRUD para cada tipo. Workouts necesitan ejercicios y parámetros; Programas, agrupación y calendario; Nutrición, estructura de plan; Recetas, ingredientes/instrucciones; Vídeos, archivo/URL y metadatos; Formularios, preguntas/tipos y respuestas. Un único título/descripción no resuelve estos seis módulos.</li>
+        <li><strong>M23 · Publicación y destinatarios:</strong> borradores/publicados, clientes o grupos autorizados, asignación, retirada, cambios/versiones y copia de plantillas si se incluye. Conectar ficha Manager y vistas Go; probar que el contenido llega al cliente correcto.</li>
+        <li><strong>M24 · Búsqueda, filtros e IA:</strong> hacer búsquedas y contadores reales. La IA es ampliación: decidir proveedor, coste, revisión profesional y tratamiento de datos antes de implementarla. No bloquea la creación manual.</li>
+      </ul>
+      <p>Para empezar por entrenamientos, se puede desarrollar únicamente Workouts y su asignación, sin fingir que el resto de Librería queda terminado. Cada pestaña debe tener su prueba de cierre independiente.</p>
+      <p class="source">Fuente: <a href="../fitnova-manager/libreria.html">Librería y formulario actual</a>.</p>
+    </article>
+
+    <article class="card" id="m-chat">
+      <h3>4.7. Chat</h3>
+      <p><span class="tag demo">MAQUETA</span> Conversaciones, mensajes, horas, última conexión y «3 sin leer» son ejemplos. Seleccionar una conversación solo cambia su resaltado; no carga otro historial. Enviar, adjuntar, ver planificación y más opciones no operan.</p>
+      <ul class="tasks">
+        <li><strong>M25 · Conversación real:</strong> participantes, mensajes, historial paginado, envío y recepción, orden estable, errores/reintentos y enlace directo desde la ficha. Compartir modelo con Go.</li>
+        <li><strong>M26 · Opciones de la lista:</strong> Clientes/Colaboradores, buscar nombre, «solo asignados», contadores no leídos y estados de lectura/conexión reales. La mensajería de colaboradores depende también de Equipo.</li>
+        <li><strong>M27 · Adjuntos y opciones:</strong> implementar las aprobadas o retirar botones sin función; permisos privados y límites para archivos. Si se añade tiempo real, gestionar reconexión sin mensajes duplicados.</li>
+      </ul>
+      <p class="source">Fuente: <a href="../fitnova-manager/chat.html">Chat Manager</a>.</p>
+    </article>
+
+    <article class="card" id="m-equipo">
+      <h3>4.8. Equipo y tareas del profesional</h3>
+      <p><span class="tag demo">EQUIPO DE EJEMPLO</span> La lista, clientes asignados, estados, conexión e invitación pendiente son fijos. Invitar solo cierra el modal. Buscar, filtrar, editar, reenviar y cancelar no operan. La tabla de profesionales y la relación con clientes sí existen, pero no un flujo de colaboración.</p>
+      <ul class="tasks">
+        <li><strong>M28 · Tareas:</strong> crear persistencia de título, fecha límite, profesional responsable, cliente opcional y estado; alta/edición/finalización y reflejo en Dashboard/ficha. Definir si una tarea es solo interna o si también debe verla el cliente.</li>
+        <li><strong>M29 · Equipo real:</strong> pertenencia a organización/negocio, invitaciones de profesionales, aceptación, caducidad, reenvío/cancelación, alta/baja y lista real. La RPC actual de autorregistro no invita a terceros ni los incorpora a un equipo.</li>
+        <li><strong>M30 · Asignación y permisos:</strong> gestionar profesionales de un cliente, roles, retirada de acceso y calendario. Armonizar «recepción» mostrado en Equipo con «colaborador» del perfil profesional y los roles de la relación. El texto de permisos de la maqueta no es una matriz de autorizaciones implementada.</li>
+      </ul>
+      <p class="source">Fuentes: <a href="../fitnova-manager/equipo.html">Equipo</a> · <a href="../fitnova-manager/cliente-perfil.html">Nueva tarea en ficha</a>.</p>
+    </article>
+
+    <article class="card" id="m-negocio">
+      <h3>4.9. Negocio</h3>
+      <p><span class="tag demo">MAQUETA</span> Ingresos, clientes con plan, impagos, suscripciones, precios, próximo cobro y planes son ejemplos; el historial es un vacío fijo. No hay cobros reales. Activa Pagos, editar/crear plan y reclamar pago no completan una operación.</p>
+      <ul class="tasks">
+        <li><strong>M31 · Planes y suscripciones:</strong> modelos reales, precio/moneda/periodicidad, asignación por cliente, cambio/cancelación y relación con servicios o contenido autorizado.</li>
+        <li><strong>M32 · Pasarela y eventos de pago:</strong> alta de cuenta de cobro, checkout, referencias tokenizadas, confirmación desde servidor mediante webhooks, duplicados, fallos, reintentos y estado. No dar un pago por realizado por volver a una pantalla de éxito.</li>
+        <li><strong>M33 · Facturación y panel:</strong> datos fiscales, historial, justificantes/facturas según requisitos, impagos, próximo cobro y contadores de ingresos reales. Conectar Pagos de ficha y Ajustes Go; definir devoluciones, impuestos y conservación con asesoramiento profesional.</li>
+      </ul>
+      <p>No se trata de conectar una tabla de pagos existente: los modelos de facturación, planes, métodos y suscripciones estaban aplazados y no figuran en las migraciones revisadas.</p>
+      <p class="source">Fuente: <a href="../fitnova-manager/negocio.html">Negocio Manager</a>.</p>
+    </article>
+  </section>
+
+  <section id="ventanas">
+    <h2>5. Lista de ventanas: ningún «Guardar» debe quedarse sin operación</h2>
+    <p>Además de las páginas anteriores y los estados del registro, hay <strong>11 tipos de modal en Go y 5 en Manager</strong>. Chat, Notificaciones y Objetivo aparecen repetidos en varias páginas; compartir nombre no significa compartir datos o lógica.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>App y ventana</th><th>Qué hace hoy</th><th>Tarea de cierre</th></tr></thead>
+        <tbody>
+          <tr><td>Go · Registrar actividad / Editar actividad</td><td>Guarda local; no sincroniza. Inicio y Agenda no preparan el formulario de la misma manera.</td><td>G07–G08, G11.</td></tr>
+          <tr><td>Go · Detalles del día</td><td>Citas reales + actividades locales; edición/borrado de estas últimas.</td><td>Mantener diferenciación al conectar G11; no convertir «añadir actividad» en reserva.</td></tr>
+          <tr><td>Go · Registrar nutrición</td><td>Guardar cierra, sin persistencia.</td><td>G09.</td></tr>
+          <tr><td>Go · Métrica (Perfil)</td><td>Consulta/inserta/borra en Supabase.</td><td>G19–G21; no duplicar backend.</td></tr>
+          <tr><td>Go · Definir objetivo</td><td>Perfil guarda en Supabase; Evolución solo cierra.</td><td>G15; misma fuente y validación.</td></tr>
+          <tr><td>Go · Registrar métricas (Evolución)</td><td>FormData a <code>fitnova_metrics</code>.</td><td>G16–G17; las 15 medidas.</td></tr>
+          <tr><td>Go · Ayuda «Cómo medir»</td><td>Abre texto según medida.</td><td>Revisión de contenido/accesibilidad; función ya presente.</td></tr>
+          <tr><td>Go · Buscar vídeos por</td><td>Cambia campo de búsqueda sobre catálogo fijo.</td><td>G13–G14.</td></tr>
+          <tr><td>Go · Chat</td><td>Profesionales ficticios o texto, sin mensajes.</td><td>G29 y M25–M27.</td></tr>
+          <tr><td>Go · Notificaciones</td><td>Avisos y badges fijos.</td><td>G30.</td></tr>
+          <tr><td>Go · Actualización disponible</td><td>Recuerda versión/descartado y recarga.</td><td>T06: verificar actualización de PWA instalada.</td></tr>
+          <tr><td>Manager · Añadir cliente / Resultado con enlace</td><td>RPC real, enlace, copia; sin email automático.</td><td>M10–M11; conservar flujo probado.</td></tr>
+          <tr><td>Manager · Agendar / Editar sesión</td><td>RPC real y validaciones.</td><td>Conservar; M20–M21 solo al ampliar.</td></tr>
+          <tr><td>Manager · Crear nuevo contenido</td><td>Nombre/descripción; Guardar cierra.</td><td>M22–M24; formularios propios por tipo.</td></tr>
+          <tr><td>Manager · Invitar colaborador</td><td>Email/rol; Enviar cierra.</td><td>M29–M30.</td></tr>
+          <tr><td>Manager · Nueva tarea</td><td>Título/fecha; Guardar cierra.</td><td>M28.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Las confirmaciones de borrar medida, borrar/cancelar según acción y cerrar sesión deben avisar del efecto real y responder al fallo. No cuentan como una ventana de datos nueva, pero sí forman parte de las pruebas de interacción.</p>
+  </section>
+
+  <section id="persistencia">
+    <h2>6. Qué está en local y qué debe acabar en Supabase</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Dato</th><th>Almacenamiento actual</th><th>Destino o decisión</th></tr></thead>
+        <tbody>
+          <tr><td>Identidad, objetivo, PAR-Q, medidas desde Perfil y citas</td><td>Tablas Supabase; sesiones Auth gestionadas por SDK.</td><td>Conservar y completar las pantallas que no consultan estos datos.</td></tr>
+          <tr><td>Actividades personales</td><td><code>localStorage: fitnova_activities</code>, sin separación por cuenta.</td><td>Registros propios en Supabase; origen, permisos y migración explícita.</td></tr>
+          <tr><td>Formulario de Evolución</td><td><code>localStorage: fitnova_metrics</code>; el gráfico no lee esa colección.</td><td><code>clientes_metricas</code>, sin una segunda tabla de métricas duplicada.</td></tr>
+          <tr><td>Fotos de progreso</td><td>FileReader y elementos de la página, solo memoria/DOM.</td><td>Storage privado + metadatos de propietario, fecha y archivo.</td></tr>
+          <tr><td>Favoritos de vídeo</td><td>Propiedad de los cuatro objetos JavaScript, solo memoria.</td><td>Relación cliente/vídeo persistente.</td></tr>
+          <tr><td>Nutrición, facturación y tarea nueva</td><td>No se guardan con los botones actuales.</td><td>Modelos y operaciones reales; no hay datos locales que migrar de estos formularios.</td></tr>
+          <tr><td>Idioma, medidas y notificaciones</td><td>Selectores sin persistencia propia.</td><td>Preferencias por cliente y aplicación funcional.</td></tr>
+          <tr><td>Versiones vistas/descartadas</td><td><code>fitnova_seen_version</code> y <code>fitnova_dismissed_version</code> en localStorage.</td><td>Pueden seguir locales: son estado técnico de ese navegador, no seguimiento del cliente.</td></tr>
+          <tr><td>Marca de última actividad registrada</td><td><code>sessionStorage: fitnova_actividad_registrada</code>; fecha en Supabase.</td><td>Ligarlo al usuario y al resultado de la escritura; limpiar/reiniciar al cambiar cuenta. No es un registro de entrenamiento.</td></tr>
+          <tr><td>Caché PWA y sesión Auth</td><td>Cache Storage para recursos; sesión SDK persistida en navegador.</td><td>No eliminarlos por «todo debe estar en Supabase». Mantener caché técnica y gestión de sesión; no usarla como fuente de datos de negocio.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Backend versionado existente:</strong> 11 tablas: <code>profesionales</code>, <code>clientes</code>, <code>profesional_cliente</code>, <code>invitaciones</code>, <code>clientes_objetivo</code>, <code>clientes_salud_parq</code>, <code>clientes_metricas</code>, <code>consentimientos</code>, <code>etiquetas</code>, <code>cliente_etiqueta</code> y <code>sesiones</code>.</p>
+    <p><strong>Modelos que faltan en el repositorio:</strong> actividades, fotos/archivos, catálogo/asignaciones/resultados de entrenamientos, vídeos/favoritos, planes/diario nutricional/recetas, mensajes/lecturas, notificaciones, tareas, formularios/respuestas, organizaciones/invitaciones de equipo, preferencias y negocio/facturación/pagos. Los nombres concretos se diseñarán al abordar cada bloque: esta lista no implica crear de golpe todas las tablas.</p>
+    <p>No hay una carpeta de Edge Functions implementadas en esta revisión. No se ha inspeccionado de nuevo toda la configuración remota de correo, Storage, tareas programadas o integraciones; confirmar lo ya existente en el servicio antes de crearlo de nuevo.</p>
+  </section>
+
+  <section id="relacion">
+    <h2>7. Cómo debe cerrarse la relación Manager ↔ Go</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Recorrido</th><th>Estado</th><th>Siguiente cierre comprobable</th></tr></thead>
+        <tbody>
+          <tr><td>Manager invita → Go se registra → cliente activo</td><td>Hecho en el recorrido normal.</td><td>Correo automático y recuperación de altas interrumpidas, sin rehacer la base.</td></tr>
+          <tr><td>Manager agenda → Go consulta → cambios e historial</td><td>Hecho para sesiones individuales.</td><td>Conservarlo; notificaciones/ampliaciones solo cuando se aprueben.</td></tr>
+          <tr><td>Go registra medida → Perfil/Evolución → Progreso Manager</td><td>Solo Perfil escribe/consulta de verdad.</td><td><strong>Próximo cierre recomendado: G15–G21 + M15.</strong></td></tr>
+          <tr><td>Go registra actividad → semana real → profesional revisa</td><td>Actividad local, semana fija, revisión inexistente.</td><td>G06–G08, G11 y M04.</td></tr>
+          <tr><td>Manager crea/asigna workout → Go realiza → Manager revisa</td><td>No implementado.</td><td>M13, M22–M23 y G31; ejecución distinta de estado de cita.</td></tr>
+          <tr><td>Manager publica vídeo → Go reproduce y guarda favorito</td><td>Ambos extremos son maqueta.</td><td>M22–M23 y G13–G14.</td></tr>
+          <tr><td>Manager asigna nutrición → Go registra alimentación → revisión</td><td>No implementado.</td><td>M14, M22–M23 y G09/G32.</td></tr>
+          <tr><td>Go escribe → Manager responde → lectura/avisos</td><td>No implementado.</td><td>G29–G30 y M25–M27.</td></tr>
+          <tr><td>Profesional comparte formulario/archivo → cliente responde/consulta</td><td>No implementado.</td><td>M16–M17, M22–M23 y G32.</td></tr>
+          <tr><td>Manager asigna plan → Go paga → estado/factura actualizados</td><td>No implementado.</td><td>M18, M31–M33 y G24/G27.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="notice"><strong>Regla:</strong> una función compartida no se cierra solo porque guarde una fila. Debe guardarse para la cuenta correcta, leerse en las dos apps donde proceda, conservarse en otro dispositivo y dar una respuesta clara si falla.</div>
+  </section>
+
+  <section id="transversal">
+    <h2>8. Pendientes transversales para una app terminada</h2>
+    <ul class="tasks">
+      <li><strong>T01 · Separación de identidades:</strong> ambas apps públicas comparten origen GitHub Pages y proyecto Supabase, y sus clientes SDK no definen claves de almacenamiento distintas. Resolver/probar el aislamiento entre sesión profesional y cliente, y entre cuentas. Para pruebas simultáneas, usar perfiles de navegador distintos mientras no se cierre este punto.</li>
+      <li><strong>T02 · Errores, carga y sesión:</strong> evitar listas vacías que oculten fallos; mostrar guardado parcial, sesión expirada, carga, reintento y éxito real. Revisar cierre de sesión y registro de última actividad, que no comprueban sus errores. Reutilizar la experiencia ya más completa de Agenda.</li>
+      <li><strong>T03 · Permisos y datos sensibles:</strong> cada nuevo modelo necesita RLS, permisos de escritura y pruebas por cliente/profesional/rol. El backend actual ya tiene políticas, pero no certifican módulos futuros. Revisar también los permisos concedidos por defecto al crear objetos. Antes de producción, realizar una revisión especializada separada.</li>
+      <li><strong>T04 · Consentimientos y textos:</strong> términos/privacidad se guardan con versión «v1»; IP no se rellena y el tipo «salud» existe pero no se inserta en ese recorrido. Validar base legal y textos con asesoría; si procede registrar IP, hacerlo desde una capa de servidor confiable. Resolver acceso a documentos, aceptación de nuevas versiones, conservación y ejercicio de derechos.</li>
+      <li><strong>T05 · Instalación de Go:</strong> manifest y service worker existen, pero falta el recorrido guiado de instalación, especialmente iOS. Verificar Safari/Chrome, pantalla de inicio, retorno desde invitación y cuenta existente. Comprobar tamaños reales de iconos: el manifest declara 192 y 512 usando el mismo archivo. No prometer instalación silenciosa.</li>
+      <li><strong>T06 · Actualizaciones y desconexión:</strong> comprobar actualización de PWA ya instalada, versión visible, reintento y pantalla sin conexión. Supabase no se cachea por el service worker. El shell offline no significa guardado offline de datos; decidir si se añadirá cola de cambios o si se informará de que hace falta conexión.</li>
+      <li><strong>T07 · Notificaciones y correo:</strong> definir eventos/canales, preferencias, permisos del navegador, entrega y fallos. Bandeja, email de invitación, recuperación, confirmación y push son recorridos distintos; probar cada uno.</li>
+      <li><strong>T08 · Hosting y operación:</strong> hosting público ya existe; no está pendiente buscar un primer enlace. Documentar publicación, rollback, configuración/URLs de retorno y separación de entorno de pruebas/producción. Verificar copias de seguridad y restauración según plan contratado; el nombre «dev» no garantiza que no haya usuarios reales.</li>
+      <li><strong>T09 · Archivos y recursos:</strong> Storage privado o proveedor elegido, metadatos, tipos/tamaños, progreso de subida y errores. Sustituir imágenes placeholder y proteger fotos/archivos de cliente; no hacer públicos datos sensibles para facilitar pruebas.</li>
+      <li><strong>T10 · Navegación y accesibilidad:</strong> teclado, foco y cierre de modales, etiquetas, mensajes anunciados, contrastes, zoom y tamaños pequeños. Manager declara viewport de 1280: decidir si sigue siendo escritorio o si se adapta para tablet/móvil. Ayuda y opciones de cabecera sin función deben completarse o retirarse explícitamente.</li>
+      <li><strong>T11 · Pruebas y mantenimiento:</strong> conservar los tests de Agenda y ampliar con pruebas enfocadas al cerrar cada bloque. Automatizar recorridos clave y comprobar datos entre cuentas/dispositivos. Registrar fallos operativos sin exponer datos personales y no introducir dependencias/costes de integraciones sin decisión previa.</li>
+      <li><strong>T12 · Documentación y limpieza:</strong> actualizar este inventario y las guías al cerrar módulos. Los diseños históricos no son prueba de implementación actual. El CSV de consentimientos de la raíz sigue teniendo solo cabeceras: confirmar que no sirve y retirarlo en una limpieza acordada; no se borra en esta revisión.</li>
+    </ul>
+    <p><strong>Importante sobre las pruebas anteriores:</strong> Agenda dispone de pruebas automatizadas aisladas y se probó previamente contra Supabase. Eso no significa que los módulos de pagos, etiquetas completas, métricas en todos sus extremos o instalación iOS tengan la misma cobertura. En esta revisión no se han creado cuentas ni modificado registros remotos.</p>
+  </section>
+
+  <section id="orden">
+    <h2>9. Orden lógico de trabajo, sin olvidar lo que viene después</h2>
+    <p>No doy un porcentaje de «app terminada»: las pantallas no tienen el mismo coste ni existe un alcance final cerrado para todas las ampliaciones. Es más fiable cerrar recorridos con pruebas.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Prioridad / bloque</th><th>Qué cerrar</th><th>Depende de</th><th>Resultado visible</th></tr></thead>
+        <tbody>
+          <tr><td><strong>P1 · Seguimiento corporal</strong></td><td>G15–G21 y M15; error/identidad T01–T03 en el recorrido.</td><td>Tablas actuales, definición de fechas y borrado.</td><td>Una medida de Go aparece igual en Perfil, Evolución y Manager.</td></tr>
+          <tr><td><strong>P1 · Actividad real</strong></td><td>G06–G08, G11 y revisión del profesional.</td><td>Modelo de actividad y política de importación local.</td><td>Registro persistente, semana real y lectura del profesional.</td></tr>
+          <tr><td><strong>P1 · Cuentas recuperables</strong></td><td>G01–G05, M01 y T01–T02/T07.</td><td>Configuración de correo/retorno y reanudación.</td><td>Recuperar contraseña y retomar alta sin crear otra cuenta.</td></tr>
+          <tr><td><strong>P2 · Workouts y programas</strong></td><td>M13, M22–M23 y G31.</td><td>Modelo de ejercicios, asignación y ejecución.</td><td>Profesional prescribe, cliente realiza y profesional revisa.</td></tr>
+          <tr><td><strong>P2 · Vídeos y fotos</strong></td><td>G13–G14, G18/G22, M15/M17 y parte de Librería.</td><td>Storage/proveedor, permisos y catálogo.</td><td>Reproducción real y fotos conservadas con acceso autorizado.</td></tr>
+          <tr><td><strong>P2 · Nutrición y recetas</strong></td><td>G09/G32, M14 y pestañas específicas de M22–M23.</td><td>Modelo de plan/receta/diario.</td><td>Plan asignado y alimentación revisable.</td></tr>
+          <tr><td><strong>P2 · Chat, tareas y formularios</strong></td><td>G29–G30/G32, M16/M19/M25–M28.</td><td>Participantes, eventos, modelos y permisos.</td><td>Comunicación y seguimiento reales, sin mensajes ficticios.</td></tr>
+          <tr><td><strong>P2 · Cartera y equipo</strong></td><td>M02/M07–M11/M21/M29–M30.</td><td>Modelo de negocio/equipo y reglas de archivo.</td><td>Invitaciones entregadas, cartera gestionable y colaboradores autorizados.</td></tr>
+          <tr><td><strong>P3 · Negocio y preferencias</strong></td><td>G24–G28, M18/M31–M33.</td><td>Decisiones comerciales/fiscales, pasarela y servidor.</td><td>Cobro verificable, facturación real y ajustes aplicados.</td></tr>
+          <tr><td><strong>Cierre de lanzamiento</strong></td><td>T04–T12 y regresión de los bloques cerrados.</td><td>Se prepara durante el desarrollo, no solo al final.</td><td>PWA instalable, operación fiable, pruebas y documentación actualizadas.</td></tr>
+          <tr><td><strong>Ampliaciones separadas</strong></td><td>Dispositivos, IA, reservas/grupos/recurrencias, calendario externo y nuevas métricas.</td><td>Aprobación de alcance, proveedores, costes y UX.</td><td>No bloquean la primera versión salvo decisión expresa.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="notice good"><strong>Mi recomendación para el siguiente paso concreto:</strong> cerrar las 15 métricas en Evolución de Go y Progreso de Manager. Es el recorrido más inmediato que aprovecha tablas ya existentes y permite enseñar otro resultado compartido sin abrir seis módulos a la vez.</div>
+  </section>
+
+  <section id="aceptacion">
+    <h2>10. Cuándo podemos marcar un bloque como terminado</h2>
+    <ol>
+      <li><strong>Guardar:</strong> la operación crea/modifica el registro correcto en el backend, una sola vez, con validación.</li>
+      <li><strong>Volver a entrar:</strong> conserva los datos tras recarga, cierre de sesión y acceso desde otro navegador/dispositivo.</li>
+      <li><strong>Ver en ambas apps:</strong> donde corresponda, Manager y Go presentan el mismo contenido y estado tras actualizar.</li>
+      <li><strong>Modificar y eliminar:</strong> los efectos acordados se reflejan en listas, gráficos, contadores e historial; no se pierde información colateral.</li>
+      <li><strong>Separar cuentas:</strong> un cliente ajeno o un profesional sin asignación no lee ni modifica datos que no le corresponden.</li>
+      <li><strong>Fallar con claridad:</strong> sin red, permiso, sesión o archivo válido, no se muestra «guardado» ni un falso «no hay datos»; existe recuperación útil.</li>
+      <li><strong>Publicar:</strong> la versión está desplegada y probada en el enlace público, incluida la PWA instalada si afecta a Go.</li>
+      <li><strong>Actualizar el inventario:</strong> anotar qué se cerró, qué quedó fuera y su guía de prueba. Una maqueta funcional visualmente no cumple estos criterios.</li>
+    </ol>
+    <h3>Primera prueba propuesta: cierre de métricas</h3>
+    <p>Con una cuenta de prueba autorizada: añadir las 15 medidas desde Evolución, comprobar los valores en Perfil y Manager, cambiar de dispositivo, definir el peso objetivo y probar borrado/corrección sin perder las demás medidas. Repetir con una medida aislada, fecha límite y error de conexión. Comprobar un segundo cliente y otro profesional sin asignación. No modificar datos de clientes reales para demostrarlo.</p>
+    <h3>Enlaces ya disponibles</h3>
+    <ul>
+      <li><a href="https://alinaresblanco-gif.github.io/FitNova/fitnova-manager/login.html">Acceso público a Manager</a>.</li>
+      <li><a href="https://alinaresblanco-gif.github.io/FitNova/mockup-fitnova-go/login.html">Acceso público a Go</a>; la primera alta requiere la invitación individual.</li>
+      <li><a href="prueba-ciclo-cliente-fitnova.html">Guía de creación y registro del cliente</a>.</li>
+      <li><a href="guia-agenda-manager.html">Prueba de Agenda para el profesional</a> y <a href="guia-agenda-go.html">prueba de Agenda para el cliente</a>.</li>
+    </ul>
+    <p>Los enlaces estables reciben cambios al publicar en el hosting; guardar un archivo local no publica una versión. Las invitaciones individuales son distintas y caducan.</p>
+  </section>
+
+  <section id="fuentes">
+    <h2>11. Fuentes, alcance y uso de este documento</h2>
+    <p>Revisión del código de la rama main, partiendo de la versión con las guías de Agenda publicadas (<code>fc672aa</code>). Se han leído las 17 páginas y los scripts propios de ambas apps. Las conclusiones de persistencia se apoyan en las llamadas reales a Auth, tablas y RPC, no solo en textos de botones.</p>
+    <ul>
+      <li>Go: Acceso, Invitación, Inicio, Agenda, Vídeos, Evolución, Perfil y Ajustes; sus scripts, manifest y service worker.</li>
+      <li>Manager: Acceso, Inicio, Clientes, Ficha de cliente, Agenda, Librería, Chat, Equipo y Negocio; lógica común y scripts de módulos conectados.</li>
+      <li><a href="https://github.com/alinaresblanco-gif/FitNova/tree/main/supabase/migrations">Migraciones versionadas</a>: identidad/cliente, onboarding, métricas, invitaciones, etiquetas y sesiones.</li>
+      <li><a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/supabase/tests/agenda.test.cjs">Pruebas existentes de Agenda</a>: backend y fechas, no cobertura integral de todos los módulos.</li>
+      <li><a href="estado-proyecto-fitnova.html">Informe anterior de situación</a> y guías de alta/Agenda: contexto histórico, no sustituyen este inventario detallado.</li>
+    </ul>
+    <p><strong>Límites:</strong> no se han verificado en esta revisión todos los ajustes remotos, entregas de email, pagos, instalación en dispositivos físicos o cada operación real de etiquetas/métricas. Los módulos sin implementación se señalan como pendientes; las funciones conectadas no se presentan como nuevas pruebas superadas. Tampoco se transforma cada idea futura en requisito obligatorio.</p>
+    <p><strong>Uso práctico:</strong> este es el índice maestro para trabajar paso a paso. Cada bloque nuevo debe cerrar sus dos extremos, actualizar su estado aquí y aportar una guía de prueba. Así no volvemos a declarar «terminada la app» solo porque el alta del cliente funcione.</p>
+  </section>
+
+  <footer>FitNova · Inventario de cierre Go + Manager · 23/11/2026. Documento de programación y seguimiento; no sustituye asesoramiento sanitario, fiscal o legal.</footer>
+</main>
+</body>
+</html>
