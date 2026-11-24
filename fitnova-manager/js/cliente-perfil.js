@@ -310,11 +310,16 @@ function cpActRender() {
       <thead><tr><th>Fecha</th><th>Actividad</th><th>Duración</th><th>Distancia</th><th>Comentario</th><th>Foto</th></tr></thead>
       <tbody>${visibles.map((a) => {
         const est = a.distancia_km ? A.estimaciones(a.distancia_km) : null;
+        const extra = [];
+        if (est) extra.push(`≈ ${est.pasos.toLocaleString('es-ES')} pasos`);
+        if (a.calorias_kcal) extra.push(`${a.calorias_kcal.toLocaleString('es-ES')} kcal (reloj)`);
+        else if (est) extra.push(`≈ ${est.calorias.toLocaleString('es-ES')} kcal`);
+        const hora = a.inicio ? new Date(a.inicio).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : '';
         return `<tr>
-          <td>${A.escapar(A.fechaCorta(a.fecha))}${a.fecha > hoy ? ' <small>(planificada)</small>' : ''}</td>
-          <td>${A.escapar(a.nombre)}</td>
+          <td>${A.escapar(A.fechaCorta(a.fecha))}${hora ? ` <small>${hora}</small>` : ''}${a.fecha > hoy ? ' <small>(planificada)</small>' : ''}</td>
+          <td>${A.escapar(a.nombre)}${a.origen === 'archivo' ? '<br><small style="color:#8a93a1;" title="Importada desde un archivo GPX, TCX o FIT del reloj o app">⌚ importada del reloj</small>' : ''}</td>
           <td>${a.duracion_min ? A.escapar(A.formatearDuracion(a.duracion_min)) : '—'}</td>
-          <td>${a.distancia_km ? `${A.escapar(A.formatearKm(a.distancia_km))}<br><small style="color:#8a93a1;">≈ ${est.pasos.toLocaleString('es-ES')} pasos · ${est.calorias.toLocaleString('es-ES')} kcal</small>` : '—'}</td>
+          <td>${a.distancia_km || a.calorias_kcal ? `${a.distancia_km ? A.escapar(A.formatearKm(a.distancia_km)) : '—'}<br><small style="color:#8a93a1;">${extra.join(' · ')}</small>` : '—'}</td>
           <td>${a.comentario ? A.escapar(a.comentario) : '—'}</td>
           <td>${a.foto_ruta ? `<button class="btn-outline" type="button" data-foto="${A.escapar(a.foto_ruta)}">Ver foto</button>` : '—'}</td>
         </tr>`;

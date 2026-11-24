@@ -1,7 +1,7 @@
 // Utilidades genéricas para el mockup de FitNova Go (sin backend, solo simulación visual)
 
 // Incrementar en cada cambio visible del mockup para que se muestre el aviso de actualización.
-const APP_VERSION = '2026.11.24.3';
+const APP_VERSION = '2026.11.24.4';
 const ACTIVITIES_KEY = 'fitnova_activities';
 let selectedAgendaDay = '';
 let agendaFechaBase = new Date();
@@ -50,7 +50,7 @@ function aplicarActualizacion() {
 
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.register('./service-worker.js?v=20261124.3').then((registration) => {
+  navigator.serviceWorker.register('./service-worker.js?v=20261124.4').then((registration) => {
     registration.update();
   }).catch(() => {});
   navigator.serviceWorker.addEventListener('message', (event) => {
@@ -95,14 +95,64 @@ function selectChip(button) {
 }
 
 // ---------- Actividades personales (Supabase: clientes_actividades) ----------
-const goAct = { clienteId: null, filas: [], cargadas: false, error: '', archivo: null, quitarFoto: false, fotoActual: null };
+const goAct = {
+  clienteId: null, filas: [], cargadas: false, error: '', archivo: null, quitarFoto: false, fotoActual: null,
+  importacion: null, caloriasDispositivo: null,
+};
 
-// Pasos y calorías son estimaciones a partir de la distancia; no se guardan.
+// Pasos y calorías estimados a partir de la distancia (no se guardan); si la
+// actividad viene de un archivo con calorías del reloj, se muestran esas.
 function calcularActividad() {
   const km = parseFloat(String(document.getElementById('act-distancia').value).replace(',', '.')) || 0;
   const estimado = FitNovaActividades.estimaciones(km);
   document.getElementById('act-pasos').value = km ? estimado.pasos : '';
-  document.getElementById('act-calorias').value = km ? estimado.calorias : '';
+  document.getElementById('act-calorias').value = goAct.caloriasDispositivo || (km ? estimado.calorias : '');
+  document.getElementById('act-calorias-label').textContent = goAct.caloriasDispositivo ? 'Calorías (reloj)' : 'Calorías (est.)';
+}
+
+function avisoImportacion(texto) {
+  const modal = document.getElementById('modal-actividad');
+  if (modal && modal.classList.contains('open')) actividadError(texto);
+  else alert(texto);
+}
+
+function elegirArchivoActividad() {
+  ensureActivityModal();
+  document.getElementById('act-import-input').click();
+}
+
+async function importarArchivoActividad(archivo) {
+  document.getElementById('act-import-input').value = '';
+  if (!archivo) return;
+  const A = FitNovaActividades;
+  let datos;
+  try {
+    datos = await FitNovaImportar.leer(archivo);
+  } catch (e) {
+    return avisoImportacion(`No se pudo importar «${archivo.name}»: ${e.message}`);
+  }
+  const repetida = datos.inicio && goAct.filas.find((a) => a.inicio && Date.parse(a.inicio) === Date.parse(datos.inicio));
+  if (repetida) {
+    return avisoImportacion(`Esta actividad ya está importada: «${repetida.nombre}» del ${A.fechaCorta(repetida.fecha)}.`);
+  }
+  openActivityModal(null, datos.fecha || todayIso());
+  const importacion = { inicio: datos.inicio, calorias_kcal: datos.calorias_kcal };
+  goAct.importacion = importacion;
+  goAct.caloriasDispositivo = datos.calorias_kcal;
+  document.getElementById('act-nombre').value = datos.nombre;
+  document.getElementById('act-duracion').value = A.minutosATexto(datos.duracion_min);
+  document.getElementById('act-distancia').value = datos.distancia_km || '';
+  document.getElementById('act-importar-bloque').hidden = true;
+  calcularActividad();
+  const nota = document.getElementById('act-import-nota');
+  nota.hidden = false;
+  nota.textContent = `Datos leídos de «${archivo.name}»${datos.fecha ? '' : ' (sin fecha: elige el día)'}. Revisa nombre y datos, añade un comentario si quieres y pulsa Guardar.`;
+  const foto = await FitNovaImportar.imagenRuta(datos.puntos, A.detalle(datos)).catch(() => null);
+  if (foto && goAct.importacion === importacion && !goAct.archivo) {
+    goAct.archivo = foto;
+    mostrarFotoActividad(URL.createObjectURL(foto));
+    nota.textContent += ' Hemos dibujado tu recorrido como foto de la ruta; puedes cambiarla o quitarla.';
+  }
 }
 
 function getActivities() {
@@ -125,6 +175,12 @@ function ensureActivityModal() {
           <button class="modal-close" type="button" onclick="closeModal('modal-actividad')">✕</button>
         </div>
         <input type="hidden" id="actividad-id" />
+        <div class="act-importar" id="act-importar-bloque">
+          <button class="btn-secondary" type="button" onclick="elegirArchivoActividad()">⌚ Importar desde reloj o app</button>
+          <span>Archivo GPX, TCX o FIT (Garmin, Polar, Suunto, Coros, Strava...)</span>
+        </div>
+        <input type="file" id="act-import-input" hidden />
+        <p class="act-nota act-import-nota" id="act-import-nota" hidden></p>
         <label for="act-nombre">Nombre de la actividad</label>
         <input type="text" id="act-nombre" maxlength="120" placeholder="Ej. Carrera en el parque" />
         <div class="field-row">
@@ -135,9 +191,9 @@ function ensureActivityModal() {
         <div class="field-row field-row-align">
           <div><label for="act-distancia">Distancia (Km)</label><input type="number" id="act-distancia" step="0.01" min="0" inputmode="decimal" oninput="calcularActividad()" /></div>
           <div><label for="act-pasos">Pasos (est.)</label><input type="number" id="act-pasos" readonly /></div>
-          <div><label for="act-calorias">Calorías (est.)</label><input type="number" id="act-calorias" readonly /></div>
+          <div><label for="act-calorias" id="act-calorias-label">Calorías (est.)</label><input type="number" id="act-calorias" readonly /></div>
         </div>
-        <p class="act-nota">Pasos y calorías son una estimación a partir de la distancia (0,63 m por paso y 60 kcal por km); no son lecturas de un dispositivo.</p>
+        <p class="act-nota">Los pasos (y las calorías, salvo que vengan del reloj) son una estimación a partir de la distancia: 0,63 m por paso y 60 kcal por km.</p>
         <label for="act-comentario">Deja un comentario de la actividad</label>
         <textarea id="act-comentario" maxlength="1000" placeholder="¿Cómo te has sentido?"></textarea>
         <label for="act-foto-input">Foto de la ruta (opcional)</label>
@@ -156,6 +212,7 @@ function ensureActivityModal() {
       </div>
     </div>`);
   document.getElementById('act-foto-input').addEventListener('change', (event) => elegirFotoActividad(event.target.files[0]));
+  document.getElementById('act-import-input').addEventListener('change', (event) => importarArchivoActividad(event.target.files[0]));
 }
 
 function actividadError(texto) {
@@ -206,6 +263,12 @@ function openActivityModal(activityId, fecha) {
   goAct.archivo = null;
   goAct.quitarFoto = false;
   goAct.fotoActual = activity ? activity.foto_ruta : null;
+  goAct.importacion = null;
+  goAct.caloriasDispositivo = activity ? activity.calorias_kcal : null;
+  document.getElementById('act-importar-bloque').hidden = Boolean(activity);
+  const nota = document.getElementById('act-import-nota');
+  nota.hidden = !(activity && activity.origen === 'archivo');
+  nota.textContent = nota.hidden ? '' : '⌚ Actividad importada desde un archivo del reloj o app.';
   document.getElementById('act-foto-input').value = '';
   mostrarFotoActividad(null);
   actividadError('');
@@ -233,7 +296,7 @@ async function saveActivity() {
   boton.textContent = 'Guardando...';
   try {
     await FitNovaActividades.guardar(supabaseClient, goAct.clienteId, document.getElementById('actividad-id').value || null, fila, {
-      archivo: goAct.archivo, quitarFoto: goAct.quitarFoto, fotoAnterior: goAct.fotoActual,
+      archivo: goAct.archivo, quitarFoto: goAct.quitarFoto, fotoAnterior: goAct.fotoActual, importacion: goAct.importacion,
     });
     closeModal('modal-actividad');
     await cargarActividades();
@@ -379,7 +442,7 @@ function openDayModal(date) {
       return `
     <div class="day-activity">
       <div class="day-activity-info" onclick="openActivityModal('${activity.id}')">
-        <strong>${A.escapar(activity.nombre)}${activity.foto_ruta ? ' 📷' : ''}</strong>
+        <strong>${A.escapar(activity.nombre)}${activity.origen === 'archivo' ? ' ⌚' : ''}${activity.foto_ruta ? ' 📷' : ''}</strong>
         <span>${detalle ? `${A.escapar(detalle)} · ` : ''}Pulsa para consultar o editar</span>
       </div>
       <button class="day-activity-open" onclick="openActivityModal('${activity.id}')" title="Abrir actividad">›</button>
@@ -475,7 +538,7 @@ function renderAgenda() {
   const item = (activity) => {
     const detalle = A.detalle(activity);
     return `<button class="activity-item" onclick="openActivityModal('${activity.id}')">
-      <span><strong>${A.escapar(activity.nombre)}${activity.foto_ruta ? ' 📷' : ''}</strong><span>${formatDate(activity.fecha)}${detalle ? ` · ${A.escapar(detalle)}` : ''}</span></span><span>›</span>
+      <span><strong>${A.escapar(activity.nombre)}${activity.origen === 'archivo' ? ' ⌚' : ''}${activity.foto_ruta ? ' 📷' : ''}</strong><span>${formatDate(activity.fecha)}${detalle ? ` · ${A.escapar(detalle)}` : ''}</span></span><span>›</span>
     </button>`;
   };
   if (goAct.error) {

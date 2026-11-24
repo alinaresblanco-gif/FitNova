@@ -379,6 +379,10 @@ textarea { resize: vertical; min-height: 60px; }
 .act-foto img { max-width: 100%; max-height: 220px; border-radius: 10px; object-fit: cover; }
 .act-foto-elegir { cursor: pointer; color: var(--naranja); font-weight: 600; margin: 0; }
 .act-nota { font-size: 11px; color: #8a93a1; margin: 4px 0 0; }
+.act-importar { display: flex; flex-direction: column; gap: 6px; padding: 12px; margin: 0 0 12px; border: 1px dashed var(--naranja); border-radius: 12px; background: #fff8f3; }
+.act-importar[hidden] { display: none; }
+.act-importar span { font-size: 12px; color: #55606f; }
+.act-import-nota { font-size: 12px; color: #0a1a2f; background: #eef6ff; border-radius: 10px; padding: 8px 10px; margin: 0 0 12px; }
 .weekly-summary { font-size: 13px; color: #55606f; margin: 10px 0 0; text-align: center; }
 .actividades-locales { border: 1px solid var(--naranja); background: #fff8f3; border-radius: 12px; padding: 12px; margin: 12px 0; font-size: 13px; }
 .actividades-locales p { margin: 0 0 10px; }

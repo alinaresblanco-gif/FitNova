@@ -6,7 +6,7 @@
 <title>FitNova Go · Inicio</title>
 <link rel="manifest" href="manifest.webmanifest" />
 <meta name="theme-color" content="#0A1A2F" />
-<link rel="stylesheet" href="css/styles.css?v=20261124.3" />
+<link rel="stylesheet" href="css/styles.css?v=20261124.4" />
 </head>
 <body data-auth="required">
   <div class="app">
@@ -52,9 +52,9 @@
 
       <!-- Conectar app externa -->
       <section class="card">
-        <p class="card-title">Conecta tu app o dispositivo</p>
-        <p style="font-size:13px;color:#55606f;margin:0 0 12px;">Sincroniza Strava o tu reloj inteligente para importar tu actividad automáticamente.</p>
-        <button class="btn-secondary">Conectar dispositivo</button>
+        <p class="card-title">Tu reloj o app deportiva</p>
+        <p style="font-size:13px;color:#55606f;margin:0 0 12px;">Importa tus entrenamientos con el archivo GPX, TCX o FIT de tu reloj o app (Garmin, Polar, Suunto, Coros, Strava...). Se rellenan solos la fecha, la duración, la distancia, las calorías y el recorrido.</p>
+        <button class="btn-secondary" type="button" onclick="elegirArchivoActividad()">⌚ Importar actividad del reloj</button>
       </section>
 
       <!-- Nutrición -->
@@ -163,9 +163,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/supabase-client.js?v=20261111.1"></script>
-  <script src="../js/fotos-progreso.js?v=20261124.3"></script>
-  <script src="../js/actividades.js?v=20261124.3"></script>
-  <script src="js/app.js?v=20261124.3"></script>
+  <script src="../js/fotos-progreso.js?v=20261124.4"></script>
+  <script src="../js/actividades.js?v=20261124.4"></script>
+  <script src="../js/importar-actividad.js?v=20261124.4"></script>
+  <script src="js/app.js?v=20261124.4"></script>
   <script>
     checkForAppUpdate();
     // Saludo personalizado con el nombre real del cliente

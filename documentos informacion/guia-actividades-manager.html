@@ -43,6 +43,7 @@
       <li>Su resumen semanal en Go se actualiza con datos reales.</li>
       <li>Tú lo ves en <strong>Manager → Clientes → ficha del cliente → Resumen → Actividad física</strong>.</li>
       <li>Si el cliente corrige o borra la actividad, tu ficha también cambia.</li>
+      <li>Si el cliente importa una actividad desde el archivo de su reloj o app, la ves marcada como <strong>⌚ importada del reloj</strong>, con hora de inicio, calorías del dispositivo y el recorrido dibujado.</li>
     </ol>
     <p>Necesitas un cliente <strong>activo</strong>. Dale la guía <a href="guia-actividades-go.html">«Registra tus actividades en FitNova Go»</a>.</p>
   </section>
@@ -87,13 +88,23 @@
     <p class="resultado">Resultado esperado: la tabla y los totales reflejan el cambio.</p>
   </section>
 
+  <section>
+    <h2>5. Comprueba una actividad importada del reloj</h2>
+    <ol>
+      <li>Pide al cliente que exporte una actividad de su reloj o app (Garmin, Polar, Suunto, Coros, Strava...) en GPX, TCX o FIT y la importe en Go con <strong>⌚ Importar actividad del reloj</strong> (está explicado en su guía).</li>
+      <li>Recarga la ficha (F5).</li>
+    </ol>
+    <p class="resultado">Resultado esperado: en la columna <strong>Actividad</strong> aparece <strong>⌚ importada del reloj</strong>; junto a la fecha, la hora de inicio; en <strong>Distancia</strong>, las calorías marcadas como <strong>(reloj)</strong> en lugar de la estimación; y en <strong>Foto</strong>, el recorrido dibujado (si el cliente no lo ha quitado).</p>
+    <p>Si el cliente intenta importar dos veces la misma actividad, Go le avisa y no se duplica en tu ficha.</p>
+  </section>
+
   <section class="nota">
     <h2>Ten en cuenta</h2>
     <ul>
       <li>Es de <strong>solo lectura</strong>: las actividades son del cliente; tú no puedes crearlas, editarlas ni borrarlas.</li>
       <li>Solo ven estas actividades el cliente y sus profesionales asignados (entrenador o nutricionista).</li>
-      <li>Pasos y calorías son estimaciones a partir de la distancia, no lecturas de un dispositivo.</li>
-      <li>La conexión con relojes o Strava todavía no está disponible: el registro es manual.</li>
+      <li>Pasos y calorías son estimaciones a partir de la distancia, salvo las calorías marcadas como <strong>(reloj)</strong>, que vienen del dispositivo.</li>
+      <li>No hay conexión automática con Strava o relojes: el cliente importa el archivo de cada actividad. Strava no permite que un entrenador vea los datos de sus clientes a través de su API, por eso se usa el archivo.</li>
     </ul>
   </section>
 

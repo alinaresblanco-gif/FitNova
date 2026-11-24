@@ -2,7 +2,7 @@
 // (tabla clientes_actividades; foto de la ruta en el bucket privado progreso-fotos).
 window.FitNovaActividades = (() => {
   const BUCKET = 'progreso-fotos';
-  const CAMPOS = 'id, cliente_id, nombre, fecha, duracion_min, distancia_km, comentario, foto_ruta, creado_en';
+  const CAMPOS = 'id, cliente_id, nombre, fecha, duracion_min, distancia_km, comentario, foto_ruta, origen, inicio, calorias_kcal, creado_en';
   const METROS_POR_PASO = 0.63;
   const KCAL_POR_KM = 60;
   const DIAS = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
@@ -123,18 +123,25 @@ window.FitNovaActividades = (() => {
     if (ruta) await client.storage.from(BUCKET).remove([ruta]);
   }
 
-  // Crea o actualiza; opciones: archivo (foto nueva), quitarFoto, fotoAnterior.
-  async function guardar(client, clienteId, id, fila, { archivo = null, quitarFoto = false, fotoAnterior = null } = {}) {
+  // Crea o actualiza; opciones: archivo (foto nueva), quitarFoto, fotoAnterior e
+  // importacion ({ inicio, calorias_kcal }, solo al crear una actividad importada).
+  async function guardar(client, clienteId, id, fila, { archivo = null, quitarFoto = false, fotoAnterior = null, importacion = null } = {}) {
     const nuevaRuta = archivo ? await subirFoto(client, clienteId, archivo) : null;
     const datos = { ...fila };
     if (nuevaRuta) datos.foto_ruta = nuevaRuta;
     else if (quitarFoto) datos.foto_ruta = null;
+    if (!id && importacion) {
+      datos.origen = 'archivo';
+      datos.inicio = importacion.inicio || null;
+      datos.calorias_kcal = importacion.calorias_kcal || null;
+    }
     const consulta = id
       ? client.from('clientes_actividades').update(datos).eq('id', id)
       : client.from('clientes_actividades').insert({ ...datos, cliente_id: clienteId });
     const { data, error } = await consulta.select(CAMPOS).single();
     if (error) {
       await borrarFoto(client, nuevaRuta);
+      if (error.code === '23505' && datos.inicio) throw new Error('Esta actividad ya está importada (misma hora de inicio).');
       throw new Error(error.message);
     }
     if (fotoAnterior && (nuevaRuta || quitarFoto)) await borrarFoto(client, fotoAnterior);
