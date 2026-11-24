@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FitNova Manager · Prueba completa paso a paso</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:#233249;font:16px/1.65 "Segoe UI",system-ui,sans-serif}main{max-width:900px;margin:24px auto 60px;padding:0 16px}header{background:#0a1a2f;color:white;border-radius:14px;padding:26px}header p{margin:0}h1{font-size:clamp(26px,5vw,36px);line-height:1.2;margin:8px 0}h2{font-size:22px;margin:0 0 12px}h3{margin:20px 0 6px}section,nav{background:white;border:1px solid #dce3ee;border-radius:12px;padding:22px;margin-top:18px}li{margin:8px 0}a{color:#1748c7;overflow-wrap:anywhere}.aviso{background:#fff6e7;border-left:5px solid #ac710b}.resultado{color:#146a49;font-weight:600}.boton{display:inline-block;background:#1748c7;color:white;padding:10px 16px;border-radius:8px;text-decoration:none}footer{color:#657189;font-size:13px;margin:24px 0}@media print{body{background:white}main{max-width:none;margin:0}header{background:white;color:#233249;border-bottom:2px solid #1748c7}section{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<header><p>Guía de prueba · Cuenta profesional</p><h1>FitNova Manager: prueba paso a paso</h1><p>Prepara un cliente ficticio, asígnale contenido y comprueba el recorrido completo con Go.</p></header>
+<section class="aviso"><h2>Lectura obligatoria antes de empezar</h2><p>La aplicación pública utiliza una base de datos real compartida. Estas acciones crean datos persistentes, incluidos cuentas, citas, respuestas, mensajes y archivos; no todo se puede eliminar desde la interfaz. Utiliza únicamente cuentas autorizadas, información ficticia y archivos sin datos personales. <strong>No introduzcas datos reales ni de salud.</strong></p><p>El alta pública de Go todavía presenta una aceptación sin textos accesibles. Hay nuevos textos y casillas como borrador local, no publicados ni revisados legalmente. No se debe considerar el alta una base válida para clientes reales. Correo, recuperación por email y pagos reales están pendientes.</p></section>
+<section><h2>Preparación y coordinación</h2><ul>
+<li>Necesitas internet, una cuenta profesional de prueba y un segundo correo controlado, distinto del profesional, para una cuenta ficticia de cliente. Si se prueba Equipo, usa además otra cuenta profesional autorizada.</li>
+<li>Usa nombres con prefijo <strong>PRUEBA</strong>, un archivo de imagen y un PDF ficticios, y un enlace de YouTube o Vimeo autorizado que permita inserción. No compartas contraseñas ni enlaces de invitación públicamente.</li>
+<li>Abre <a href="https://alinaresblanco-gif.github.io/FitNova/fitnova-manager/login.html">FitNova Manager</a>. La persona de Go usará su propia cuenta; ambas sesiones pueden coexistir en el mismo navegador.</li>
+</ul><p><strong>Orden conjunto:</strong> realiza M1–M2; el cliente sigue G1–G2 en la <a href="fitnova-go-paso-a-paso.html">guía de Go</a>; después realiza M3–M8, dejando el cambio y cancelación de la cita para después de que Go la vea en G4. El cliente continúa G3–G4; vuelve al último punto de M3 para cambiar y cancelar la cita y pídele que actualice Go. El cliente realiza G5–G10; comprueba los resultados en M9 y pídele que termine G11–G12. M10–M12 son pruebas y cierre adicionales.</p></section>
+<nav><strong>Ir a:</strong> <a href="#m1">M1 Cuenta</a> · <a href="#m2">M2 Invitación</a> · <a href="#m3">M3 Agenda</a> · <a href="#m4">M4 Entrenamiento</a> · <a href="#m5">M5 Nutrición</a> · <a href="#m6">M6 Vídeos</a> · <a href="#m7">M7 Formularios y archivos</a> · <a href="#m8">M8 Chat y tareas</a> · <a href="#m9">M9 Revisión</a> · <a href="#m10">M10 Equipo</a> · <a href="#m11">M11 Negocio</a> · <a href="#m12">M12 Cierre</a></nav>
+<section id="m1"><h2>M1. Acceder y revisar la cuenta</h2><ol>
+<li>Abre Manager e inicia sesión con una cuenta profesional de prueba. Si aún no tienes una, usa <strong>Crear cuenta</strong> y completa el perfil profesional con datos ficticios y un correo controlado.</li>
+<li>Abre el avatar y entra en <strong>Mi cuenta</strong>. Revisa nombre, apellidos, correo y rol. Cambia el nombre o sube una imagen ficticia si quieres probar el guardado.</li>
+<li>Vuelve a <strong>Inicio</strong> y observa contadores, clientes recientes, próximos eventos y tareas. Los valores dependen de la cuenta y de sus datos de prueba.</li>
+</ol><p class="resultado">Resultado esperado: se abre el Dashboard y los cambios permitidos de la cuenta persisten al recargar.</p></section>
+<section id="m2"><h2>M2. Crear la invitación del cliente</h2><ol>
+<li>Entra en <strong>Clientes → Añadir cliente</strong>. Escribe «PRUEBA Cliente» y el correo controlado reservado para Go.</li>
+<li>Pulsa <strong>Enviar invitación</strong>. En el resultado comprueba que se ha creado y pulsa <strong>Copiar enlace</strong>.</li>
+<li>Comparte el enlace individual por un canal privado con la persona de prueba. No dependas del envío de email: el proveedor aún no está configurado. El enlace caduca a los siete días.</li>
+<li>Busca la invitación en <strong>Invitaciones enviadas</strong>. Si necesitas probar «Reenviar» o «Cancelar», hazlo con otra invitación de prueba: el enlace anterior deja de funcionar.</li>
+<li>Espera a que la persona complete <strong>G1–G2</strong> de la guía de Go. Actualiza <strong>Clientes → Activos</strong> y abre la ficha del cliente ficticio.</li>
+</ol><p class="resultado">Resultado esperado: el cliente aparece activo y su ficha muestra los datos básicos ficticios. Si el alta se interrumpe, puede reanudarse desde un enlace válido.</p></section>
+<section id="m3"><h2>M3. Crear una cita de prueba</h2><ol>
+<li>Abre <strong>Agenda → Agendar sesión</strong> y selecciona el cliente activo de prueba.</li>
+<li>Introduce «PRUEBA · Revisión», tipo seguimiento, una fecha futura, hora libre, duración de 45 minutos y un lugar ficticio. Guarda.</li>
+<li>Comprueba la cita en la lista, el calendario y <strong>Clientes → ficha → Agenda</strong>. El Dashboard solo muestra hasta cinco próximas sesiones.</li>
+<li>Cuando Go la haya visto en G4, edítala para cambiar la hora y pide que actualicen. Después cancela <strong>solo esa cita de prueba</strong> y comprueba el historial.</li>
+</ol><p class="resultado">Resultado esperado: Go y Manager muestran la misma cita y sus cambios. Una cancelación queda en el historial y no se reabre.</p></section>
+<section id="m4"><h2>M4. Preparar ejercicios, workout y programa</h2><ol>
+<li>Abre <strong>Librería → Ejercicios → Crear nuevo</strong>. Crea «PRUEBA · Sentadilla» con una categoría e instrucciones ficticias; opcionalmente añade un vídeo autorizado de YouTube o Vimeo. Guarda.</li>
+<li>En <strong>Workouts → Crear nuevo</strong>, escribe «PRUEBA · Fuerza», añade ese ejercicio y define, por ejemplo, 2 series y 8 repeticiones. Guarda.</li>
+<li>Pulsa <strong>Asignar</strong> en el workout, elige el cliente y la fecha de hoy y confirma una única sesión. Comprueba que aparece en <strong>ficha → Entrenamiento</strong>.</li>
+<li>En <strong>Programas → Crear nuevo</strong>, crea «PRUEBA · Programa», añade el workout en semana 1/día 1 y de nuevo en semana 2/día 3 y guarda.</li>
+<li>Asigna el programa al mismo cliente con inicio mañana. Revisa en su ficha las fechas creadas. El día 1 es la fecha de inicio, no necesariamente lunes.</li>
+</ol><p class="resultado">Resultado esperado: Go podrá abrir el workout de hoy y ver los entrenamientos futuros del programa. La asignación crea copias; editar la plantilla después no cambia las copias ya asignadas. No asignes dos veces por error.</p></section>
+<section id="m5"><h2>M5. Crear receta y plan nutricional</h2><ol>
+<li>Abre <strong>Librería → Recetas → Crear nuevo</strong> y crea «PRUEBA · Receta» con ingredientes y preparación ficticios. Guarda; las kcal y la foto son opcionales.</li>
+<li>En <strong>Librería → Nutrición → Crear nuevo</strong>, escribe «PRUEBA · Plan semanal». En el día actual añade una comida y selecciona la receta; guarda el plan.</li>
+<li>Pulsa <strong>Asignar</strong>, elige el cliente y un intervalo desde hoy hasta dentro de una semana; confirma. Si existe otro plan solapado, elige otra cuenta de prueba o resuelve el solapamiento antes de asignar.</li>
+<li>Comprueba el plan y la receta en <strong>ficha → Nutrición → Planes nutricionales</strong>.</li>
+</ol><p class="resultado">Resultado esperado: Go muestra el plan vigente y la receta. Las cantidades de kcal introducidas son manuales y consultar el plan no registra comidas.</p></section>
+<section id="m6"><h2>M6. Publicar un vídeo de prueba</h2><ol>
+<li>Abre <strong>Librería → Vídeos → Crear nuevo</strong> y crea «PRUEBA · Vídeo» con un enlace autorizado de YouTube o Vimeo que permita inserción.</li>
+<li>Usa <strong>Ver vista previa</strong>; selecciona solo el cliente de prueba, marca <strong>Publicar para los clientes seleccionados</strong> y guarda.</li>
+<li>Comprueba que la tabla lo muestra como publicado. Cuando Go lo haya probado, puedes editar destinatarios, despublicarlo o eliminarlo.</li>
+</ol><p class="resultado">Resultado esperado: el cliente seleccionado lo ve en Go. Retirar el acceso en FitNova no invalida un enlace externo que alguien haya copiado.</p></section>
+<section id="m7"><h2>M7. Enviar formulario y archivo</h2><ol>
+<li>En <strong>Librería → Formularios → Crear nuevo</strong>, crea «PRUEBA · Seguimiento» con una pregunta de texto sin datos personales; guarda.</li>
+<li>Abre <strong>Clientes → ficha → Formularios</strong>, selecciona la plantilla y pulsa <strong>Enviar al cliente</strong>. Comprueba que figura pendiente.</li>
+<li>En <strong>Archivos</strong>, selecciona un PDF o imagen ficticios de hasta 20 MB y pulsa <strong>Subir archivo</strong>. Pide al cliente que lo descargue en G9.</li>
+</ol><p class="resultado">Resultado esperado: Go recibe el formulario y el archivo. Las respuestas enviadas son definitivas; un envío pendiente puede cancelarlo su autor.</p></section>
+<section id="m8"><h2>M8. Enviar un mensaje y crear una tarea</h2><ol>
+<li>En la ficha pulsa <strong>Enviar mensaje</strong> o abre el icono de chat. Elige el cliente de prueba y envía «PRUEBA · Hola».</li>
+<li>Opcionalmente adjunta una imagen o PDF ficticios de hasta 5 MB. Si falla, atiende el mensaje y reintenta o descarta el envío pendiente.</li>
+<li>En Inicio, en <strong>Tareas</strong>, pulsa <strong>Nueva tarea</strong>; escribe «PRUEBA · Revisar seguimiento» y asocia el cliente si lo deseas. Guarda, completa y reabre la tarea.</li>
+<li>Abre la campana y revisa los avisos internos. Avisa al cliente para que realice <strong>G3–G10</strong>.</li>
+</ol><p class="resultado">Resultado esperado: el mensaje llega al chat de Go. La tarea queda en Manager y no se envía al cliente.</p></section>
+<section id="m9"><h2>M9. Revisar lo que ha hecho el cliente y responder</h2><ol>
+<li>Abre la ficha del cliente de prueba. En <strong>Resumen → Actividad física</strong> comprueba el paseo que creó en Go.</li>
+<li>En <strong>Entrenamiento</strong>, abre el workout de hoy y compara lo prescrito con el registro del cliente. Escribe un comentario ficticio y pulsa <strong>Comentar</strong>.</li>
+<li>En <strong>Nutrición</strong> consulta la comida y el agua del día. Pulsa <strong>Comentar este día</strong>, escribe un comentario ficticio y publícalo.</li>
+<li>En <strong>Progreso</strong>, revisa peso, cintura, objetivo y foto. Si quieres, pulsa <strong>+ Registrar medidas</strong>, añade una medida ficticia y guarda; el cliente la verá como profesional.</li>
+<li>En <strong>Formularios</strong> consulta la respuesta enviada y en <strong>Archivos</strong> descarga el archivo ficticio. En chat comprueba la respuesta del cliente.</li>
+<li>Abre <strong>Agenda</strong> y compara la cita; comprueba también la pestaña <strong>Pagos</strong> y recuerda que <strong>Historial</strong> contiene fechas de ejemplo.</li>
+<li>Pide al cliente que complete <strong>G11</strong> para comprobar tus comentarios y la medida profesional.</li>
+</ol><p class="resultado">Resultado esperado: los datos de Go aparecen en la ficha correspondiente y las respuestas del profesional se ven en Go. Si no aparecen, actualiza y comprueba cliente, fecha y asignación.</p></section>
+<section id="m10"><h2>M10. Probar Equipo — opcional</h2><ol>
+<li>Con una segunda cuenta profesional de prueba y su correo, abre <strong>Equipo → Invitar colaborador</strong>, elige el rol y crea la invitación.</li>
+<li>Copia el enlace y compártelo en privado. La otra persona lo abre, inicia sesión o crea su cuenta con ese correo y acepta.</li>
+<li>En Equipo pulsa <strong>Clientes</strong> junto al colaborador y asigna solo el cliente ficticio. Comprueba desde la segunda cuenta qué ficha y opciones puede ver según el rol.</li>
+<li>Si vais a retirar la asignación o al colaborador, comprueba antes que no tiene citas reales: perder el último acceso puede cancelar citas futuras. El chat previo puede quedar en solo lectura.</li>
+</ol><p class="resultado">Resultado esperado: la lista refleja el colaborador y el acceso depende de la asignación y rol. El enlace se comparte manualmente; no hay correo automático operativo.</p></section>
+<section id="m11"><h2>M11. Revisar Negocio sin realizar cobros</h2><ol>
+<li>En <strong>Negocio</strong>, pulsa <strong>Nuevo plan</strong>, crea un plan llamado «PRUEBA» con importe orientativo y guarda.</li>
+<li>Pulsa <strong>Preparar propuesta</strong>, selecciona el plan y el cliente ficticio, y guarda el borrador.</li>
+<li>Comprueba el aviso de la pantalla: la propuesta no se envía, no crea una suscripción y no cobra dinero. No introduzcas datos de pago ni fiscales reales.</li>
+</ol><p class="resultado">Resultado esperado: plan y propuesta aparecen como borradores internos, no como una contratación o factura.</p></section>
+<section id="m12"><h2>M12. Cerrar la prueba y recoger observaciones</h2><ol>
+<li>Anota pantalla, acción, resultado esperado, resultado observado y cambios que propones. No incluyas contraseñas, enlaces privados ni datos personales.</li>
+<li>Coordina la limpieza con la persona de Go. Elimina o retira únicamente contenidos, archivos, comentarios, tareas y asignaciones de prueba cuando la pantalla lo permita. Algunas copias o registros realizados no se pueden eliminar desde Manager.</li>
+<li>Las citas canceladas y respuestas enviadas quedan en el historial; la baja completa de cuentas y clientes aún no está disponible en la interfaz. Si se necesita eliminar todo, solicita una limpieza controlada al responsable; no borres registros ajenos.</li>
+<li>Si quieres comprobar la persistencia, recarga y vuelve a acceder con la cuenta de prueba. No consideres terminada la recuperación por correo.</li>
+</ol><p>Ante un fallo, comprueba conexión, permisos, cliente activo y asignación. Guarda el texto del error sin incluir información sensible y evita repetir asignaciones antes de comprobar si la primera se creó.</p></section>
+<section><h2>Para completar la revisión</h2><p><a class="boton" href="fitnova-manager-explicacion.html">Leer qué hace cada pantalla de Manager</a> · <a href="fitnova-go-paso-a-paso.html">Abrir las pruebas de Go</a></p><p>¿Qué pantallas, permisos o procesos cambiarías antes de llevarlo a uso real?</p></section>
+<footer>FitNova Manager · Guía de pruebas sintéticas · 24/11/2026</footer>
+</main></body></html>

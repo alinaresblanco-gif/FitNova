@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FitNova Go · Prueba completa paso a paso</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:#233249;font:16px/1.65 "Segoe UI",system-ui,sans-serif}main{max-width:900px;margin:24px auto 60px;padding:0 16px}header{background:#0a1a2f;color:white;border-radius:14px;padding:26px}header p{margin:0}h1{font-size:clamp(26px,5vw,36px);line-height:1.2;margin:8px 0}h2{font-size:22px;margin:0 0 12px}h3{margin:20px 0 6px}section,nav{background:white;border:1px solid #dce3ee;border-radius:12px;padding:22px;margin-top:18px}li{margin:8px 0}a{color:#1748c7;overflow-wrap:anywhere}.aviso{background:#fff6e7;border-left:5px solid #ac710b}.resultado{color:#146a49;font-weight:600}.boton{display:inline-block;background:#1748c7;color:white;padding:10px 16px;border-radius:8px;text-decoration:none}footer{color:#657189;font-size:13px;margin:24px 0}@media print{body{background:white}main{max-width:none;margin:0}header{background:white;color:#233249;border-bottom:2px solid #ff6a00}section{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<header><p>Guía de prueba · Cuenta de cliente</p><h1>FitNova Go: prueba paso a paso</h1><p>Sigue este recorrido en orden y contrasta lo que guardas con FitNova Manager.</p></header>
+<section class="aviso"><h2>Lectura obligatoria antes de empezar</h2><p>La aplicación pública usa una base de datos real compartida. Las pruebas crean cuentas, registros, mensajes y archivos que persisten; no todas las acciones se pueden deshacer desde la interfaz. Usa únicamente cuentas autorizadas, datos ficticios e imágenes y archivos sin información personal. <strong>No introduzcas datos reales ni de salud.</strong></p><p>Los documentos legales y las tres casillas nuevas son un borrador local no publicado. En la versión pública la aceptación no enlaza todavía a esos textos; no la consideres un consentimiento válido de un cliente real. La recuperación de contraseña por correo aún no está lista para clientes generales.</p></section>
+<section><h2>Preparación y orden entre las dos aplicaciones</h2><ol>
+<li>Necesitas internet, una cuenta profesional de prueba en Manager y un correo distinto controlado por quien haga de cliente. No compartáis contraseñas. Para probar Equipo opcionalmente hace falta otro correo y otra cuenta profesional de prueba.</li>
+<li>La persona que usa Manager realiza <strong>M1–M2</strong> de la <a href="fitnova-manager-paso-a-paso.html">guía de Manager</a> y entrega el enlace individual de invitación por un canal privado.</li>
+<li>Realiza <strong>G1–G2</strong> aquí. Comunica al profesional que el alta de prueba ha terminado.</li>
+<li>El profesional realiza <strong>M3–M8</strong> de su guía y te avisa cuando haya creado la cita, entrenamientos, plan, vídeo, formulario y mensaje.</li>
+<li>Realiza <strong>G3</strong> y la primera comprobación de la cita en <strong>G4</strong>. Después el profesional cambia y cancela la cita siguiendo el último punto de <strong>M3</strong>; actualiza Go para ver los cambios.</li>
+<li>Continúa con <strong>G5–G10</strong>. El profesional comprueba los resultados en <strong>M9</strong> y escribe los comentarios; termina con <strong>G11–G12</strong>.</li>
+</ol><p>Si la app instalada muestra «Actualización disponible», pulsa «Actualizar aplicación». Si un cambio no se ve, actualiza o vuelve a abrir la pantalla. Abre <a href="https://alinaresblanco-gif.github.io/FitNova/mockup-fitnova-go/login.html">el acceso público de Go</a> solo después de recibir la invitación para el primer registro.</p></section>
+<nav><strong>Ir a:</strong> <a href="#g1">G1 Alta</a> · <a href="#g3">G3 Inicio</a> · <a href="#g4">G4 Agenda</a> · <a href="#g5">G5 Entrenamiento</a> · <a href="#g6">G6 Nutrición</a> · <a href="#g7">G7 Vídeos</a> · <a href="#g8">G8 Evolución</a> · <a href="#g9">G9 Seguimiento</a> · <a href="#g10">G10 Chat</a> · <a href="#g11">G11 Revisión</a></nav>
+<section id="g1"><h2>G1. Completar la invitación</h2><ol>
+<li>Abre el enlace individual que te ha entregado el profesional. Verifica que el correo mostrado es el de la cuenta de prueba.</li>
+<li>Escribe apellidos ficticios y una contraseña de al menos ocho caracteres. En la versión pública se muestra una casilla de aceptación: úsala solo para la prueba sintética, teniendo en cuenta el aviso legal anterior.</li>
+<li>Continúa y rellena, con valores ficticios, sexo, objetivo, fecha de nacimiento, peso y altura.</li>
+<li>Responde todas las preguntas PAR-Q con respuestas inventadas para la prueba y pulsa <strong>Finalizar</strong>. No se trata de una evaluación de salud.</li>
+</ol><p class="resultado">Resultado esperado: se abre Inicio y el profesional puede encontrar el cliente activo en Manager.</p><p>Si se interrumpe el alta, vuelve al mismo enlace mientras siga vigente; usa la sesión existente o «Ya tengo una cuenta». Hay que repetir el cuestionario, pues sus respuestas incompletas no se guardan. Si el enlace caducó o se canceló, pide otro.</p></section>
+<section id="g2"><h2>G2. Comprobar el acceso y perfil</h2><ol>
+<li>En Inicio, pulsa la imagen de usuario. Revisa nombre, gráfica de peso inicial, profesionales y acceso a métricas.</li>
+<li>Si quieres probar la foto de perfil, sube una imagen ficticia JPG, PNG o WebP; comprueba el resultado y prueba a eliminarla.</li>
+<li>Entra en <strong>Ajustes → Mi perfil</strong>, modifica el alias ficticio y pulsa <strong>Guardar cambios</strong>. Deja vacía la contraseña si no quieres cambiarla.</li>
+<li>En <strong>Sobre mí</strong>, comprueba la altura y guarda una nota ficticia. Observa que datos fiscales, pagos y preferencias están deshabilitados o pendientes.</li>
+<li>Comunica al profesional que el cliente está activo y espera a que complete M3–M8.</li>
+</ol><p class="resultado">Resultado esperado: el perfil vuelve a mostrar los cambios tras actualizar. El correo es de solo lectura.</p></section>
+<section id="g3"><h2>G3. Registrar una actividad personal</h2><ol>
+<li>En <strong>Inicio</strong> pulsa <strong>Registrar Actividad de Hoy</strong>.</li>
+<li>Escribe «PRUEBA · Paseo», duración <strong>0:30</strong> y distancia <strong>2 km</strong>. Opcionalmente añade un comentario y una imagen ficticios; guarda.</li>
+<li>Comprueba el mensaje de actividad y el <strong>Resumen semanal</strong>. Los pasos y calorías calculados desde la distancia son una estimación.</li>
+<li>Opcional: si tienes un archivo de actividad sintético y autorizado, prueba «Importar actividad del reloj», revisa los datos y guarda. No existe conexión automática con el reloj.</li>
+</ol><p class="resultado">Resultado esperado: la actividad aparece en Inicio y Agenda y puede verla el profesional en el resumen de la ficha.</p></section>
+<section id="g4"><h2>G4. Revisar la Agenda</h2><ol>
+<li>Abre <strong>Agenda</strong> en la barra inferior y pulsa <strong>Actualizar citas</strong> si es necesario.</li>
+<li>Busca la cita «PRUEBA · Revisión» que creó el profesional y compara día, hora y lugar. Si usáis zonas horarias distintas, cada uno ve su hora local.</li>
+<li>Toca el día: distingue la cita del profesional, el entrenamiento asignado y tu actividad personal.</li>
+<li>Abre tu actividad de prueba, cambia el comentario y guarda. Puedes eliminarla después si no la necesitas.</li>
+<li>Cuando el profesional cambie o cancele la cita de prueba, actualiza y comprueba el cambio o el historial de cancelaciones.</li>
+</ol><p class="resultado">Resultado esperado: las dos aplicaciones muestran la misma cita; una actividad personal no crea una reserva.</p></section>
+<section id="g5"><h2>G5. Ver y registrar un entrenamiento</h2><ol>
+<li>En Inicio pulsa <strong>Ver mis entrenamientos</strong>, o entra desde Agenda. Abre el workout de prueba asignado para hoy.</li>
+<li>Revisa los ejercicios, indicaciones, series y, si existe, pulsa <strong>Ver vídeo</strong>. Comprueba también el nombre y semana del programa en el otro entrenamiento asignado.</li>
+<li>Sin realizar ejercicio real, pulsa <strong>Registrar entrenamiento</strong>. Introduce resultados ficticios, duración y esfuerzo de 1 a 10; añade un comentario ficticio y guarda.</li>
+<li>Abre el registro y usa <strong>Editar registro</strong> para corregir un valor. No lo borres todavía: el profesional debe revisarlo en M9.</li>
+</ol><p class="resultado">Resultado esperado: aparece como «Realizado» y el profesional ve los datos registrados en su ficha.</p></section>
+<section id="g6"><h2>G6. Probar nutrición</h2><ol>
+<li>En Inicio, pulsa <strong>Registrar comida</strong>. Selecciona desayuno y escribe «PRUEBA · Alimentos ficticios»; añade una sensación o imagen ficticia si lo deseas y guarda.</li>
+<li>Abre <strong>Ver mi diario</strong>. En Agua pulsa «+» dos veces y comprueba que se guarda; usa «−» para corregir si hace falta.</li>
+<li>Abre la comida, cambia su texto y guarda. Usa las flechas de fecha y vuelve a hoy.</li>
+<li>En <strong>Mi plan nutricional</strong>, abre el plan de prueba y el día que haya preparado el profesional; abre la receta asociada.</li>
+</ol><p class="resultado">Resultado esperado: la comida y el agua figuran en el diario y el plan muestra la receta. El plan no registra automáticamente comidas ni calcula nutrientes.</p></section>
+<section id="g7"><h2>G7. Abrir un vídeo y guardarlo como favorito</h2><ol>
+<li>En la barra inferior abre <strong>Vídeos</strong>. Busca el vídeo publicado para tu cuenta por el profesional.</li>
+<li>Ábrelo y comprueba si el proveedor permite su reproducción. Marca la estrella, entra en <strong>Mis favoritos</strong> y vuelve a abrir la pantalla.</li>
+<li>Desmarca la estrella si quieres terminar la prueba.</li>
+</ol><p class="resultado">Resultado esperado: el vídeo aparece para el cliente seleccionado y el favorito permanece al recargar. Si no reproduce, anota el mensaje y el proveedor.</p></section>
+<section id="g8"><h2>G8. Medidas, objetivo y fotos de progreso</h2><ol>
+<li>Abre <strong>Evolución → Métricas</strong> y pulsa «+». Usa la fecha de hoy y escribe medidas ficticias, por ejemplo peso 70 kg y cintura 80 cm; guarda.</li>
+<li>Selecciona peso y cintura, revisa los registros y cambia el periodo. Edita un valor con el lápiz y comprueba el resultado.</li>
+<li>En <strong>Objetivo de peso</strong>, abre la balanza, escribe un valor ficticio y pulsa <strong>Actualizar</strong>.</li>
+<li>En <strong>Fotos</strong>, añade una imagen ficticia y comprueba que aparece. Espera a que el profesional la vea antes de borrarla.</li>
+</ol><p class="resultado">Resultado esperado: las medidas, objetivo y foto se ven en la pestaña Progreso de Manager. Una medida escrita por el profesional se muestra con su origen y no se edita desde Go.</p></section>
+<section id="g9"><h2>G9. Responder un formulario y compartir un archivo</h2><ol>
+<li>Desde Inicio pulsa <strong>Ver seguimiento</strong> y abre <strong>Formularios</strong>.</li>
+<li>Responde el formulario «PRUEBA» enviado por el profesional con respuestas ficticias y pulsa <strong>Enviar respuesta</strong>. Comprueba que queda respondido.</li>
+<li>En <strong>Archivos compartidos</strong> selecciona un PDF o imagen ficticios de hasta 20 MB y pulsa <strong>Subir archivo</strong>.</li>
+<li>Comprueba también si puedes descargar el archivo de prueba que haya compartido el profesional.</li>
+</ol><p class="resultado">Resultado esperado: Manager puede consultar la respuesta y el archivo. La respuesta enviada no se puede editar; para corregirla hay que solicitar otro formulario.</p><p>Si se interrumpe una subida, usa «Revisar archivos pendientes» con la misma cuenta y navegador antes de borrar datos locales.</p></section>
+<section id="g10"><h2>G10. Chat y campana</h2><ol>
+<li>Pulsa el icono de chat en la cabecera y elige al profesional asignado. Lee su mensaje de prueba y responde «PRUEBA · Recibido».</li>
+<li>Opcional: adjunta un JPG, PNG, WebP o PDF ficticio de hasta 5 MB y envíalo. Si falla, revisa el aviso y usa «Reintentar envío» o descarta el pendiente.</li>
+<li>Abre la campana y consulta los avisos; pulsa uno para marcarlo leído y abrir su destino. Leer el chat y leer el aviso son acciones independientes.</li>
+<li>Avisa al profesional para que realice M9: revise tus datos y deje comentarios en entrenamiento y nutrición.</li>
+</ol><p class="resultado">Resultado esperado: ambos ven la conversación. Los avisos son internos, no correo ni push.</p></section>
+<section id="g11"><h2>G11. Revisar las respuestas del profesional</h2><ol>
+<li>Vuelve al entrenamiento realizado y lee el comentario que haya publicado.</li>
+<li>En el diario nutricional abre el día de la comida y busca <strong>Comentarios de tu profesional</strong>.</li>
+<li>En Evolución comprueba, si se registró, la medida con origen profesional. Revisa también que aparezca la respuesta del chat y, si se ha compartido, el archivo.</li>
+<li>Si un dato no aparece, actualiza o reabre la pantalla y confirma que se trabajó con el mismo cliente, fecha y profesional asignado.</li>
+</ol><p class="resultado">Resultado esperado: ves los comentarios y cambios guardados desde Manager donde corresponda.</p></section>
+<section><h2>G12. Cierre, incidencias y limpieza</h2><ol>
+<li>Anota qué pantalla has probado, el resultado esperado, qué ocurrió y si quieres cambiar algo. No incluyas contraseñas, enlaces de invitación ni datos personales en el informe.</li>
+<li>Si se acordó limpiar, elimina solo tus datos identificados de prueba cuando la interfaz lo permita: actividad, comida, foto, archivo propio o registro de entrenamiento. Coordínalo primero con el profesional.</li>
+<li>Algunos datos permanecen como historial o no tienen borrado desde la interfaz, por ejemplo respuestas ya enviadas y citas canceladas. No supongas que cerrar sesión elimina la cuenta o los datos; solicita la limpieza al responsable.</li>
+<li>Desde Ajustes puedes cerrar sesión y volver a entrar con tu cuenta de prueba. No pruebes recuperación por email como funcionalidad terminada.</li>
+</ol><p>Si ves «sin datos», confirma las asignaciones en Manager; si aparece un error de conexión, vuelve a intentar y anótalo. Si falla el alta, no crees múltiples cuentas: vuelve al enlace vigente o solicita ayuda.</p></section>
+<section><h2>Para completar la revisión</h2><p><a class="boton" href="fitnova-go-explicacion.html">Leer qué hace cada pantalla de Go</a> · <a href="fitnova-manager-paso-a-paso.html">Abrir las pruebas de Manager</a></p><p>¿Qué te ha resultado confuso, qué acción añadirías y qué cambiarías en la operativa?</p></section>
+<footer>FitNova Go · Guía de pruebas sintéticas · 24/11/2026</footer>
+</main></body></html>
