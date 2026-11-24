@@ -3,6 +3,12 @@ let invitacionToken = null;
 let invitacionActual = null;
 let modoCuentaExistente = false;
 let datosOnboarding = null;
+const VERSION_LEGAL_PRUEBA = 'borrador-20261124';
+
+function aceptacionesCompletas() {
+  return ['v1-terminos', 'v1-privacidad', 'v1-salud']
+    .every((id) => document.getElementById(id).checked);
+}
 
 function ocultarTodasLasVentanas() {
   document.querySelectorAll('[id^="ventana-"], #paso-cargando, #paso-invalido, #paso-completado')
@@ -69,8 +75,8 @@ async function pasoCrearCuenta() {
   const password = document.getElementById('v1-password').value;
   errorEl.textContent = '';
   if (!apellidos) { errorEl.textContent = 'Escribe tus apellidos.'; return; }
-  if (!document.getElementById('v1-terminos').checked) {
-    errorEl.textContent = 'Debes aceptar los términos y la política de privacidad para continuar.';
+  if (!aceptacionesCompletas()) {
+    errorEl.textContent = 'Revisa los documentos y marca las tres casillas para continuar con la prueba.';
     return;
   }
 
@@ -156,8 +162,8 @@ async function finalizarOnboarding() {
   const boton = document.getElementById('v9-finalizar');
   errorEl.textContent = '';
   if (!datosOnboarding?.apellidos || !document.getElementById('v1-apellidos').value.trim()
-      || !document.getElementById('v1-terminos').checked) {
-    document.getElementById('v1-error').textContent = 'Comprueba tus apellidos y la aceptación antes de finalizar.';
+      || !aceptacionesCompletas()) {
+    document.getElementById('v1-error').textContent = 'Comprueba tus apellidos y las tres casillas antes de finalizar.';
     irVentana(1);
     return;
   }
@@ -195,7 +201,8 @@ async function finalizarOnboarding() {
       p_altura_cm: Number(document.getElementById('v6-altura').value),
       p_peso_inicial_kg: Number(document.getElementById('v5-peso').value),
       p_peso_objetivo_kg: null, p_notas_objetivo: null, p_notas_lesiones: null,
-      p_parq: parq, p_version_terminos: 'v1', p_version_privacidad: 'v1',
+      p_parq: parq, p_version_terminos: VERSION_LEGAL_PRUEBA, p_version_privacidad: VERSION_LEGAL_PRUEBA,
+      p_acepta_terminos: true, p_leido_privacidad: true, p_acepta_salud: true,
     });
     if (error) throw error;
     datosOnboarding = null;

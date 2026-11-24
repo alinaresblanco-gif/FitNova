@@ -48,9 +48,23 @@
           <button type="button" class="btn-link" id="v1-cambiar-modo" onclick="cambiarModoCuenta()">Ya tengo una cuenta</button>
         </div>
         <button type="button" class="btn-link" id="v1-cerrar-sesion" onclick="cerrarSesionInvitacion()" hidden>Cerrar la sesión actual</button>
-        <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-top:10px;">
+        <p style="font-size:13px;color:#8b3500;background:#fff3e9;padding:10px;"><strong>Solo pruebas:</strong> los textos son borradores sin revisión legal. No introduzcas datos reales ni de salud.</p>
+        <p style="font-size:13px;">Lee los documentos antes de continuar (se abren en otra pestaña):
+          <a href="legal-borrador-20261124.html#terminos" target="_blank" rel="noopener">términos y condiciones</a>,
+          <a href="legal-borrador-20261124.html#privacidad" target="_blank" rel="noopener">política de privacidad</a> y
+          <a href="legal-borrador-20261124.html#salud" target="_blank" rel="noopener">tratamiento de datos de salud</a>.
+        </p>
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;margin-top:10px;">
           <input type="checkbox" id="v1-terminos" style="width:auto;" />
-          Acepto los <strong>términos y condiciones</strong> y la <strong>política de privacidad</strong>
+          <span>Acepto los términos y condiciones de prueba.</span>
+        </label>
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;margin-top:10px;">
+          <input type="checkbox" id="v1-privacidad" style="width:auto;" />
+          <span>He leído la política de privacidad de prueba.</span>
+        </label>
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;margin-top:10px;">
+          <input type="checkbox" id="v1-salud" style="width:auto;" />
+          <span>Consiento expresamente, solo para esta prueba, el tratamiento de los datos de salud simulados descrito en el documento.</span>
         </label>
         <button id="v1-continuar" class="btn-primary" style="margin-top:16px;width:100%;" onclick="pasoCrearCuenta()">Continuar</button>
         <p id="v1-error" role="alert" style="color:#E5484D;font-size:12.5px;margin-top:10px;"></p>
@@ -151,6 +165,6 @@
 
   <script src="js/app.js?v=20261126.6"></script>
   <script src="js/supabase-client.js?v=20261201.3"></script>
-  <script src="js/invitacion.js?v=20261201.3"></script>
+  <script src="js/invitacion.js?v=20261201.4"></script>
 </body>
 </html>

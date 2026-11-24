@@ -49,6 +49,8 @@ function cargarInvitacion(sesionInicial = null) {
 function rellenarAlta(caso) {
   caso.elementos('v1-apellidos').value = 'Prueba';
   caso.elementos('v1-terminos').checked = true;
+  caso.elementos('v1-privacidad').checked = true;
+  caso.elementos('v1-salud').checked = true;
   caso.elementos('v1-password').value = 'clave-segura';
   caso.elementos('v4-nacimiento').value = '1990-01-01';
   caso.elementos('v5-peso').value = '70.5';
@@ -71,6 +73,27 @@ test('alta reanudada reutiliza la sesión o accede a la cuenta sin otro registro
     await caso.context.finalizarOnboarding();
     assert.equal(caso.datos().completado.p_parq.enfermedad_cardiaca_supervisada, true);
     assert.equal(caso.datos().completado.p_parq.dolor_pecho_actividad, false);
+    assert.equal(caso.datos().completado.p_version_terminos, 'borrador-20261124');
+    assert.equal(caso.datos().completado.p_version_privacidad, 'borrador-20261124');
+    assert.equal(caso.datos().completado.p_acepta_salud, true);
+  }
+});
+
+test('cada casilla se exige antes de crear la cuenta y al finalizar', async () => {
+  for (const id of ['v1-terminos', 'v1-privacidad', 'v1-salud']) {
+    const caso = cargarInvitacion({ user: { email: 'cliente@example.test' } });
+    await caso.iniciar();
+    rellenarAlta(caso);
+    caso.elementos(id).checked = false;
+    await caso.context.pasoCrearCuenta();
+    assert.match(caso.elementos('v1-error').textContent, /tres casillas/);
+    assert.equal(caso.elementos('ventana-2').style.display, 'none');
+    caso.elementos(id).checked = true;
+    await caso.context.pasoCrearCuenta();
+    caso.elementos(id).checked = false;
+    await caso.context.finalizarOnboarding();
+    assert.match(caso.elementos('v1-error').textContent, /tres casillas/);
+    assert.equal(caso.datos().completado, undefined);
   }
 });
 
@@ -117,7 +140,7 @@ test('no finaliza con PAR-Q incompleto, dato inválido, consentimiento retirado 
   caso.elementos('v5-peso').value = '70';
   caso.elementos('v1-terminos').checked = false;
   await caso.context.finalizarOnboarding();
-  assert.match(caso.elementos('v1-error').textContent, /aceptación/);
+  assert.match(caso.elementos('v1-error').textContent, /tres casillas/);
   caso.elementos('v1-terminos').checked = true;
   caso.setSesion(null);
   await caso.context.finalizarOnboarding();

@@ -46,6 +46,37 @@ test('Equipo, archivos y formularios con todas las migraciones y RLS reales', as
         values ('${uid(21)}',false,false,false,false,false,false,false);
       insert into public.profesional_cliente (cliente_id,profesional_id,rol) values ('${uid(21)}','${uid(11)}','entrenador');
     `);
+    await db.query('insert into auth.users values ($1,$2)', [uid(6), 'alta-prueba@example.com']);
+    await como(1);
+    const altaPrueba = (await db.query("select * from public.crear_invitacion('Prueba','alta-prueba@example.com')")).rows[0];
+    await como(6);
+    const parq = JSON.stringify({
+      enfermedad_cardiaca_supervisada: false, dolor_pecho_actividad: false, dolor_pecho_reposo: false,
+      perdida_consciencia_mareo: false, alteracion_osea_articular: false,
+      medicacion_presion_arterial: false, otra_razon_medica: false,
+    });
+    const argumentos = [altaPrueba.token, 'Prueba', null, null, '1990-01-01', 'no_especificado',
+      'ponerme_en_forma', 170, 70, null, null, null, parq, 'borrador-20261124',
+      'borrador-20261124', true, true, true];
+    const llamada = `select public.completar_onboarding(${argumentos.map((_, i) => `$${i + 1}`).join(',')}) as id`;
+    for (const posicion of [15, 16, 17]) {
+      const incompleta = argumentos.slice();
+      incompleta[posicion] = false;
+      await assert.rejects(db.query(llamada, incompleta), /tres confirmaciones/);
+    }
+    const versionAntigua = argumentos.slice();
+    versionAntigua[13] = 'v1';
+    await assert.rejects(db.query(llamada, versionAntigua), /documentos de prueba/);
+    await assert.rejects(db.query(`select public.completar_onboarding_interno(${argumentos.slice(0, 15).map((_, i) => `$${i + 1}`).join(',')})`, argumentos.slice(0, 15)), /permission denied/);
+    const clienteAlta = (await db.query(llamada, argumentos)).rows[0].id;
+    assert.equal((await db.query('select id from public.clientes where id=$1 and auth_user_id=$2', [clienteAlta, uid(6)])).rows.length, 1);
+    const aceptaciones = (await db.query('select tipo, version_documento from public.consentimientos where cliente_id=$1 order by tipo', [clienteAlta])).rows;
+    assert.deepEqual(aceptaciones.map((a) => [a.tipo, a.version_documento]), [
+      ['privacidad', 'borrador-20261124'], ['salud', 'borrador-20261124'], ['terminos', 'borrador-20261124'],
+    ]);
+    await db.exec('reset role');
+    await db.query('delete from public.clientes where id=$1', [clienteAlta]);
+    await db.query('delete from auth.users where id=$1', [uid(6)]);
     await como(1);
     const inv = (await db.query("select * from public.equipo_invitar('colab@example.com','entrenador')")).rows[0];
     const invRecepcion = (await db.query("select * from public.equipo_invitar('ajeno@example.com','recepcion')")).rows[0];
