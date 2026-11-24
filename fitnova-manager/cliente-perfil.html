@@ -207,21 +207,11 @@
         </div>
 
         <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="formularios">
-          <div class="empty-state">
-            <div class="empty-icon">📝</div>
-            <h3>No se han enviado formularios</h3>
-            <p>Envía un formulario de feedback o valoración inicial.</p>
-            <a href="libreria.html?tab=formularios" class="btn-primary">Ir a formularios</a>
-          </div>
+          <div id="cp-formularios"><p>Cargando formularios...</p></div>
         </div>
 
         <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="archivos">
-          <div class="empty-state">
-            <div class="empty-icon">🗂️</div>
-            <h3>No hay archivos compartidos</h3>
-            <p>Comparte documentos, imágenes o vídeos con este cliente.</p>
-            <button class="btn-primary">Subir archivo</button>
-          </div>
+          <div id="cp-archivos"><p>Cargando archivos...</p></div>
         </div>
 
         <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="pagos">
@@ -269,7 +259,7 @@
   <script src="js/app.js?v=20260924.2"></script>
   <script src="js/supabase-client.js?v=20261126.6"></script>
   <script src="../js/comunicacion.js?v=20261126.3"></script>
-  <script src="../js/comunicacion-header.js?v=20261126.2"></script>
+  <script src="../js/comunicacion-header.js?v=20261127.1"></script>
   <script src="../js/sesiones.js?v=20261123.2"></script>
   <script src="../js/metricas.js?v=20261124.2"></script>
   <script src="../js/fotos-progreso.js?v=20261125.1"></script>
@@ -277,6 +267,8 @@
   <script src="../js/nutricion.js?v=20261125.1"></script>
   <script src="../js/planes-nutricionales.js?v=20261126.4"></script>
   <script src="../js/entrenos.js?v=20261126.2"></script>
+  <script src="../js/archivos-seguimiento.js?v=20261127.1"></script>
+  <script src="../js/formularios-seguimiento.js?v=20261127.1"></script>
   <script src="js/entrenos-manager.js?v=20261126.1"></script>
   <script src="js/programas-manager.js?v=20261126.2"></script>
   <script src="js/planes-nutricionales-manager.js?v=20261126.4"></script>
@@ -284,5 +276,21 @@
   <script src="js/cliente-entrenos.js?v=20261126.2"></script>
   <script src="js/cliente-perfil.js?v=20261126.1"></script>
   <script src="js/tareas.js?v=20261126.1"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const session = await requireSession();
+      const cliente = new URLSearchParams(location.search).get('id');
+      if (!session) return;
+      if (!cliente) {
+        document.getElementById('cp-archivos').textContent = 'Falta identificar al cliente.';
+        document.getElementById('cp-formularios').textContent = 'Falta identificar al cliente.';
+        return;
+      }
+      await Promise.all([
+        FitNovaArchivos.montar(supabaseClient, cliente, session.user.id, document.getElementById('cp-archivos')),
+        FitNovaFormularios.montar(supabaseClient, cliente, false, document.getElementById('cp-formularios')),
+      ]);
+    });
+  </script>
 </body>
 </html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitNova Go · Seguimiento</title>
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#0A1A2F" />
+<link rel="stylesheet" href="css/styles.css?v=20261126.3" />
+<link rel="stylesheet" href="../css/comunicacion.css?v=20261126.1" />
+</head>
+<body data-auth="required">
+  <div class="app">
+    <header class="app-header">
+      <a href="perfil.html" class="icon-square" title="Personalizar perfil"><img src="../imagenes/LOGO-FITNOVA USUARIO.png" alt="Perfil" /></a>
+      <div class="app-brand" aria-label="FitNova Go"><span>FitNova</span><strong>Go</strong></div>
+      <div class="header-actions">
+        <button class="icon-btn" type="button" title="Chat">💬<span class="badge" hidden></span></button>
+        <button class="icon-btn" type="button" title="Notificaciones">🔔<span class="badge" hidden></span></button>
+      </div>
+    </header>
+    <main class="app-content">
+      <h1>Seguimiento</h1>
+      <section class="card"><h2>Formularios</h2><div id="go-formularios"><p>Cargando formularios...</p></div></section>
+      <section class="card"><h2>Archivos compartidos</h2><div id="go-archivos"><p>Cargando archivos...</p></div></section>
+    </main>
+    <nav class="bottom-nav">
+      <a href="index.html"><span class="nav-icon">🏠</span>Inicio</a>
+      <a href="agenda.html"><span class="nav-icon">📅</span>Agenda</a>
+      <a href="videos.html"><span class="nav-icon">▶️</span>Vídeos</a>
+      <a href="placeholder.html?vista=Evolución"><span class="nav-icon">📈</span>Evolución</a>
+    </nav>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/supabase-client.js?v=20261126.6"></script>
+  <script src="../js/comunicacion.js?v=20261126.3"></script>
+  <script src="../js/comunicacion-header.js?v=20261127.1"></script>
+  <script src="../js/archivos-seguimiento.js?v=20261127.1"></script>
+  <script src="../js/formularios-seguimiento.js?v=20261127.1"></script>
+  <script src="js/app.js?v=20261126.6"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const session = await requireSessionGo();
+      if (!session) return;
+      const cliente = await cargarClienteActual();
+      if (!cliente) {
+        document.getElementById('go-archivos').textContent = 'No se pudo cargar tu perfil.';
+        document.getElementById('go-formularios').textContent = 'No se pudo cargar tu perfil.';
+        return;
+      }
+      await Promise.all([
+        FitNovaArchivos.montar(supabaseClient, cliente.id, session.user.id, document.getElementById('go-archivos'), true),
+        FitNovaFormularios.montar(supabaseClient, cliente.id, true, document.getElementById('go-formularios')),
+      ]);
+    });
+  </script>
+</body>
+</html>

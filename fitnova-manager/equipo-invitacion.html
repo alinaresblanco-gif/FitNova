@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitNova Manager · Invitación de equipo</title>
+<link rel="stylesheet" href="css/styles.css?v=20260930.1" />
+<style>[hidden] { display: none !important; }</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body data-view="login" style="background:var(--azul);min-height:100vh;display:flex;align-items:center;justify-content:center;">
+  <section class="card" style="max-width:520px;margin:20px;">
+    <h1>Invitación de equipo</h1>
+    <p>Inicia sesión con el correo al que se envió la invitación. El responsable te asignará los clientes correspondientes.</p>
+    <p id="invitacion-estado" role="status">Comprobando sesión...</p>
+    <a id="invitacion-login" class="btn-primary" href="login.html?equipo=1" hidden>Iniciar sesión o crear cuenta</a>
+    <button id="invitacion-aceptar" class="btn-primary" type="button" hidden>Aceptar invitación</button>
+    <button id="invitacion-salir" class="btn-outline" type="button" hidden>Usar otra cuenta</button>
+    <a id="invitacion-inicio" href="index.html" hidden>Ir a Manager</a>
+  </section>
+  <script src="js/supabase-client.js?v=20261126.6"></script>
+  <script src="js/equipo-invitacion.js?v=20261127.1"></script>
+</body>
+</html>

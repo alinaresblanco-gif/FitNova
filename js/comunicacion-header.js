@@ -39,10 +39,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   function destinoAviso(a) {
     if (a.tipo === 'chat' && a.referencia_id) return `${esGo ? 'comunicacion.html' : 'chat.html'}?conversacion=${encodeURIComponent(a.referencia_id)}`;
-    if (esGo) return ({ agenda:'agenda.html', entrenamiento:'entrenamiento.html', nutricion:'nutricion.html', video:'videos.html' })[a.tipo] || 'index.html';
+    if (esGo) return ({ agenda:'agenda.html', entrenamiento:'entrenamiento.html', nutricion:'nutricion.html', video:'videos.html', formulario:'seguimiento.html' })[a.tipo] || 'index.html';
     if (a.tipo === 'agenda') return 'agenda.html';
-    if (a.cliente_id && ['entrenamiento', 'nutricion'].includes(a.tipo)) {
-      return `cliente-perfil.html?id=${encodeURIComponent(a.cliente_id)}&tab=${a.tipo}`;
+    if (a.cliente_id && ['entrenamiento', 'nutricion', 'formulario'].includes(a.tipo)) {
+      return `cliente-perfil.html?id=${encodeURIComponent(a.cliente_id)}&tab=${a.tipo === 'formulario' ? 'formularios' : a.tipo}`;
     }
     return 'index.html';
   }

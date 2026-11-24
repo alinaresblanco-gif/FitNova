@@ -49,7 +49,7 @@
           <button class="tab-btn" data-tab-group="lib" data-tab="nutricion" onclick="switchTab('lib','nutricion')">🥗 Nutrición <span class="count-pill" id="lib-count-planes">0</span></button>
           <button class="tab-btn" data-tab-group="lib" data-tab="recetas" onclick="switchTab('lib','recetas')">🍳 Recetas <span class="count-pill" id="lib-count-recetas">0</span></button>
           <button class="tab-btn" data-tab-group="lib" data-tab="videos" onclick="switchTab('lib','videos')">🎬 Vídeos <span class="count-pill" id="lib-count-videos">0</span></button>
-          <button class="tab-btn" data-tab-group="lib" data-tab="formularios" onclick="switchTab('lib','formularios')">📝 Formularios <span class="count-pill">0</span></button>
+          <button class="tab-btn" data-tab-group="lib" data-tab="formularios" onclick="switchTab('lib','formularios')">📝 Formularios <span class="count-pill" id="lib-count-formularios">0</span></button>
         </div>
 
         <div class="list-toolbar">
@@ -93,17 +93,24 @@
         </div>
 
         <div class="tab-panel" data-tab-panel-group="lib" data-tab-panel="formularios">
-          <div class="empty-state">
-            <div class="empty-icon">📝</div>
-            <h3>No hay formularios creados</h3>
-            <p>Diseña formularios para recoger feedback y mejorar el seguimiento de tus clientes.</p>
-            <button class="btn-primary" onclick="openModal('modal-crear-item')">Crear formulario</button>
-          </div>
+          <div id="lib-formularios"><p>Cargando formularios...</p></div>
         </div>
       </section>
     </div>
   </div>
 
+  <div class="modal-overlay" id="modal-formulario">
+    <div class="modal">
+      <div class="modal-header"><h2 id="form-editor-titulo">Crear formulario</h2><button class="modal-close" type="button" onclick="closeModal('modal-formulario')">✕</button></div>
+      <form id="form-editor">
+        <label>Título<input name="titulo" required maxlength="180" style="width:100%;" /></label>
+        <div id="form-editor-preguntas"></div>
+        <button type="button" id="form-anadir-pregunta" class="btn-outline">Añadir pregunta</button>
+        <p id="form-editor-error" role="alert"></p>
+        <button type="submit" class="btn-primary">Guardar formulario</button>
+      </form>
+    </div>
+  </div>
   <div class="modal-overlay" id="modal-crear-item">
     <div class="modal">
       <div class="modal-header">
@@ -121,7 +128,7 @@
   <script src="js/app.js?v=20260924.2"></script>
   <script src="js/supabase-client.js?v=20261126.6"></script>
   <script src="../js/comunicacion.js?v=20261126.3"></script>
-  <script src="../js/comunicacion-header.js?v=20261126.2"></script>
+  <script src="../js/comunicacion-header.js?v=20261127.1"></script>
   <script src="../js/entrenos.js?v=20261126.2"></script>
   <script src="../js/fotos-progreso.js?v=20261125.1"></script>
   <script src="../js/nutricion.js?v=20261125.1"></script>
@@ -130,6 +137,7 @@
   <script src="js/programas-manager.js?v=20261126.2"></script>
   <script src="js/videos-manager.js?v=20261126.3"></script>
   <script src="js/planes-nutricionales-manager.js?v=20261126.4"></script>
-  <script src="js/libreria.js?v=20261126.4"></script>
+  <script src="js/formularios-libreria.js?v=20261127.1"></script>
+  <script src="js/libreria.js?v=20261127.1"></script>
 </body>
 </html>

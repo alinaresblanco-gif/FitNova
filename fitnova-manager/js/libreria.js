@@ -305,6 +305,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     else if (pestana === 'videos') libAccion('nuevo-video');
     else if (pestana === 'recetas') libAccion('nueva-receta');
     else if (pestana === 'nutricion') libAccion('nuevo-plan');
+    else if (pestana === 'formularios') FormulariosMgr.abrir();
     else openModal('modal-crear-item');
   });
   document.querySelector('.page-body').addEventListener('click', (event) => {
@@ -318,5 +319,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('lib-error').textContent = e.message;
     return;
   }
-  await libCargar();
+  await Promise.all([libCargar(), FormulariosMgr.iniciar()]);
 });

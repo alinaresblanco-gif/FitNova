@@ -28,10 +28,16 @@ test('Agenda: permisos, persistencia, estados y solapamientos en PostgreSQL', as
       create role service_role bypassrls;
       create schema auth;
       create schema extensions;
+      create schema storage;
+      create table storage.buckets (id text primary key, name text, public boolean, file_size_limit int, allowed_mime_types text[]);
+      create table storage.objects (bucket_id text, name text, metadata jsonb);
+      alter table storage.objects enable row level security;
       create table auth.users (id uuid primary key, email text);
       create function auth.uid() returns uuid language sql stable as
         $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
       grant usage on schema auth, public to authenticated, anon;
+      grant usage on schema storage to authenticated;
+      grant select, insert, delete on storage.objects to authenticated;
       grant execute on function auth.uid() to authenticated, anon;
       alter default privileges in schema public grant all on tables to anon, authenticated;
       alter default privileges in schema public grant execute on functions to anon;

@@ -1,10 +1,11 @@
-const CACHE_NAME = 'fitnova-go-2026.11.26.6';
+const CACHE_NAME = 'fitnova-go-2026.11.27.1';
 const APP_SHELL = [
   './',
   './index.html',
   './agenda.html',
   './videos.html',
   './comunicacion.html',
+  './seguimiento.html',
   './perfil.html',
   './ajustes.html',
   './placeholder.html',
@@ -19,6 +20,8 @@ const APP_SHELL = [
   '../js/comunicacion.js',
   '../js/comunicacion-header.js',
   '../js/chat.js',
+  '../js/archivos-seguimiento.js',
+  '../js/formularios-seguimiento.js',
   '../css/comunicacion.css',
   '../js/metricas.js',
   '../js/fotos-progreso.js',

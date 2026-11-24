@@ -46,15 +46,15 @@
           <div class="list-toolbar-left">
             <div class="search-box">
               <span class="ico">🔍</span>
-              <input type="text" placeholder="Buscar colaborador..." />
+              <input type="text" id="equipo-buscar" placeholder="Buscar colaborador..." />
             </div>
-            <button class="btn-outline">🧰 Filtros</button>
           </div>
           <div class="list-toolbar-right">
-            <button class="btn-secondary" onclick="openModal('modal-invitar')">➕ Invitar colaborador</button>
+            <button class="btn-secondary" id="equipo-abrir-invitar" onclick="openModal('modal-invitar')">➕ Invitar colaborador</button>
           </div>
         </div>
 
+        <p id="equipo-lista-error" role="alert" style="color:var(--rojo);"></p>
         <table class="data-table">
           <thead>
             <tr>
@@ -66,30 +66,7 @@
               <th></th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td class="cell-user">
-                <div class="avatar-sm">AM</div>
-                <div><strong>Ana Martínez</strong><span>ana.martinez@fitnova.app</span></div>
-              </td>
-              <td><span class="tag">Administradora</span></td>
-              <td>2</td>
-              <td><span class="status-dot">Activo</span></td>
-              <td>Hoy · 09:12</td>
-              <td><button class="btn-ghost">Editar</button></td>
-            </tr>
-            <tr>
-              <td class="cell-user">
-                <div class="avatar-sm">JL</div>
-                <div><strong>Javier Lopez</strong><span>javier.lopez@fitnova.app</span></div>
-              </td>
-              <td><span class="tag">Entrenador</span></td>
-              <td>0</td>
-              <td><span class="status-dot off">Invitación enviada</span></td>
-              <td>—</td>
-              <td><button class="btn-ghost">Reenviar</button></td>
-            </tr>
-          </tbody>
+          <tbody id="equipo-lista"><tr><td colspan="6">Cargando equipo...</td></tr></tbody>
         </table>
       </section>
 
@@ -97,20 +74,13 @@
         <section class="card">
           <p class="card-title">🛡️ Roles y permisos</p>
           <div class="mini-list">
-            <div class="mini-list-item"><div class="info"><strong>Administrador</strong><span>Acceso total a clientes, negocio y equipo</span></div></div>
-            <div class="mini-list-item"><div class="info"><strong>Entrenador</strong><span>Gestiona sus clientes asignados y agenda</span></div></div>
-            <div class="mini-list-item"><div class="info"><strong>Nutricionista</strong><span>Planes nutricionales y recetas</span></div></div>
-            <div class="mini-list-item"><div class="info"><strong>Recepción</strong><span>Agenda y mensajería, sin datos de facturación</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Entrenador y nutricionista</strong><span>Acceden a los clientes asignados y a su seguimiento.</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Recepción</strong><span>Accede a datos básicos de clientes asignados, sin acceso clínico ni chat.</span></div></div>
           </div>
         </section>
         <section class="card">
-          <p class="card-title">📨 Invitaciones pendientes <span class="count-pill">1</span></p>
-          <div class="mini-list">
-            <div class="mini-list-item">
-              <div class="info"><strong>Javier Lopez</strong><span>Enviada hace 2 días</span></div>
-              <button class="btn-ghost">Cancelar</button>
-            </div>
-          </div>
+          <p class="card-title">📨 Invitaciones pendientes</p>
+          <div class="mini-list" id="equipo-invitaciones"><p>Cargando...</p></div>
         </section>
       </div>
     </div>
@@ -126,18 +96,28 @@
       <input type="email" id="inv-email" placeholder="colaborador@email.com" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
       <label for="inv-rol">Rol</label>
       <select id="inv-rol" style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;">
-        <option>Entrenador</option>
-        <option>Nutricionista</option>
-        <option>Recepción</option>
-        <option>Administrador</option>
+        <option value="entrenador">Entrenador</option>
+        <option value="nutricionista">Nutricionista</option>
+        <option value="recepcion">Recepción</option>
       </select>
-      <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="closeModal('modal-invitar')">Enviar invitación</button>
+      <button class="btn-secondary" id="equipo-invitar" type="button" style="width:100%;justify-content:center;">Crear enlace</button>
+      <p>El enlace no se envía por correo automáticamente. Compártelo de forma privada; caduca en 7 días.</p>
+      <div id="equipo-enlace" hidden><label for="equipo-enlace-texto">Enlace de invitación</label><input id="equipo-enlace-texto" readonly style="width:100%;" /><button type="button" id="equipo-copiar">Copiar</button></div>
+      <p id="equipo-error" role="alert"></p>
     </div>
   </div>
 
+  <div class="modal-overlay" id="modal-equipo-clientes">
+    <div class="modal">
+      <div class="modal-header"><h2 id="equipo-clientes-titulo">Clientes asignados</h2><button class="modal-close" onclick="closeModal('modal-equipo-clientes')">✕</button></div>
+      <p>Solo puedes asignar tus clientes propios. Los accesos independientes se conservan. Si el profesional pierde todo acceso al cliente, se cancelan sus citas futuras programadas con él.</p>
+      <div id="equipo-clientes-lista"></div><p id="equipo-clientes-error" role="alert"></p>
+    </div>
+  </div>
   <script src="js/app.js?v=20260924.2"></script>
   <script src="js/supabase-client.js?v=20261126.6"></script>
+  <script src="js/equipo.js?v=20261127.1"></script>
   <script src="../js/comunicacion.js?v=20261126.3"></script>
-  <script src="../js/comunicacion-header.js?v=20261126.2"></script>
+  <script src="../js/comunicacion-header.js?v=20261127.1"></script>
 </body>
 </html>

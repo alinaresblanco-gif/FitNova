@@ -74,6 +74,9 @@
   <script src="js/app.js?v=20260930.1"></script>
   <script src="js/supabase-client.js?v=20261126.6"></script>
   <script>
+    function destinoAcceso() {
+      return new URLSearchParams(location.search).get('equipo') === '1' ? 'equipo-invitacion.html' : 'index.html';
+    }
     async function iniciarSesion() {
       const email = document.getElementById('li-email').value.trim();
       const password = document.getElementById('li-password').value;
@@ -98,7 +101,7 @@
         return;
       }
 
-      window.location.href = 'index.html';
+      window.location.href = destinoAcceso();
     }
 
     async function completarPerfilProfesional() {
@@ -117,7 +120,7 @@
         p_nombre: nombre, p_apellidos: apellidos || null, p_rol: rol,
       });
       if (error) { errorEl.textContent = error.message; return; }
-      window.location.href = 'index.html';
+      window.location.href = destinoAcceso();
     }
 
     async function crearCuenta() {
@@ -143,7 +146,7 @@
         p_nombre: nombre, p_apellidos: apellidos, p_rol: rol,
       });
       if (rpcError) { errorEl.textContent = rpcError.message; return; }
-      window.location.href = 'index.html';
+      window.location.href = destinoAcceso();
     }
   </script>
 </body>
