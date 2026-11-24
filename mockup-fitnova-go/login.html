@@ -38,7 +38,8 @@
         <p id="login-error" style="color:#E5484D;font-size:12.5px;margin-top:10px;"></p>
         <p id="login-info" style="color:#1da976;font-size:12.5px;margin-top:4px;"></p>
 
-        <button class="btn-link" style="margin-top:10px;" onclick="recuperarPassword()">He olvidado mi contraseña</button>
+        <button class="btn-link" id="recuperar-btn" style="margin-top:10px;" onclick="recuperarPassword()">He olvidado mi contraseña</button>
+        <button class="btn-link" id="login-salir" type="button" hidden onclick="salirDelAcceso()">Cerrar la sesión actual</button>
       </section>
 
       <section class="card">
@@ -51,7 +52,8 @@
     </main>
   </div>
 
-  <script src="js/supabase-client.js?v=20261126.6"></script>
+  <script src="js/supabase-client.js?v=20261201.3"></script>
+  <script src="../js/recuperacion.js?v=20261201.1"></script>
   <script>
     async function iniciarSesionGo() {
       const email = document.getElementById('login-email').value.trim();
@@ -66,41 +68,68 @@
         return;
       }
 
-      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-      if (error) {
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        await continuarConSesion(data.session);
+      } catch (error) {
         errorEl.textContent = error.message === 'Invalid login credentials'
           ? 'Email o contraseña incorrectos.'
-          : error.message;
+          : `No se pudo iniciar sesión: ${error.message}`;
+      }
+    }
+
+    async function continuarConSesion(session) {
+      if (!session) {
+        document.getElementById('login-error').textContent = 'No se pudo iniciar una sesión. Inténtalo de nuevo.';
         return;
       }
-
+      document.getElementById('login-salir').hidden = false;
+      const { data: cliente, error } = await supabaseClient.from('clientes')
+        .select('id').eq('auth_user_id', session.user.id).maybeSingle();
+      if (error) {
+        document.getElementById('login-error').textContent = `No se pudo comprobar tu perfil: ${error.message}`;
+        return;
+      }
+      if (!cliente) {
+        document.getElementById('login-info').textContent =
+          'Tu cuenta aún no tiene un perfil completo. Abre de nuevo el enlace de invitación para repetir el cuestionario.';
+        return;
+      }
       window.location.href = 'index.html';
     }
 
+    async function salirDelAcceso() {
+      try {
+        const { error } = await supabaseClient.auth.signOut({ scope: 'local' });
+        if (error) throw error;
+      } catch (error) {
+        document.getElementById('login-error').textContent = `No se pudo cerrar la sesión: ${error.message}`;
+        return;
+      }
+      document.getElementById('login-salir').hidden = true;
+      document.getElementById('login-info').textContent = '';
+      document.getElementById('login-error').textContent = '';
+    }
+
     async function recuperarPassword() {
-      const email = document.getElementById('login-email').value.trim();
-      const errorEl = document.getElementById('login-error');
-      const infoEl = document.getElementById('login-info');
-      errorEl.textContent = '';
-      infoEl.textContent = '';
-
-      if (!email) {
-        errorEl.textContent = 'Escribe tu email y vuelve a pulsar "He olvidado mi contraseña".';
-        return;
-      }
-
-      const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
-      if (error) {
-        errorEl.textContent = error.message;
-        return;
-      }
-      infoEl.textContent = 'Te hemos enviado un email con instrucciones para restablecer la contraseña.';
+      await FitNovaRecuperacion.solicitar(supabaseClient, {
+        email: document.getElementById('login-email'),
+        error: document.getElementById('login-error'),
+        info: document.getElementById('login-info'),
+        boton: document.getElementById('recuperar-btn'),
+      });
     }
 
     // Si ya hay sesión, entra directamente.
     document.addEventListener('DOMContentLoaded', async () => {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (session) window.location.href = 'index.html';
+      try {
+        const { data: { session }, error } = await supabaseClient.auth.getSession();
+        if (error) throw error;
+        if (session) await continuarConSesion(session);
+      } catch (error) {
+        document.getElementById('login-error').textContent = `No se pudo comprobar la sesión: ${error.message}`;
+      }
     });
   </script>
 </body>

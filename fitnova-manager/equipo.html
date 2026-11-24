@@ -70,6 +70,12 @@
         </table>
       </section>
 
+      <section class="card">
+        <p class="card-title">Profesionales de mis equipos</p>
+        <p>Compañeros y responsables de los equipos a los que perteneces.</p>
+        <div id="equipo-companeros"><p>Cargando...</p></div>
+      </section>
+
       <div class="bottom-grid" style="grid-template-columns:repeat(2,1fr);">
         <section class="card">
           <p class="card-title">🛡️ Roles y permisos</p>
@@ -100,9 +106,11 @@
         <option value="nutricionista">Nutricionista</option>
         <option value="recepcion">Recepción</option>
       </select>
-      <button class="btn-secondary" id="equipo-invitar" type="button" style="width:100%;justify-content:center;">Crear enlace</button>
-      <p>El enlace no se envía por correo automáticamente. Compártelo de forma privada; caduca en 7 días.</p>
+      <button class="btn-secondary" id="equipo-invitar" type="button" style="width:100%;justify-content:center;">Invitar colaborador</button>
+      <p>También puedes compartir el enlace de forma privada; caduca en 7 días.</p>
       <div id="equipo-enlace" hidden><label for="equipo-enlace-texto">Enlace de invitación</label><input id="equipo-enlace-texto" readonly style="width:100%;" /><button type="button" id="equipo-copiar">Copiar</button></div>
+      <p id="equipo-correo-estado" role="status"></p>
+      <button id="equipo-correo-reintentar" type="button" hidden>Reintentar correo</button>
       <p id="equipo-error" role="alert"></p>
     </div>
   </div>
@@ -115,8 +123,9 @@
     </div>
   </div>
   <script src="js/app.js?v=20260924.2"></script>
-  <script src="js/supabase-client.js?v=20261126.6"></script>
-  <script src="js/equipo.js?v=20261127.1"></script>
+  <script src="js/supabase-client.js?v=20261201.4"></script>
+  <script src="js/correo-invitacion.js?v=20261201.1"></script>
+  <script src="js/equipo.js?v=20261201.4"></script>
   <script src="../js/comunicacion.js?v=20261126.3"></script>
   <script src="../js/comunicacion-header.js?v=20261127.1"></script>
 </body>

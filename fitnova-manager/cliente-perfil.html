@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=1280, initial-scale=1.0" />
 <title>FitNova Manager · Perfil de cliente</title>
 <link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
-<link rel="stylesheet" href="css/styles.css?v=20260924.2" />
+<link rel="stylesheet" href="css/styles.css?v=20261201.3" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <link rel="stylesheet" href="../css/comunicacion.css?v=20261126.1" />
 </head>
@@ -45,6 +45,7 @@
       <!-- Cabecera fija del cliente -->
       <div class="client-header">
         <div class="avatar-lg" id="cp-iniciales">BD</div>
+        <img id="cp-foto" class="avatar-lg" alt="Foto de perfil del cliente" style="object-fit:cover;" hidden />
         <div class="client-info">
           <h2 id="cp-nombre-2" style="margin:0 0 4px;font-size:20px;color:var(--azul);">Cargando...</h2>
           <div class="client-meta">
@@ -52,6 +53,7 @@
             <span class="tag" id="cp-email"></span>
             <span id="cp-actividad">Última actividad: —</span>
           </div>
+          <p id="cp-foto-error" role="status" style="color:#b3261e;font-size:12px;margin:4px 0 0;"></p>
         </div>
         <div class="client-actions">
           <a href="chat.html" id="cp-chat" class="btn-outline">💬 Enviar mensaje</a>
@@ -215,19 +217,7 @@
         </div>
 
         <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="pagos">
-          <table class="data-table">
-            <thead>
-              <tr><th>Plan</th><th>Precio</th><th>Estado</th><th>Próximo cobro</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Plan Premium</td>
-                <td>49,00 €/mes</td>
-                <td><span class="status-dot">Al día</span></td>
-                <td>01/10/2026</td>
-              </tr>
-            </tbody>
-          </table>
+          <p>Los pagos y suscripciones aún no están disponibles. No hay información de cobro que mostrar.</p>
         </div>
 
         <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="historial">
@@ -257,7 +247,7 @@
   </div>
 
   <script src="js/app.js?v=20260924.2"></script>
-  <script src="js/supabase-client.js?v=20261126.6"></script>
+  <script src="js/supabase-client.js?v=20261201.4"></script>
   <script src="../js/comunicacion.js?v=20261126.3"></script>
   <script src="../js/comunicacion-header.js?v=20261127.1"></script>
   <script src="../js/sesiones.js?v=20261123.2"></script>
@@ -274,7 +264,7 @@
   <script src="js/planes-nutricionales-manager.js?v=20261126.4"></script>
   <script src="js/cliente-planes-nutricionales.js?v=20261126.4"></script>
   <script src="js/cliente-entrenos.js?v=20261126.2"></script>
-  <script src="js/cliente-perfil.js?v=20261126.1"></script>
+  <script src="js/cliente-perfil.js?v=20261201.3"></script>
   <script src="js/tareas.js?v=20261126.1"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {

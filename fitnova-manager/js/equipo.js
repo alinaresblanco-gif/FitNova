@@ -38,8 +38,52 @@ async function equipoCargar() {
     equipoEstado.miembros = miembros;
     equipoEstado.invitaciones = resultado.data;
     equipoPintar();
+    await equipoCargarCompaneros();
   } catch (error) {
     errorEl.textContent = `No se pudo cargar el equipo: ${error.message}`;
+  }
+}
+
+async function equipoCargarCompaneros() {
+  const cont = document.getElementById('equipo-companeros');
+  try {
+    const companeros = await equipoRpc('equipo_companeros');
+    cont.innerHTML = companeros.length ? companeros.map((p) => `
+      <div class="mini-list-item">
+        <div class="avatar-sm" data-companero="${equipoEsc(p.id)}">${equipoEsc(p.nombre.trim().charAt(0).toUpperCase())}</div>
+        <div class="info"><strong>${equipoEsc(p.nombre)}</strong></div>
+      </div>`).join('') : '<p>No hay otros profesionales en tus equipos.</p>';
+    const avisarFoto = () => {
+      if (cont.querySelector('[data-foto-error]')) return;
+      const aviso = document.createElement('p');
+      aviso.dataset.fotoError = '';
+      aviso.setAttribute('role', 'status');
+      aviso.textContent = 'No se pudieron cargar algunas fotos. Vuelve a abrir Equipo.';
+      cont.appendChild(aviso);
+    };
+    let fallo = false;
+    await Promise.all(companeros.filter((p) => p.foto_perfil).map(async (p) => {
+      try {
+        const { data, error } = await supabaseClient.storage.from('profesionales-fotos')
+          .createSignedUrl(`${p.id}/perfil.jpg`, 3600);
+        if (error || !data?.signedUrl) throw error || new Error('No se pudo obtener la foto.');
+        cont.querySelectorAll('[data-companero]').forEach((avatar) => {
+          if (avatar.dataset.companero !== p.id) return;
+          const img = document.createElement('img');
+          img.alt = `Foto de ${p.nombre}`;
+          img.style.cssText = 'width:100%;height:100%;border-radius:50%;object-fit:cover;';
+          img.onload = () => { avatar.textContent = ''; avatar.appendChild(img); };
+          img.onerror = avisarFoto;
+          img.src = data.signedUrl;
+        });
+      } catch (error) {
+        console.error('Error al cargar foto de equipo:', error);
+        fallo = true;
+      }
+    }));
+    if (fallo) avisarFoto();
+  } catch (error) {
+    cont.textContent = `No se pudieron cargar tus equipos: ${error.message}`;
   }
 }
 
@@ -56,6 +100,8 @@ async function equipoInvitar(email, rol) {
     url.hash = inv.token;
     document.getElementById('equipo-enlace-texto').value = url.href;
     document.getElementById('equipo-enlace').hidden = false;
+    enviarCorreoInvitacion('equipo', inv, document.getElementById('equipo-correo-estado'),
+      document.getElementById('equipo-correo-reintentar'));
     await equipoCargar();
   } catch (error) {
     errorEl.textContent = `No se pudo crear la invitación: ${error.message}`;
@@ -91,6 +137,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('inv-email').value = '';
     document.getElementById('equipo-enlace').hidden = true;
     document.getElementById('equipo-error').textContent = '';
+    document.getElementById('equipo-correo-estado').correoSolicitud = null;
+    document.getElementById('equipo-correo-estado').textContent = '';
+    document.getElementById('equipo-correo-reintentar').hidden = true;
   });
   document.getElementById('equipo-invitar').addEventListener('click', () =>
     equipoInvitar(document.getElementById('inv-email').value, document.getElementById('inv-rol').value));

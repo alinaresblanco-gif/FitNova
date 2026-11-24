@@ -50,16 +50,15 @@
         <section class="card">
           <div class="card-head">
             <p class="card-title">Accesos rápidos</p>
-            <button class="icon-round" title="Configurar accesos rápidos">⚙️</button>
           </div>
           <div class="quick-access-list">
             <a class="quick-access-item" href="libreria.html?tab=workouts">
               <div class="quick-access-ico">✨</div>
-              <div class="quick-access-text"><strong>Crea con IA tu Workout</strong><span>Entrenamientos + rápido</span></div>
+              <div class="quick-access-text"><strong>Crear workout</strong><span>Preparar un entrenamiento</span></div>
             </a>
             <a class="quick-access-item" href="libreria.html?tab=programas">
               <div class="quick-access-ico">✨</div>
-              <div class="quick-access-text"><strong>Crea con IA tu Programa</strong><span>Programas + rápido</span></div>
+              <div class="quick-access-text"><strong>Crear programa</strong><span>Planificar varias semanas</span></div>
             </a>
             <a class="quick-access-item" href="clientes.html">
               <div class="quick-access-ico">➕</div>
@@ -67,7 +66,7 @@
             </a>
             <a class="quick-access-item" href="libreria.html?tab=nutricion">
               <div class="quick-access-ico">✨</div>
-              <div class="quick-access-text"><strong>Crea con IA un Plan Nutri</strong><span>Tu asistente de nutrición</span></div>
+              <div class="quick-access-text"><strong>Crear plan nutricional</strong><span>Preparar un plan semanal</span></div>
             </a>
             <a class="quick-access-item" href="agenda.html?open=modal-nueva-sesion">
               <div class="quick-access-ico">📅</div>
@@ -75,7 +74,7 @@
             </a>
             <a class="quick-access-item" href="libreria.html?tab=videos">
               <div class="quick-access-ico">🎬</div>
-              <div class="quick-access-text"><strong>Sube tus vídeos</strong><span>Carga tu contenido</span></div>
+              <div class="quick-access-text"><strong>Añade vídeos</strong><span>Enlaza vídeos de YouTube o Vimeo</span></div>
             </a>
           </div>
         </section>
@@ -84,9 +83,9 @@
           <p class="card-title" style="margin-bottom:12px;">Suscripciones</p>
           <div class="empty-state" style="padding:18px 6px;">
             <div class="empty-icon">💳</div>
-            <h3>Automatiza tus cobros</h3>
-            <p>Activa los pagos integrados y controla el estado de tus clientes sin hojas de cálculo.</p>
-            <a href="negocio.html" class="btn-secondary">Activa Pagos FitNova</a>
+            <h3>Prepara tus planes</h3>
+            <p>Los pagos integrados todavía no están disponibles.</p>
+            <a href="negocio.html" class="btn-secondary">Ir a Negocio</a>
           </div>
         </section>
       </div>
@@ -98,11 +97,17 @@
             <div class="card-head-left">
               <p class="card-title">🕐 Actividad reciente <span class="count-pill" id="dashboard-actividad-count">0</span></p>
             </div>
-            <div class="card-head-tools">
-              <button class="icon-round" title="Buscar">🔍</button>
-              <button class="icon-round" title="Filtrar actividad">🧰</button>
-            </div>
           </div>
+          <label for="dashboard-buscar">Buscar en la actividad reciente</label>
+          <input id="dashboard-buscar" type="search" placeholder="Buscar por nombre o evento" />
+          <p style="font-size:12px;">Busca entre los últimos seis eventos de cada clase, no en todo el historial.</p>
+          <label for="dashboard-filtro">Tipo de actividad</label>
+          <select id="dashboard-filtro">
+            <option value="">Todos</option>
+            <option value="acceso">Accesos</option>
+            <option value="alta">Altas</option>
+            <option value="invitacion">Invitaciones</option>
+          </select>
           <div class="mini-list" id="dashboard-actividad">
             <div class="empty-state"><div class="empty-icon">⏳</div><h3>Cargando actividad...</h3></div>
           </div>
@@ -154,11 +159,11 @@
   </div>
 
   <script src="js/app.js?v=20260924.2"></script>
-  <script src="js/supabase-client.js?v=20261126.6"></script>
+  <script src="js/supabase-client.js?v=20261201.4"></script>
   <script src="../js/comunicacion.js?v=20261126.3"></script>
   <script src="../js/comunicacion-header.js?v=20261127.1"></script>
   <script src="../js/sesiones.js?v=20261123.2"></script>
-  <script src="js/dashboard.js?v=20261123.1"></script>
+  <script src="js/dashboard.js?v=20261201.4"></script>
   <script src="js/tareas.js?v=20261126.1"></script>
 </body>
 </html>

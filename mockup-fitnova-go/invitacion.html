@@ -41,14 +41,19 @@
         <input type="text" id="v1-apellidos" placeholder="Tus apellidos" />
         <label for="v1-email">Email</label>
         <input type="email" id="v1-email" readonly />
-        <label for="v1-password">Crea una contraseña</label>
-        <input type="password" id="v1-password" placeholder="Mínimo 8 caracteres" />
+        <p id="v1-sesion" role="status"></p>
+        <div id="v1-credenciales">
+          <label for="v1-password" id="v1-password-label">Crea una contraseña</label>
+          <input type="password" id="v1-password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" />
+          <button type="button" class="btn-link" id="v1-cambiar-modo" onclick="cambiarModoCuenta()">Ya tengo una cuenta</button>
+        </div>
+        <button type="button" class="btn-link" id="v1-cerrar-sesion" onclick="cerrarSesionInvitacion()" hidden>Cerrar la sesión actual</button>
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-top:10px;">
           <input type="checkbox" id="v1-terminos" style="width:auto;" />
           Acepto los <strong>términos y condiciones</strong> y la <strong>política de privacidad</strong>
         </label>
-        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="pasoCrearCuenta()">Continuar</button>
-        <p id="v1-error" style="color:#E5484D;font-size:12.5px;margin-top:10px;"></p>
+        <button id="v1-continuar" class="btn-primary" style="margin-top:16px;width:100%;" onclick="pasoCrearCuenta()">Continuar</button>
+        <p id="v1-error" role="alert" style="color:#E5484D;font-size:12.5px;margin-top:10px;"></p>
       </section>
 
       <!-- Ventana 2: género -->
@@ -60,25 +65,28 @@
           <button data-value="hombre" onclick="selectChip(this)">Hombre</button>
           <button data-value="no_especificado" onclick="selectChip(this)" class="active">Prefiero no decirlo</button>
         </div>
-        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="irVentana(3)">Continuar</button>
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="avanzarVentana(2)">Continuar</button>
+        <button class="btn-link" onclick="irVentana(1)">Volver</button><p id="v2-error" role="alert"></p>
       </section>
 
       <!-- Ventana 3: objetivo -->
       <section class="card" id="ventana-3" style="display:none;">
         <p class="card-title">¿Cuál es tu objetivo?</p>
         <div class="chip-select" id="v3-objetivo" style="flex-direction:column;">
-          <button data-value="perder_peso" onclick="selectChip(this)" class="active">Perder peso · Quemar grasa y definir músculo</button>
+          <button data-value="perder_peso" onclick="selectChip(this)">Perder peso · Quemar grasa y definir músculo</button>
           <button data-value="ponerme_en_forma" onclick="selectChip(this)">Ponerme en forma · Recomposición corporal</button>
           <button data-value="ganar_musculo" onclick="selectChip(this)">Ganar músculo · Ganar volumen y fuerza</button>
         </div>
-        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="irVentana(4)">Continuar</button>
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="avanzarVentana(3)">Continuar</button>
+        <button class="btn-link" onclick="irVentana(2)">Volver</button><p id="v3-error" role="alert"></p>
       </section>
 
       <!-- Ventana 4: fecha de nacimiento -->
       <section class="card" id="ventana-4" style="display:none;">
         <p class="card-title">¿Cuál es tu fecha de nacimiento?</p>
         <input type="date" id="v4-nacimiento" />
-        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="irVentana(5)">Continuar</button>
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="avanzarVentana(4)">Continuar</button>
+        <button class="btn-link" onclick="irVentana(3)">Volver</button><p id="v4-error" role="alert"></p>
       </section>
 
       <!-- Ventana 5: peso -->
@@ -86,7 +94,8 @@
         <p class="card-title">¿Cuánto pesas ahora mismo?</p>
         <label for="v5-peso">Peso (kg)</label>
         <input type="number" id="v5-peso" step="0.1" placeholder="Ej. 76,4" />
-        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="irVentana(6)">Continuar</button>
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="avanzarVentana(5)">Continuar</button>
+        <button class="btn-link" onclick="irVentana(4)">Volver</button><p id="v5-error" role="alert"></p>
       </section>
 
       <!-- Ventana 6: altura -->
@@ -94,38 +103,42 @@
         <p class="card-title">¿Cuánto mides?</p>
         <label for="v6-altura">Altura (cm)</label>
         <input type="number" id="v6-altura" placeholder="Ej. 175" />
-        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="irVentana(7)">Continuar</button>
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="avanzarVentana(6)">Continuar</button>
+        <button class="btn-link" onclick="irVentana(5)">Volver</button><p id="v6-error" role="alert"></p>
       </section>
 
       <!-- Ventanas 7-10: salud (PAR-Q) -->
       <section class="card" id="ventana-7" style="display:none;">
         <p class="card-title">Hablemos de tu estado de salud</p>
         <p style="font-size:13px;color:#55606f;">¿Alguna vez te ha diagnosticado un médico una enfermedad cardíaca, recomendándote que solo hagas actividad física supervisada por personal sanitario?</p>
-        <div class="chip-select" id="parq-1"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)" class="active">No</button></div>
+        <div class="chip-select" id="parq-1"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)">No</button></div>
         <p style="font-size:13px;color:#55606f;margin-top:16px;">¿Sufres dolor en el pecho cuando realizas actividad física?</p>
-        <div class="chip-select" id="parq-2"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)" class="active">No</button></div>
-        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="irVentana(8)">Continuar</button>
+        <div class="chip-select" id="parq-2"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)">No</button></div>
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="avanzarVentana(7)">Continuar</button>
+        <button class="btn-link" onclick="irVentana(6)">Volver</button><p id="v7-error" role="alert"></p>
       </section>
 
       <section class="card" id="ventana-8" style="display:none;">
         <p class="card-title">Sigamos con tu salud</p>
         <p style="font-size:13px;color:#55606f;">¿Has notado dolor en el pecho durante el último mes mientras estabas en reposo?</p>
-        <div class="chip-select" id="parq-3"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)" class="active">No</button></div>
+        <div class="chip-select" id="parq-3"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)">No</button></div>
         <p style="font-size:13px;color:#55606f;margin-top:16px;">¿Has perdido la consciencia o el equilibrio después de notar sensación de mareo?</p>
-        <div class="chip-select" id="parq-4"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)" class="active">No</button></div>
+        <div class="chip-select" id="parq-4"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)">No</button></div>
         <p style="font-size:13px;color:#55606f;margin-top:16px;">¿Tienes alguna alteración ósea o articular que podría agravarse con la actividad física?</p>
-        <div class="chip-select" id="parq-5"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)" class="active">No</button></div>
-        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="irVentana(9)">Continuar</button>
+        <div class="chip-select" id="parq-5"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)">No</button></div>
+        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="avanzarVentana(8)">Continuar</button>
+        <button class="btn-link" onclick="irVentana(7)">Volver</button><p id="v8-error" role="alert"></p>
       </section>
 
       <section class="card" id="ventana-9" style="display:none;">
         <p class="card-title">Últimas preguntas de salud</p>
         <p style="font-size:13px;color:#55606f;">¿Alguna vez te ha recetado el médico algún fármaco para la presión arterial u otro problema cardiocirculatorio?</p>
-        <div class="chip-select" id="parq-6"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)" class="active">No</button></div>
+        <div class="chip-select" id="parq-6"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)">No</button></div>
         <p style="font-size:13px;color:#55606f;margin-top:16px;">¿Conoces alguna otra razón médica que te impida hacer ejercicio sin supervisión?</p>
-        <div class="chip-select" id="parq-7"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)" class="active">No</button></div>
-        <button class="btn-primary" style="margin-top:16px;width:100%;" onclick="finalizarOnboarding()">Finalizar</button>
-        <p id="v9-error" style="color:#E5484D;font-size:12.5px;margin-top:10px;"></p>
+        <div class="chip-select" id="parq-7"><button data-value="true" onclick="selectChip(this)">Sí</button><button data-value="false" onclick="selectChip(this)">No</button></div>
+        <button id="v9-finalizar" class="btn-primary" style="margin-top:16px;width:100%;" onclick="finalizarOnboarding()">Finalizar</button>
+        <button class="btn-link" onclick="irVentana(8)">Volver</button>
+        <p id="v9-error" role="alert" style="color:#E5484D;font-size:12.5px;margin-top:10px;"></p>
       </section>
 
       <!-- Estado final -->
@@ -137,7 +150,7 @@
   </div>
 
   <script src="js/app.js?v=20261126.6"></script>
-  <script src="js/supabase-client.js?v=20261126.6"></script>
-  <script src="js/invitacion.js?v=20260930.1"></script>
+  <script src="js/supabase-client.js?v=20261201.3"></script>
+  <script src="js/invitacion.js?v=20261201.3"></script>
 </body>
 </html>

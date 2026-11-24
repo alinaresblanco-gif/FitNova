@@ -808,6 +808,7 @@ button:disabled { opacity: .6; cursor: wait; }
   justify-content: center;
   flex-shrink: 0;
 }
+.client-header .avatar-lg[hidden] { display: none; }
 
 .client-header .client-info { flex: 1; min-width: 200px; }
 .client-header .client-info h1 { margin: 0 0 4px; font-size: 20px; color: var(--azul); }

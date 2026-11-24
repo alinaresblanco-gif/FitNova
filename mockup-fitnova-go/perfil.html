@@ -21,9 +21,12 @@
     <main class="app-content">
 
       <div class="profile-summary">
-        <button class="icon-square" style="width:64px;height:64px;" title="Cambiar foto">
-          <img src="../imagenes/LOGO-FITNOVA USUARIO.png" alt="Foto de perfil" />
+        <button class="icon-square" id="foto-perfil-elegir" type="button" style="width:64px;height:64px;" title="Cambiar foto">
+          <img data-foto-perfil src="../imagenes/LOGO-FITNOVA USUARIO.png" alt="Foto de perfil" />
         </button>
+        <input id="foto-perfil-archivo" type="file" accept="image/jpeg,image/png,image/webp" hidden />
+        <button id="foto-perfil-borrar" type="button" class="btn-link">Eliminar foto</button>
+        <p id="foto-perfil-mensaje" role="status" style="font-size:12px;"></p>
         <h2 id="pf-nombre">—</h2>
       </div>
 
@@ -163,9 +166,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="js/supabase-client.js?v=20261126.6"></script>
+  <script src="js/supabase-client.js?v=20261201.3"></script>
   <script src="../js/metricas.js?v=20261124.2"></script>
+  <script src="../js/fotos-progreso.js?v=20261124.2"></script>
   <script src="js/app.js?v=20261126.6"></script>
-  <script src="js/perfil.js?v=20261124.2"></script>
+  <script src="js/foto-perfil.js?v=20261201.3"></script>
+  <script src="js/perfil.js?v=20261201.4"></script>
 </body>
 </html>

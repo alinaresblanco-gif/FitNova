@@ -25,9 +25,12 @@
           Mi perfil <span class="chevron">⌄</span>
         </div>
         <div class="accordion-body">
-          <button class="icon-square" style="width:64px;height:64px;" title="Cambiar foto">
-            <img src="../imagenes/LOGO-FITNOVA USUARIO.png" alt="Foto de perfil" />
+          <button class="icon-square" id="foto-perfil-elegir" type="button" style="width:64px;height:64px;" title="Cambiar foto">
+            <img data-foto-perfil src="../imagenes/LOGO-FITNOVA USUARIO.png" alt="Foto de perfil" />
           </button>
+          <input id="foto-perfil-archivo" type="file" accept="image/jpeg,image/png,image/webp" hidden />
+          <button id="foto-perfil-borrar" type="button" class="btn-link">Eliminar foto</button>
+          <p id="foto-perfil-mensaje" role="status" style="font-size:12px;"></p>
 
           <p class="section-title">Datos personales</p>
           <div class="field-row">
@@ -46,6 +49,8 @@
           <input type="password" id="perfil-password" placeholder="Déjalo vacío para no cambiarla" autocomplete="new-password" />
 
           <p class="section-title">Datos de facturación</p>
+          <p>La configuración fiscal todavía no está disponible.</p>
+          <fieldset disabled style="border:0;padding:0;margin:0;">
           <div class="field-row">
             <div><label for="fact-dni">DNI</label><input id="fact-dni" /></div>
             <div><label for="fact-cp">Código postal</label><input id="fact-cp" /></div>
@@ -58,6 +63,7 @@
           </div>
           <label for="fact-pais">País</label>
           <input id="fact-pais" />
+          </fieldset>
 
           <button class="btn-primary" style="margin-top:16px;" onclick="guardarMiPerfil()">Guardar cambios</button>
           <p id="perfil-msg" style="font-size:12.5px;margin-top:8px;"></p>
@@ -95,9 +101,7 @@
           Métodos de pago <span class="chevron">⌄</span>
         </div>
         <div class="accordion-body">
-          <div class="list-item"><span>💳 Visa · •••• 4321</span><span>Predeterminada</span></div>
-          <div class="list-item"><span>💳 Mastercard · •••• 8890</span><span></span></div>
-          <button class="btn-secondary" style="margin-top:12px;">Introducir nueva forma de pago</button>
+          <p>Los métodos de pago aún no están disponibles.</p>
         </div>
       </div>
 
@@ -107,18 +111,19 @@
           Ajustes <span class="chevron">⌄</span>
         </div>
         <div class="accordion-body">
+          <p>Estas preferencias todavía no están disponibles.</p>
           <label for="ajuste-medidas">Sistema de medidas</label>
-          <select id="ajuste-medidas">
+          <select id="ajuste-medidas" disabled>
             <option>Internacional (Kg/m)</option>
             <option>Imperial (Lb/inches)</option>
           </select>
           <label for="ajuste-notif">Notificaciones</label>
-          <select id="ajuste-notif">
+          <select id="ajuste-notif" disabled>
             <option>Activadas</option>
             <option>Desactivadas</option>
           </select>
           <label for="ajuste-idioma">Idioma</label>
-          <select id="ajuste-idioma">
+          <select id="ajuste-idioma" disabled>
             <option>Español</option>
             <option>English</option>
           </select>
@@ -134,8 +139,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="js/supabase-client.js?v=20261126.6"></script>
+  <script src="js/supabase-client.js?v=20261201.3"></script>
+  <script src="../js/fotos-progreso.js?v=20261124.2"></script>
   <script src="js/app.js?v=20261126.6"></script>
-  <script src="js/ajustes.js?v=20261111.1"></script>
+  <script src="js/foto-perfil.js?v=20261201.3"></script>
+  <script src="js/ajustes.js?v=20261201.3"></script>
 </body>
 </html>

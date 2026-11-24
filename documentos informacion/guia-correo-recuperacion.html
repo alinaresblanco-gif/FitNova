@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitNova · Configurar correo y recuperación</title>
+<style>
+body{font-family:system-ui,sans-serif;line-height:1.6;color:#0a1a2f;background:#f4f6fa;margin:0}
+main{max-width:900px;margin:auto;padding:28px 20px 60px}section{background:#fff;border:1px solid #dce3ec;border-radius:12px;padding:20px;margin:16px 0}
+h1,h2{line-height:1.25}a{color:#1955ac}code{background:#edf1f7;padding:2px 4px;overflow-wrap:anywhere}
+.aviso{background:#fff3e9;border-left:4px solid #ff6a00;padding:16px}
+</style>
+</head>
+<body><main>
+<h1>Correo y recuperación de cuentas</h1>
+<p class="aviso"><strong>Estado:</strong> las pantallas están incluidas en esta versión y la migración y la función de invitaciones están desplegadas en Supabase. Las pruebas de recuperación y envío son simuladas: Resend no está configurado y no se ha probado la entrega real. Las invitaciones siguen compartiéndose manualmente.</p>
+<section>
+<h2>1. Lo que necesitas preparar</h2>
+<ol>
+<li>Registrar un dominio propio y crear una cuenta en <a href="https://resend.com/">Resend</a>.</li>
+<li>Añadir el dominio o subdominio de envío en Resend y configurar en el proveedor del dominio los registros DNS indicados por Resend. Esperar a que figure verificado.</li>
+<li>Elegir una dirección remitente del dominio verificado y generar una clave de API con permisos de envío. No pegues la clave en el chat ni la guardes en el repositorio.</li>
+<li>Desactivar el seguimiento de clics para correos transaccionales que contengan enlaces privados.</li>
+</ol>
+<p>Consulta las instrucciones oficiales de <a href="https://resend.com/docs/dashboard/domains/introduction">dominios de Resend</a> y <a href="https://resend.com/docs/send-with-supabase-smtp">SMTP con Supabase</a>. Comprueba costes y límites del plan elegido antes de activarlo.</p>
+</section>
+<section>
+<h2>2. Qué debe configurarse después en Supabase</h2>
+<ul>
+<li>Para los correos de recuperación, configurar SMTP de Auth con host <code>smtp.resend.com</code>, puerto <code>465</code>, usuario <code>resend</code>, clave de API como contraseña y remitente del dominio verificado. La clave se introduce directamente en Supabase.</li>
+<li>Para invitaciones, configurar como secretos de la Edge Function <code>RESEND_API_KEY</code> y <code>FITNOVA_EMAIL_FROM</code> (por ejemplo, <code>FitNova &lt;invitaciones@tu-dominio.example&gt;</code>). Los secretos se introducen directamente en Supabase, no en archivos ni en el chat.</li>
+<li>La migración <code>20261127130000_correo_invitaciones.sql</code> y la función <code>enviar-invitacion</code> ya se han desplegado. No hacer un <code>config push</code> completo sin revisar las diferencias: el archivo local contiene valores distintos a los remotos.</li>
+<li>Los dos retornos públicos de recuperación de GitHub Pages ya se han autorizado en Auth. Si se cambia el dominio de las apps, actualizar las URL permitidas y los destinos fijos de la función de invitaciones antes de probar.</li>
+<li>No activar todavía la confirmación obligatoria de email: el alta interrumpida de Go debe resolverse y probarse primero. Tampoco se ha cambiado esa opción al preparar este bloque.</li>
+</ul>
+<p>El SMTP predeterminado de Supabase está limitado a direcciones autorizadas del equipo y no es adecuado para enviar a clientes generales. La aceptación de Resend no demuestra la entrega en la bandeja; todavía no hay webhooks para registrar entregas o rebotes.</p>
+</section>
+<section>
+<h2>3. Prueba antes de dar el bloque por cerrado</h2>
+<ol>
+<li>Con cuentas y destinatarios de prueba autorizados, comprobar recuperación en Go y Manager: recepción, enlace válido, enlace caducado o utilizado y acceso con la nueva contraseña.</li>
+<li>Comprobar que una sesión existente de cada aplicación no se sustituye durante la recuperación de otra cuenta y que se mantiene el retorno a la invitación de equipo cuando se utiliza el mismo navegador.</li>
+<li>Invitar y reenviar tanto a un cliente como a un colaborador; verificar llegada del email, validez del enlace, aceptación y acceso.</li>
+<li>Provocar un fallo de envío: debe mantenerse el enlace manual y ofrecerse reintento sin afirmar que el correo ha llegado. La función registra intentos y la aceptación del proveedor, no la entrega final.</li>
+<li>Los límites acordados para invitaciones son 30 intentos por profesional en una hora y 300 en total durante 24 horas. Los fallos también cuentan. Los correos de Auth tienen límites propios de Supabase.</li>
+</ol>
+</section>
+</main></body>
+</html>

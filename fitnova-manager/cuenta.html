@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1280, initial-scale=1.0" />
+<title>FitNova Manager · Mi cuenta</title>
+<link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
+<link rel="stylesheet" href="css/styles.css?v=20261201.3" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body data-view="cuenta">
+  <header class="topbar">
+    <a href="index.html" class="topbar-brand"><img src="../imagenes/LOGO FITNOVA MANAGER.png" alt="FitNova Manager" /></a>
+    <nav class="topbar-nav">
+      <a href="index.html" class="topbar-link">Inicio</a>
+      <a href="clientes.html" class="topbar-link">Clientes</a>
+      <a href="equipo.html" class="topbar-link">Equipo</a>
+      <a href="libreria.html" class="topbar-link">Librería</a>
+      <a href="agenda.html" class="topbar-link">Agenda</a>
+      <a href="negocio.html" class="topbar-link">Negocio</a>
+    </nav>
+  </header>
+  <main class="app-shell">
+    <div class="page-header"><p class="breadcrumb"><a href="index.html">Inicio</a> / Mi cuenta</p><h1>Mi cuenta</h1></div>
+    <div class="page-body single">
+      <section class="card">
+        <h2>Perfil profesional</h2>
+        <p>Tu foto es privada y pueden verla tus clientes asignados y los profesionales de tus equipos.</p>
+        <div class="client-header">
+          <div class="avatar-lg" id="cuenta-inicial">—</div>
+          <img class="avatar-lg" id="cuenta-foto" alt="Tu foto de perfil" style="object-fit:cover;" hidden />
+          <div>
+            <button type="button" class="btn-outline" id="cuenta-elegir-foto">Elegir foto</button>
+            <button type="button" class="btn-ghost" id="cuenta-borrar-foto">Eliminar foto</button>
+            <input id="cuenta-archivo" type="file" accept="image/jpeg,image/png,image/webp" hidden />
+            <p id="cuenta-foto-mensaje" role="status"></p>
+          </div>
+        </div>
+        <form id="cuenta-perfil-form">
+          <label for="cuenta-nombre">Nombre</label>
+          <input id="cuenta-nombre" maxlength="100" required />
+          <label for="cuenta-apellidos">Apellidos</label>
+          <input id="cuenta-apellidos" maxlength="150" />
+          <label for="cuenta-email">Email</label>
+          <input id="cuenta-email" type="email" readonly />
+          <label for="cuenta-rol">Rol de cuenta</label>
+          <input id="cuenta-rol" readonly />
+          <p>El email y el rol no se cambian desde aquí. El rol de equipo se gestiona por separado.</p>
+          <button class="btn-primary" type="submit">Guardar perfil</button>
+          <p id="cuenta-perfil-mensaje" role="status"></p>
+        </form>
+      </section>
+      <section class="card">
+        <h2>Cambiar contraseña</h2>
+        <form id="cuenta-clave-form">
+          <label for="cuenta-clave">Nueva contraseña</label>
+          <input id="cuenta-clave" type="password" minlength="8" autocomplete="new-password" required />
+          <label for="cuenta-clave-confirmar">Repite la contraseña</label>
+          <input id="cuenta-clave-confirmar" type="password" minlength="8" autocomplete="new-password" required />
+          <button class="btn-primary" type="submit">Cambiar contraseña</button>
+          <p id="cuenta-clave-mensaje" role="status"></p>
+        </form>
+      </section>
+      <section class="card">
+        <button type="button" class="btn-outline" id="cuenta-salir">Cerrar sesión</button>
+      </section>
+    </div>
+  </main>
+  <script src="js/app.js?v=20260924.2"></script>
+  <script src="js/supabase-client.js?v=20261201.4"></script>
+  <script src="../js/fotos-progreso.js?v=20261124.2"></script>
+  <script src="js/cuenta.js?v=20261201.4"></script>
+</body>
+</html>

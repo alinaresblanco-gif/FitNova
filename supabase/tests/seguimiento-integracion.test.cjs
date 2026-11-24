@@ -22,7 +22,7 @@ test('Equipo, archivos y formularios con todas las migraciones y RLS reales', as
       create table storage.objects (bucket_id text,name text,metadata jsonb);
       alter table storage.objects enable row level security;
       grant usage on schema public,auth,storage to authenticated,anon;
-      grant select,insert,delete on storage.objects to authenticated;
+      grant select,insert,update,delete on storage.objects to authenticated;
       alter default privileges in schema public grant all on tables to anon,authenticated;
       alter default privileges in schema public grant execute on functions to anon;
     `);
@@ -32,13 +32,14 @@ test('Equipo, archivos y formularios con todas las migraciones y RLS reales', as
     }
     await db.exec(`
       insert into auth.users values ('${uid(1)}','dueno@example.com'),('${uid(2)}','colab@example.com'),
-        ('${uid(3)}','cliente@example.com'),('${uid(4)}','ajeno@example.com');
+        ('${uid(3)}','cliente@example.com'),('${uid(4)}','ajeno@example.com'),('${uid(5)}','otro-cliente@example.com');
       insert into public.profesionales (id,auth_user_id,nombre,email,rol) values
         ('${uid(11)}','${uid(1)}','Responsable','dueno@example.com','entrenador'),
         ('${uid(12)}','${uid(2)}','Colaborador','colab@example.com','entrenador'),
         ('${uid(14)}','${uid(4)}','Ajeno','ajeno@example.com','entrenador');
       insert into public.clientes (id,auth_user_id,nombre,email,estado) values
-        ('${uid(21)}','${uid(3)}','Cliente','cliente@example.com','activo');
+        ('${uid(21)}','${uid(3)}','Cliente','cliente@example.com','activo'),
+        ('${uid(22)}','${uid(5)}','Otro','otro-cliente@example.com','activo');
       insert into public.clientes_salud_parq (cliente_id,enfermedad_cardiaca_supervisada,
         dolor_pecho_actividad,dolor_pecho_reposo,perdida_consciencia_mareo,
         alteracion_osea_articular,medicacion_presion_arterial,otra_razon_medica)
@@ -56,6 +57,37 @@ test('Equipo, archivos y formularios con todas las migraciones y RLS reales', as
     await como(1);
     await db.query('select public.equipo_asignar_cliente($1,$2)', [uid(12),uid(21)]);
     await db.query('select public.equipo_asignar_cliente($1,$2)', [uid(14),uid(21)]);
+    const fotoProfesional = `${uid(11)}/perfil.jpg`;
+    await db.query("insert into storage.objects values ('profesionales-fotos',$1,'{}')", [fotoProfesional]);
+    await db.query("update public.profesionales set nombre='Nuevo',foto_perfil=true where id=$1", [uid(11)]);
+    await assert.rejects(db.query("update public.profesionales set rol='administrador' where id=$1", [uid(11)]));
+    await como(2);
+    assert.equal((await db.query('select name from storage.objects where name=$1', [fotoProfesional])).rows.length, 1);
+    assert.equal((await db.query('select id from public.equipo_companeros() where id=$1', [uid(11)])).rows.length, 1);
+    assert.equal((await db.query("update storage.objects set metadata='{\"v\":2}' where name=$1 returning name", [fotoProfesional])).rows.length, 0);
+    await assert.rejects(db.query("insert into storage.objects values ('profesionales-fotos',$1,'{}')", [`${uid(11)}/otra.jpg`]));
+    assert.equal((await db.query("update public.profesionales set nombre='Ajeno' where id=$1 returning id", [uid(11)])).rows.length, 0);
+    await como(3);
+    assert.equal((await db.query('select name from storage.objects where name=$1', [fotoProfesional])).rows.length, 1);
+    assert.equal((await db.query('select foto_perfil from public.profesionales where id=$1', [uid(11)])).rows[0].foto_perfil, true);
+    await como(4);
+    assert.equal((await db.query('select name from storage.objects where name=$1', [fotoProfesional])).rows.length, 1);
+    await como(5);
+    assert.equal((await db.query('select name from storage.objects where name=$1', [fotoProfesional])).rows.length, 0);
+    await como(1);
+    const avatar = `${uid(21)}/perfil/avatar.jpg`;
+    const progreso = `${uid(21)}/progreso.jpg`;
+    await como(3);
+    await db.query("insert into storage.objects values ('progreso-fotos',$1,'{}'),('progreso-fotos',$2,'{}')", [avatar, progreso]);
+    assert.equal((await db.query("update storage.objects set metadata='{\"v\":1}' where name=$1 returning name", [avatar])).rows.length, 1);
+    await assert.rejects(db.query('update storage.objects set name=$2 where name=$1', [avatar, progreso + '.otro']));
+    assert.equal((await db.query("update storage.objects set metadata='{\"v\":1}' where name=$1 returning name", [progreso])).rows.length, 0);
+    await como(1);
+    assert.equal((await db.query('select name from storage.objects where name=$1', [avatar])).rows.length, 1);
+    assert.equal((await db.query("update storage.objects set metadata='{\"v\":2}' where name=$1 returning name", [avatar])).rows.length, 0);
+    await como(4);
+    assert.equal((await db.query('select name from storage.objects where name=$1', [avatar])).rows.length, 0);
+    await como(1);
     const listado = (await db.query('select * from public.equipo_listar()')).rows;
     assert.equal(listado.find((miembro) => miembro.profesional_id === uid(12)).clientes, 1);
     assert.equal((await db.query('select * from public.equipo_clientes($1)', [uid(12)])).rows[0].asignado, true);
@@ -81,11 +113,33 @@ test('Equipo, archivos y formularios con todas las migraciones y RLS reales', as
     await db.query('select public.equipo_retirar_miembro($1)', [uid(12)]);
     await como(2);
     assert.equal((await db.query('select id from public.clientes')).rows.length, 0);
+    assert.equal((await db.query('select name from storage.objects where name=$1', [fotoProfesional])).rows.length, 0);
+    assert.equal((await db.query('select id from public.equipo_companeros()')).rows.length, 0);
     assert.equal((await db.query('select id from public.formularios_enviados')).rows.length, 0);
     assert.equal((await db.query('select name from storage.objects where name=$1', [ruta])).rows.length, 0);
     await como(3);
     assert.equal((await db.query('select id from public.formularios_enviados')).rows.length, 1);
     assert.equal((await db.query('select name from storage.objects where name=$1', [ruta])).rows.length, 1);
     assert.equal((await db.query('select estado from public.sesiones where id=$1', [cita])).rows[0].estado, 'cancelada');
+    await db.exec(`reset role;
+      with nuevos as (
+        insert into public.clientes (nombre,email,estado)
+        select 'Pendiente', 'test' || n || '@example.test', 'invitacion_enviada'
+        from generate_series(1,56) n returning id,email
+      ), asignaciones as (
+        insert into public.profesional_cliente (cliente_id,profesional_id,rol)
+        select id,'${uid(11)}','entrenador' from nuevos
+      )
+      insert into public.invitaciones (cliente_id,profesional_id,token_hash,email_destino,estado,fecha_expiracion,creado_en)
+      select id,'${uid(11)}',md5(email)||md5(email),email,'enviada',
+        case when email='test56@example.test' then now()-interval '1 day' else now()+interval '1 day' end,
+        now()-interval '2 days' from nuevos;
+    `);
+    await como(1);
+    const contadores = (await db.query('select * from public.manager_dashboard_contadores()')).rows[0];
+    assert.equal(Number(contadores.activos), 1);
+    assert.equal(Number(contadores.invitaciones), 55);
+    await como(2);
+    assert.equal(Number((await db.query('select * from public.manager_dashboard_contadores()')).rows[0].invitaciones), 0);
   } finally { await db.close(); }
 });

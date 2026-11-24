@@ -28,6 +28,8 @@
       <input type="password" id="li-password" placeholder="********" style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;" />
       <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="iniciarSesion()">Entrar</button>
       <p id="li-error" style="color:var(--rojo);font-size:12.5px;margin-top:10px;"></p>
+      <p id="li-info" style="color:#20804d;font-size:12.5px;margin-top:4px;" role="status"></p>
+      <button id="recuperar-btn" type="button" class="btn-secondary" style="width:100%;justify-content:center;" onclick="recuperarPassword()">He olvidado mi contraseña</button>
     </div>
 
     <!-- Crear cuenta (primer acceso del profesional) -->
@@ -68,40 +70,66 @@
       </select>
       <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="completarPerfilProfesional()">Completar perfil</button>
       <p id="pp-error" style="color:var(--rojo);font-size:12.5px;margin-top:10px;"></p>
+      <button class="btn-ghost" type="button" onclick="salirPerfilPendiente()">Cerrar sesión y usar otra cuenta</button>
     </div>
   </section>
 
   <script src="js/app.js?v=20260930.1"></script>
-  <script src="js/supabase-client.js?v=20261126.6"></script>
+  <script src="js/supabase-client.js?v=20261201.4"></script>
+  <script src="../js/recuperacion.js?v=20261201.1"></script>
   <script>
     function destinoAcceso() {
       return new URLSearchParams(location.search).get('equipo') === '1' ? 'equipo-invitacion.html' : 'index.html';
+    }
+    async function recuperarPassword() {
+      await FitNovaRecuperacion.solicitar(supabaseClient, {
+        email: document.getElementById('li-email'),
+        error: document.getElementById('li-error'),
+        info: document.getElementById('li-info'),
+        boton: document.getElementById('recuperar-btn'),
+      });
     }
     async function iniciarSesion() {
       const email = document.getElementById('li-email').value.trim();
       const password = document.getElementById('li-password').value;
       const errorEl = document.getElementById('li-error');
       errorEl.textContent = '';
-      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-      if (error) { errorEl.textContent = error.message; return; }
-
-      const { data: profesional, error: perfilError } = await supabaseClient
-        .from('profesionales')
-        .select('id')
-        .eq('auth_user_id', data.user.id)
-        .maybeSingle();
-      if (perfilError) { errorEl.textContent = perfilError.message; return; }
-
-      if (!profesional) {
-        document.getElementById('acceso-tabs').style.display = 'none';
-        document.querySelectorAll('[data-tab-panel-group="acceso"]').forEach((panel) => {
-          panel.style.display = 'none';
-        });
-        document.getElementById('perfil-profesional-pendiente').style.display = 'block';
-        return;
+      document.getElementById('li-info').textContent = '';
+      if (!email || !password) { errorEl.textContent = 'Escribe tu email y contraseña.'; return; }
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        if (!data.session) throw new Error('No se pudo iniciar una sesión.');
+        document.getElementById('li-password').value = '';
+        await continuarSesion(data.session);
+      } catch (error) {
+        errorEl.textContent = `No se pudo acceder: ${error.message}`;
       }
+    }
 
+    function mostrarPerfilPendiente(mensaje = '') {
+      document.getElementById('acceso-tabs').style.display = 'none';
+      document.querySelectorAll('[data-tab-panel-group="acceso"]').forEach((panel) => { panel.style.display = 'none'; });
+      document.getElementById('perfil-profesional-pendiente').style.display = 'block';
+      document.getElementById('pp-error').textContent = mensaje;
+    }
+
+    async function continuarSesion(session) {
+      const { data: profesional, error } = await supabaseClient.from('profesionales')
+        .select('id').eq('auth_user_id', session.user.id).maybeSingle();
+      if (error) throw error;
+      if (!profesional) { mostrarPerfilPendiente(); return; }
       window.location.href = destinoAcceso();
+    }
+
+    async function salirPerfilPendiente() {
+      try {
+        const { error } = await supabaseClient.auth.signOut({ scope: 'local' });
+        if (error) throw error;
+        window.location.href = destinoAcceso() === 'equipo-invitacion.html' ? 'login.html?equipo=1' : 'login.html';
+      } catch (error) {
+        document.getElementById('pp-error').textContent = `No se pudo cerrar sesión: ${error.message}`;
+      }
     }
 
     async function completarPerfilProfesional() {
@@ -116,11 +144,13 @@
         return;
       }
 
-      const { error } = await supabaseClient.rpc('registrar_profesional_actual', {
-        p_nombre: nombre, p_apellidos: apellidos || null, p_rol: rol,
-      });
-      if (error) { errorEl.textContent = error.message; return; }
-      window.location.href = destinoAcceso();
+      try {
+        const { error } = await supabaseClient.rpc('registrar_profesional_actual', {
+          p_nombre: nombre, p_apellidos: apellidos || null, p_rol: rol,
+        });
+        if (error) throw error;
+        window.location.href = destinoAcceso();
+      } catch (error) { errorEl.textContent = `No se pudo completar el perfil: ${error.message}`; }
     }
 
     async function crearCuenta() {
@@ -134,20 +164,44 @@
       errorEl.textContent = '';
       infoEl.textContent = '';
 
-      const { data, error } = await supabaseClient.auth.signUp({ email, password });
-      if (error) { errorEl.textContent = error.message; return; }
-
-      if (!data.session) {
-        infoEl.textContent = 'Cuenta creada. Confirma el email y después inicia sesión; podrás completar tu perfil profesional al entrar.';
+      if (!nombre || nombre.length > 100 || apellidos.length > 150 || !email || password.length < 8) {
+        errorEl.textContent = 'Indica nombre, email y una contraseña de al menos 8 caracteres.';
         return;
       }
-
-      const { error: rpcError } = await supabaseClient.rpc('registrar_profesional_actual', {
-        p_nombre: nombre, p_apellidos: apellidos, p_rol: rol,
-      });
-      if (rpcError) { errorEl.textContent = rpcError.message; return; }
-      window.location.href = destinoAcceso();
+      try {
+        const actual = await supabaseClient.auth.getSession();
+        if (actual.error) throw actual.error;
+        if (actual.data.session) { await continuarSesion(actual.data.session); return; }
+        const { data, error } = await supabaseClient.auth.signUp({ email, password });
+        if (error) throw error;
+        document.getElementById('cr-password').value = '';
+        if (!data.session) {
+          infoEl.textContent = 'Si tu cuenta necesita confirmación, confirma el email y después inicia sesión. Si ya existe, usa Iniciar sesión.';
+          return;
+        }
+        const resultado = await supabaseClient.rpc('registrar_profesional_actual', {
+          p_nombre: nombre, p_apellidos: apellidos || null, p_rol: rol,
+        });
+        if (resultado.error) {
+          document.getElementById('pp-nombre').value = nombre;
+          document.getElementById('pp-apellidos').value = apellidos;
+          document.getElementById('pp-rol').value = rol;
+          mostrarPerfilPendiente(`La cuenta existe, pero falta completar el perfil: ${resultado.error.message}`);
+          return;
+        }
+        window.location.href = destinoAcceso();
+      } catch (error) { errorEl.textContent = `No se pudo crear o comprobar la cuenta: ${error.message}`; }
     }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const { data, error } = await supabaseClient.auth.getSession();
+        if (error) throw error;
+        if (data.session) await continuarSesion(data.session);
+      } catch (error) {
+        document.getElementById('li-error').textContent = `No se pudo comprobar la cuenta: ${error.message}`;
+      }
+    });
   </script>
 </body>
 </html>

@@ -37,98 +37,53 @@
     <div class="page-header">
       <p class="breadcrumb">Negocio / Suscripciones y pagos</p>
       <h1>Negocio</h1>
-      <p class="subtitle">Controla suscripciones, cobros y el rendimiento económico de tu operativa.</p>
+      <p class="subtitle">Prepara tus planes comerciales y propuestas para clientes.</p>
     </div>
 
     <div class="page-body single">
-      <div class="promo-grid">
-        <div class="promo-card">
-          <div class="promo-ico">💶</div>
-          <h4>Ingresos del mes</h4>
-          <strong class="stat">0 €</strong>
-          <p>Activa los pagos integrados para empezar a cobrar automáticamente.</p>
-        </div>
-        <div class="promo-card">
-          <div class="promo-ico">👥</div>
-          <h4>Clientes con plan activo</h4>
-          <strong class="stat">1</strong>
-          <p>De 2 clientes en tu cartera actual.</p>
-        </div>
-        <div class="promo-card">
-          <div class="promo-ico">⚠️</div>
-          <h4>Pagos pendientes</h4>
-          <strong class="stat">1</strong>
-          <p>Cliente con un pago atrasado que requiere revisión.</p>
-        </div>
-      </div>
-
       <section class="card">
-        <div class="card-head">
-          <p class="card-title">💳 Suscripciones</p>
-          <button class="btn-secondary">Activa Pagos FitNova</button>
-        </div>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Cliente</th>
-              <th>Plan</th>
-              <th>Precio</th>
-              <th>Estado</th>
-              <th>Próximo cobro</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="cell-user">
-                <div class="avatar-sm">BD</div>
-                <div><strong>Blanco Demo</strong></div>
-              </td>
-              <td>Plan Premium</td>
-              <td>49,00 €/mes</td>
-              <td><span class="status-dot">Al día</span></td>
-              <td>01/10/2026</td>
-              <td><a href="clientes.html" class="btn-ghost">Ver detalle</a></td>
-            </tr>
-            <tr>
-              <td class="cell-user">
-                <div class="avatar-sm">DR</div>
-                <div><strong>Dany Roca</strong></div>
-              </td>
-              <td>Plan Básico</td>
-              <td>25,00 €/mes</td>
-              <td><span class="status-dot warn">Pago pendiente</span></td>
-              <td>18/09/2026</td>
-              <td><a href="clientes.html" class="btn-ghost">Reclamar pago</a></td>
-            </tr>
-          </tbody>
-        </table>
+        <p><strong>Cobros y facturas aún no disponibles.</strong> Falta configurar Stripe y revisar la fiscalidad. Los planes y propuestas son borradores: no se envían al cliente, no crean suscripciones y no realizan cobros.</p>
+        <p>Los importes son orientativos; su tratamiento fiscal queda pendiente de asesoría.</p>
       </section>
-
-      <div class="bottom-grid" style="grid-template-columns:repeat(2,1fr);">
-        <section class="card">
-          <p class="card-title">📦 Planes y precios</p>
-          <div class="mini-list">
-            <div class="mini-list-item"><div class="info"><strong>Plan Básico</strong><span>25 €/mes · Acceso a entrenamientos</span></div><button class="btn-ghost">Editar</button></div>
-            <div class="mini-list-item"><div class="info"><strong>Plan Premium</strong><span>49 €/mes · Entrenamiento + nutrición</span></div><button class="btn-ghost">Editar</button></div>
-            <div class="mini-list-item"><div class="info"><strong>+ Nuevo plan</strong><span>Crea un plan personalizado</span></div><button class="btn-ghost">➕</button></div>
-          </div>
-        </section>
-        <section class="card">
-          <p class="card-title">🧾 Historial de pagos</p>
-          <div class="empty-state" style="padding:20px 4px;">
-            <div class="empty-icon" style="font-size:22px;width:52px;height:52px;">🧾</div>
-            <h3 style="font-size:14px;">Aún no hay pagos registrados</h3>
-            <p style="font-size:12.5px;">El historial aparecerá aquí en cuanto actives los cobros integrados.</p>
-          </div>
-        </section>
-      </div>
+      <section class="card">
+        <div class="card-head"><p class="card-title">📦 Planes y precios</p><button class="btn-secondary" type="button" id="negocio-nuevo" disabled>Nuevo plan</button></div>
+        <p id="negocio-error" role="alert" style="color:var(--rojo)"></p>
+        <div id="negocio-planes"><p>Cargando planes...</p></div>
+      </section>
+      <section class="card">
+        <div class="card-head"><p class="card-title">📝 Propuestas borrador</p><button class="btn-secondary" type="button" id="negocio-proponer" disabled>Preparar propuesta</button></div>
+        <p>Los cambios en un plan no modifican las propuestas ya creadas. Puedes retirarlas y preparar una nueva.</p>
+        <div id="negocio-propuestas"><p>Cargando propuestas...</p></div>
+      </section>
     </div>
   </div>
 
+  <div class="modal-overlay" id="modal-negocio-plan"><div class="modal">
+    <div class="modal-header"><h2 id="negocio-plan-titulo">Nuevo plan</h2><button class="modal-close" type="button" onclick="closeModal('modal-negocio-plan')">✕</button></div>
+    <form id="negocio-plan-form">
+      <label for="negocio-nombre">Nombre</label><input id="negocio-nombre" required maxlength="120" style="width:100%;" />
+      <label for="negocio-descripcion">Descripción (opcional)</label><textarea id="negocio-descripcion" maxlength="2000" style="width:100%;"></textarea>
+      <label for="negocio-modalidad">Modalidad</label>
+      <select id="negocio-modalidad" style="width:100%;"><option value="unico">Pago único</option><option value="semanal">Semanal</option><option value="mensual">Mensual</option><option value="trimestral">Trimestral</option><option value="anual">Anual</option></select>
+      <label for="negocio-precio">Importe orientativo en euros</label><input id="negocio-precio" type="text" inputmode="decimal" required placeholder="Ej. 49,00" style="width:100%;" />
+      <p id="negocio-plan-error" role="alert" style="color:var(--rojo)"></p>
+      <button class="btn-primary" type="submit" id="negocio-guardar">Guardar plan</button>
+    </form>
+  </div></div>
+  <div class="modal-overlay" id="modal-negocio-propuesta"><div class="modal">
+    <div class="modal-header"><h2>Preparar propuesta</h2><button class="modal-close" type="button" onclick="closeModal('modal-negocio-propuesta')">✕</button></div>
+    <form id="negocio-propuesta-form">
+      <label for="negocio-selector-plan">Plan</label><select id="negocio-selector-plan" required style="width:100%;"></select>
+      <label for="negocio-selector-cliente">Cliente activo asignado</label><select id="negocio-selector-cliente" required style="width:100%;"></select>
+      <p>Es un borrador interno: no se enviará ni cobrará al cliente.</p>
+      <p id="negocio-propuesta-error" role="alert" style="color:var(--rojo)"></p>
+      <button class="btn-primary" type="submit" id="negocio-propuesta-guardar">Guardar propuesta</button>
+    </form>
+  </div></div>
   <script src="js/app.js?v=20260924.2"></script>
-  <script src="js/supabase-client.js?v=20261126.6"></script>
+  <script src="js/supabase-client.js?v=20261201.4"></script>
   <script src="../js/comunicacion.js?v=20261126.3"></script>
   <script src="../js/comunicacion-header.js?v=20261127.1"></script>
+  <script src="js/negocio.js?v=20261127.1"></script>
 </body>
 </html>

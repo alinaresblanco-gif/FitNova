@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitNova Go · Recuperar contraseña</title>
+<meta name="theme-color" content="#0A1A2F" />
+<link rel="stylesheet" href="css/styles.css?v=20261111.1" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body data-view="recuperacion" data-app="go">
+  <div class="app">
+    <header class="app-header">
+      <span style="width:42px;"></span>
+      <div class="app-brand" aria-label="FitNova Go"><span>FitNova</span><strong>Go</strong></div>
+      <span style="width:42px;"></span>
+    </header>
+    <main class="app-content">
+      <section class="card" style="margin-top:24px;">
+        <h1 class="card-title">Recuperar contraseña</h1>
+        <p id="recuperacion-estado" role="status">Comprobando el enlace…</p>
+        <form id="recuperacion-formulario" hidden>
+          <label for="recuperacion-clave">Nueva contraseña</label>
+          <input id="recuperacion-clave" type="password" autocomplete="new-password" minlength="8" required />
+          <label for="recuperacion-confirmacion">Repite la contraseña</label>
+          <input id="recuperacion-confirmacion" type="password" autocomplete="new-password" minlength="8" required />
+          <button id="recuperacion-guardar" class="btn-primary" style="margin-top:16px;width:100%;" type="submit">Guardar contraseña</button>
+        </form>
+        <p><a id="recuperacion-acceso" href="login.html">Volver al acceso</a></p>
+      </section>
+    </main>
+  </div>
+  <script src="../js/recuperacion.js?v=20261201.1"></script>
+  <script src="js/supabase-client.js?v=20261201.3"></script>
+  <script>FitNovaRecuperacion.iniciar(supabaseClient);</script>
+</body>
+</html>

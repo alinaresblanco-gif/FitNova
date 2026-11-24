@@ -15,7 +15,7 @@ async function cargarFichaCliente() {
 
   const { data: cliente, error } = await supabaseClient
     .from('clientes')
-    .select('nombre, apellidos, email, telefono, estado, ultima_actividad, fecha_alta')
+    .select('nombre, apellidos, email, telefono, estado, ultima_actividad, fecha_alta, foto_url')
     .eq('id', id)
     .maybeSingle();
 
@@ -29,6 +29,7 @@ async function cargarFichaCliente() {
   document.getElementById('cp-nombre').textContent = nombreCompleto;
   document.getElementById('cp-nombre-2').textContent = nombreCompleto;
   document.getElementById('cp-iniciales').textContent = cliente.nombre.trim().charAt(0).toUpperCase();
+  if (cliente.foto_url) cargarFotoFichaCliente(id, cliente.foto_url);
   document.getElementById('cp-estado').textContent = cliente.estado;
   document.getElementById('cp-email').textContent = cliente.email;
   document.getElementById('cp-telefono').textContent = cliente.telefono || '—';
@@ -51,6 +52,31 @@ async function cargarFichaCliente() {
       objetivo.notas_objetivo || etiquetasObjetivo[objetivo.objetivo_tipo] || objetivo.objetivo_tipo;
     document.getElementById('cp-medidas').textContent =
       `${objetivo.altura_cm} cm · objetivo ${objetivo.peso_objetivo_kg ?? '—'} kg`;
+  }
+}
+
+async function cargarFotoFichaCliente(id, ruta) {
+  const errorEl = document.getElementById('cp-foto-error');
+  try {
+    if (ruta !== `${id}/perfil/avatar.jpg`) throw new Error('La ruta de la foto no es válida.');
+    const permiso = await supabaseClient.rpc('es_profesional_salud_de', { p_cliente_id: id });
+    if (permiso.error) throw permiso.error;
+    if (!permiso.data) return;
+    const { data, error } = await supabaseClient.storage.from('progreso-fotos').createSignedUrl(ruta, 3600);
+    if (error || !data?.signedUrl) throw error || new Error('No se pudo obtener la imagen.');
+    const foto = document.getElementById('cp-foto');
+    foto.onerror = () => {
+      foto.hidden = true;
+      document.getElementById('cp-iniciales').hidden = false;
+      errorEl.textContent = 'No se pudo mostrar la foto del cliente.';
+    };
+    foto.onload = () => {
+      foto.hidden = false;
+      document.getElementById('cp-iniciales').hidden = true;
+    };
+    foto.src = data.signedUrl;
+  } catch (error) {
+    errorEl.textContent = `No se pudo cargar la foto del cliente: ${error.message}`;
   }
 }
 

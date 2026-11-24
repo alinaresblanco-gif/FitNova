@@ -77,7 +77,6 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th><input type="checkbox" /></th>
                 <th>Cliente</th>
                 <th>Estado</th>
                 <th>Última actividad</th>
@@ -86,7 +85,7 @@
               </tr>
             </thead>
             <tbody id="tabla-activos">
-              <tr><td colspan="6" style="text-align:center;color:var(--gris-texto-suave);">Cargando...</td></tr>
+              <tr><td colspan="5" style="text-align:center;color:var(--gris-texto-suave);">Cargando...</td></tr>
             </tbody>
           </table>
         </div>
@@ -131,21 +130,25 @@
         <div class="empty-state" style="padding:10px 0 16px;">
           <div class="empty-icon">✅</div>
           <h3>Invitación creada</h3>
-          <p>Todavía no hay envío automático de email configurado. Copia este enlace y compártelo tú mismo con el cliente. Caduca en 7 días.</p>
+          <p id="nc-correo-estado" role="status"></p>
+          <p>También puedes compartir el enlace de forma privada. Caduca en 7 días.</p>
         </div>
         <div class="search-box" style="width:100%;">
           <input type="text" id="nc-link" readonly style="width:100%;" />
         </div>
         <button class="btn-primary" style="width:100%;justify-content:center;margin-top:12px;" onclick="copiarEnlaceInvitacion()">📋 Copiar enlace</button>
+        <p id="nc-copia-estado" role="status"></p>
+        <button id="nc-correo-reintentar" type="button" class="btn-outline" hidden>Reintentar correo</button>
         <button class="btn-outline" style="width:100%;justify-content:center;margin-top:10px;" onclick="cerrarModalCliente()">Cerrar</button>
       </div>
     </div>
   </div>
 
   <script src="js/app.js?v=20260924.2"></script>
-  <script src="js/supabase-client.js?v=20261126.6"></script>
+  <script src="js/supabase-client.js?v=20261201.4"></script>
   <script src="../js/comunicacion.js?v=20261126.3"></script>
   <script src="../js/comunicacion-header.js?v=20261127.1"></script>
-  <script src="js/clientes.js?v=20261111.1"></script>
+  <script src="js/correo-invitacion.js?v=20261201.1"></script>
+  <script src="js/clientes.js?v=20261201.4"></script>
 </body>
 </html>

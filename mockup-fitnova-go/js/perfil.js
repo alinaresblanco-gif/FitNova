@@ -236,27 +236,66 @@ async function cargarProfesionales() {
   const cont = document.getElementById('pf-profesionales');
   const etiquetasRol = { entrenador: 'Entrenador personal', nutricionista: 'Nutricionista', recepcion: 'Recepción' };
 
-  const { data, error } = await supabaseClient
-    .from('profesional_cliente')
-    .select('rol, profesionales(nombre, apellidos)')
-    .eq('cliente_id', pfCliente.id);
+  let resultado;
+  try {
+    resultado = await supabaseClient.from('profesional_cliente')
+      .select('rol, profesionales(id, nombre, apellidos, foto_perfil)')
+      .eq('cliente_id', pfCliente.id);
+  } catch (error) {
+    resultado = { error };
+  }
+  const { data, error } = resultado;
 
-  if (error || !data || !data.length) {
+  if (error) {
+    cont.innerHTML = `<p role="alert" style="font-size:13px;color:#c0392b;margin:0;">No se pudieron cargar tus profesionales: ${FitNovaMetricas.escapar(error.message)}.</p><button type="button" class="btn-link" onclick="cargarProfesionales()">Reintentar</button>`;
+    return;
+  }
+  if (!data || !data.length) {
     cont.innerHTML = '<p style="font-size:13px;color:#55606f;margin:0;">Todavía no tienes profesionales asignados.</p>';
     return;
   }
 
   cont.innerHTML = data.map((p) => `
     <div class="professional-item">
-      <div class="avatar" style="display:flex;align-items:center;justify-content:center;background:#0A1A2F;color:#fff;font-weight:700;">
-        ${(p.profesionales?.nombre || '?').trim().charAt(0).toUpperCase()}
+      <div class="avatar" data-profesional-foto="${FitNovaMetricas.escapar(p.profesionales?.id || '')}" style="display:flex;align-items:center;justify-content:center;background:#0A1A2F;color:#fff;font-weight:700;overflow:hidden;">
+        ${FitNovaMetricas.escapar((p.profesionales?.nombre || '?').trim().charAt(0).toUpperCase())}
       </div>
       <div class="info">
-        <strong>${p.profesionales ? `${p.profesionales.nombre} ${p.profesionales.apellidos || ''}`.trim() : '—'}</strong>
-        <span>${etiquetasRol[p.rol] || p.rol}</span>
+        <strong>${FitNovaMetricas.escapar(p.profesionales ? `${p.profesionales.nombre} ${p.profesionales.apellidos || ''}`.trim() : '—')}</strong>
+        <span>${FitNovaMetricas.escapar(etiquetasRol[p.rol] || p.rol)}</span>
       </div>
     </div>
   `).join('');
+  const avisarFoto = () => {
+    if (cont.querySelector('[data-foto-error]')) return;
+    const aviso = document.createElement('p');
+    aviso.dataset.fotoError = '';
+    aviso.textContent = 'No se pudieron cargar algunas fotos de profesionales. Vuelve a abrir Perfil.';
+    aviso.setAttribute('role', 'status');
+    cont.appendChild(aviso);
+  };
+  const conFoto = data.filter((p) => p.profesionales?.foto_perfil && p.profesionales.id);
+  const errores = await Promise.all(conFoto.map(async (p) => {
+    try {
+      const { data: firma, error } = await supabaseClient.storage.from('profesionales-fotos')
+        .createSignedUrl(`${p.profesionales.id}/perfil.jpg`, 3600);
+      if (error || !firma?.signedUrl) throw error || new Error('No se pudo obtener la imagen.');
+      cont.querySelectorAll('[data-profesional-foto]').forEach((avatar) => {
+        if (avatar.dataset.profesionalFoto !== p.profesionales.id) return;
+        const img = document.createElement('img');
+        img.alt = `Foto de ${p.profesionales.nombre}`;
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+        img.onload = () => { avatar.textContent = ''; avatar.appendChild(img); };
+        img.onerror = avisarFoto;
+        img.src = firma.signedUrl;
+      });
+      return false;
+    } catch (error) {
+      console.error('Error al cargar foto profesional:', error);
+      return true;
+    }
+  }));
+  if (errores.some(Boolean)) avisarFoto();
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

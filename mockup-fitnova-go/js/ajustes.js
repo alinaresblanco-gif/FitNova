@@ -7,7 +7,7 @@ function mostrarMensaje(id, texto, esError) {
   const el = document.getElementById(id);
   el.textContent = texto;
   el.style.color = esError ? '#E5484D' : '#1da976';
-  if (!esError) setTimeout(() => { el.textContent = ''; }, 4000);
+  if (!esError) setTimeout(() => { if (el.textContent === texto) el.textContent = ''; }, 4000);
 }
 
 function marcarChipGenero(valor) {
@@ -28,8 +28,18 @@ async function guardarMiPerfil() {
     mostrarMensaje('perfil-msg', 'El nombre no puede quedar vacío.', true);
     return;
   }
+  if (!ajCliente) {
+    mostrarMensaje('perfil-msg', 'No se ha podido cargar tu perfil. Vuelve a abrir Ajustes.', true);
+    return;
+  }
+  if (password && password.length < 8) {
+    mostrarMensaje('perfil-msg', 'La nueva contraseña debe tener al menos 8 caracteres.', true);
+    return;
+  }
 
-  const { error } = await supabaseClient
+  let resultado;
+  try {
+    resultado = await supabaseClient
     .from('clientes')
     .update({
       nombre,
@@ -38,69 +48,93 @@ async function guardarMiPerfil() {
       fecha_nacimiento: nacimiento || null,
       telefono: telefono || null,
     })
-    .eq('id', ajCliente.id);
+      .eq('id', ajCliente.id).select('id').maybeSingle();
+  } catch (error) {
+    mostrarMensaje('perfil-msg', `No se pudieron confirmar los datos personales: ${error.message}.`, true);
+    return;
+  }
+  const { data, error } = resultado;
 
-  if (error) {
-    mostrarMensaje('perfil-msg', error.message, true);
+  if (error || !data) {
+    mostrarMensaje('perfil-msg', `No se pudieron confirmar los datos personales: ${error?.message || 'perfil no disponible'}.`, true);
     return;
   }
 
+  _clienteActual = null;
   if (password) {
-    if (password.length < 8) {
-      mostrarMensaje('perfil-msg', 'La nueva contraseña debe tener al menos 8 caracteres.', true);
-      return;
+    let passError;
+    try {
+      ({ error: passError } = await supabaseClient.auth.updateUser({ password }));
+    } catch (error) {
+      passError = error;
     }
-    const { error: passError } = await supabaseClient.auth.updateUser({ password });
     if (passError) {
-      mostrarMensaje('perfil-msg', passError.message, true);
+      mostrarMensaje('perfil-msg', `Los datos personales se guardaron, pero no se pudo confirmar el cambio de contraseña: ${passError.message}`, true);
       return;
     }
     document.getElementById('perfil-password').value = '';
   }
 
-  _clienteActual = null; // invalida la caché para recargar los datos nuevos
   mostrarMensaje('perfil-msg', 'Cambios guardados ✓', false);
 }
 
 async function guardarSobreMi() {
   const generoBtn = document.querySelector('#sobre-genero button.active');
   const genero = generoBtn ? generoBtn.dataset.value : null;
-  const altura = parseFloat(document.getElementById('sobre-altura').value);
+  const valorAltura = document.getElementById('sobre-altura').value;
+  const altura = Number(valorAltura);
   const notasObjetivo = document.getElementById('sobre-objetivo').value.trim();
   const notasLesiones = document.getElementById('sobre-lesiones').value.trim();
 
-  const { error: errorCliente } = await supabaseClient
-    .from('clientes')
-    .update({ genero })
-    .eq('id', ajCliente.id);
-
-  if (errorCliente) {
-    mostrarMensaje('sobre-msg', errorCliente.message, true);
+  if (!ajCliente || !ajObjetivo) {
+    mostrarMensaje('sobre-msg', 'No se ha podido cargar tu objetivo. Vuelve a abrir Ajustes antes de guardar.', true);
+    return;
+  }
+  if (!/^\d+(\.\d{1,2})?$/.test(valorAltura) || altura < 0.01 || altura > 999.99) {
+    mostrarMensaje('sobre-msg', 'Indica una altura válida en centímetros, con hasta dos decimales.', true);
     return;
   }
 
-  if (ajObjetivo) {
-    const cambios = {
-      notas_objetivo: notasObjetivo || null,
-      notas_lesiones: notasLesiones || null,
-    };
-    if (altura && altura > 0) cambios.altura_cm = altura;
-
-    const { error: errorObjetivo } = await supabaseClient
-      .from('clientes_objetivo')
-      .update(cambios)
-      .eq('cliente_id', ajCliente.id);
-
-    if (errorObjetivo) {
-      mostrarMensaje('sobre-msg', errorObjetivo.message, true);
-      return;
-    }
+  let resultadoCliente;
+  try {
+    resultadoCliente = await supabaseClient.from('clientes')
+      .update({ genero }).eq('id', ajCliente.id).select('id').maybeSingle();
+  } catch (error) {
+    mostrarMensaje('sobre-msg', `No se pudo confirmar el género: ${error.message}.`, true);
+    return;
   }
+  const { data: cliente, error: errorCliente } = resultadoCliente;
+
+  if (errorCliente || !cliente) {
+    mostrarMensaje('sobre-msg', `No se pudo confirmar el género: ${errorCliente?.message || 'perfil no disponible'}.`, true);
+    return;
+  }
+  _clienteActual = null;
+
+  const cambios = {
+    notas_objetivo: notasObjetivo || null,
+    notas_lesiones: notasLesiones || null,
+    altura_cm: altura,
+  };
+  let resultadoObjetivo;
+  try {
+    resultadoObjetivo = await supabaseClient.from('clientes_objetivo').update(cambios)
+      .eq('cliente_id', ajCliente.id).select('cliente_id').maybeSingle();
+  } catch (error) {
+    mostrarMensaje('sobre-msg', `El género se guardó, pero no se pudo confirmar la altura ni las notas: ${error.message}.`, true);
+    return;
+  }
+  const { data: objetivo, error: errorObjetivo } = resultadoObjetivo;
+  if (errorObjetivo || !objetivo) {
+    mostrarMensaje('sobre-msg', `El género se guardó, pero no se pudo confirmar la altura ni las notas: ${errorObjetivo?.message || 'objetivo no disponible'}.`, true);
+    return;
+  }
+  Object.assign(ajObjetivo, cambios);
 
   mostrarMensaje('sobre-msg', 'Cambios guardados ✓', false);
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function cargarAjustes() {
   ajCliente = await cargarClienteActual();
   if (!ajCliente) return;
 
@@ -115,12 +149,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Sobre mí
   marcarChipGenero(ajCliente.genero);
 
-  const { data: objetivo } = await supabaseClient
+  const { data: objetivo, error: errorObjetivo } = await supabaseClient
     .from('clientes_objetivo')
     .select('altura_cm, notas_objetivo, notas_lesiones')
     .eq('cliente_id', ajCliente.id)
     .maybeSingle();
   ajObjetivo = objetivo;
+  if (errorObjetivo || !objetivo) {
+    mostrarMensaje('sobre-msg', `No se pudo cargar tu objetivo: ${errorObjetivo?.message || 'no existe una ficha de objetivo'}.`, true);
+  }
 
   if (objetivo) {
     document.getElementById('sobre-altura').value = objetivo.altura_cm ? parseFloat(objetivo.altura_cm) : '';
@@ -129,7 +166,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Peso inicial (primer registro de peso en métricas, solo lectura)
-  const { data: primerPeso } = await supabaseClient
+  const { data: primerPeso, error: errorPeso } = await supabaseClient
     .from('clientes_metricas')
     .select('peso_kg')
     .eq('cliente_id', ajCliente.id)
@@ -140,5 +177,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (primerPeso?.peso_kg) {
     document.getElementById('sobre-peso').value = parseFloat(primerPeso.peso_kg);
+  }
+  if (errorPeso && !errorObjetivo && objetivo) {
+    mostrarMensaje('sobre-msg', `No se pudo cargar tu peso inicial: ${errorPeso.message}`, true);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    await cargarAjustes();
+  } catch (error) {
+    console.error('Error al cargar Ajustes:', error);
+    mostrarMensaje('sobre-msg', `No se pudieron cargar los datos: ${error.message}. Vuelve a abrir Ajustes.`, true);
   }
 });

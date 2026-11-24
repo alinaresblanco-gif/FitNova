@@ -18,6 +18,8 @@ let clientesCartera = [];
 let etiquetasDisponibles = [];
 let filtroBusqueda = '';
 let filtroEtiqueta = '';
+let clientesCargados = false;
+let invitacionOcupada = false;
 
 function escaparHTML(valor) {
   return String(valor || '').replace(/[&<>'"]/g, (caracter) => ({
@@ -53,9 +55,8 @@ function htmlEtiquetasCliente(cliente) {
   }).join('')}</div>`;
 }
 
-function htmlFilaCliente(cliente, activo) {
+function htmlFilaCliente(cliente) {
   return `<tr>
-    ${activo ? '<td><input type="checkbox" aria-label="Seleccionar cliente" /></td>' : ''}
     <td class="cell-user">
       <div class="avatar-sm">${escaparHTML(iniciales(nombreCliente(cliente)))}</div>
       <div><strong>${escaparHTML(nombreCliente(cliente))}</strong><span>${escaparHTML(cliente.email)}</span></div>
@@ -68,6 +69,7 @@ function htmlFilaCliente(cliente, activo) {
 }
 
 function renderClientes() {
+  if (!clientesCargados) return;
   const estados = [
     { key: 'activo', id: 'tabla-activos', count: 'count-activos' },
     { key: 'archivado', id: 'tabla-archivados', count: 'count-archivados' },
@@ -79,29 +81,26 @@ function renderClientes() {
     const tbody = document.getElementById(id);
     document.getElementById(count).textContent = clientesCartera.filter((cliente) => cliente.estado === key).length;
     tbody.innerHTML = filas.length
-      ? filas.map((cliente) => htmlFilaCliente(cliente, key === 'activo')).join('')
-      : `<tr><td colspan="${key === 'activo' ? 6 : 5}" style="text-align:center;color:var(--gris-texto-suave);">${filtroBusqueda || filtroEtiqueta ? 'No hay resultados con estos filtros.' : `No tienes ${key === 'activo' ? 'clientes activos' : key === 'lead' ? 'leads' : 'clientes archivados'}.`}</td></tr>`;
+      ? filas.map((cliente) => htmlFilaCliente(cliente)).join('')
+      : `<tr><td colspan="5" style="text-align:center;color:var(--gris-texto-suave);">${filtroBusqueda || filtroEtiqueta ? 'No hay resultados con estos filtros.' : `No tienes ${key === 'activo' ? 'clientes activos' : key === 'lead' ? 'leads' : 'clientes archivados'}.`}</td></tr>`;
   });
 }
 
 async function cargarClientes() {
+  try {
   const { data, error } = await supabaseClient
     .from('clientes')
     .select('id, nombre, apellidos, email, estado, ultima_actividad')
     .order('nombre', { ascending: true });
   if (error) {
-    document.getElementById('tabla-activos').innerHTML =
-      `<tr><td colspan="6" style="color:var(--rojo);text-align:center;">${escaparHTML(error.message)}</td></tr>`;
-    return;
+    throw error;
   }
 
   const { data: relaciones, error: errorRelaciones } = await supabaseClient
     .from('cliente_etiqueta')
     .select('cliente_id, etiquetas(id, nombre)');
   if (errorRelaciones) {
-    document.getElementById('tabla-activos').innerHTML =
-      `<tr><td colspan="6" style="color:var(--rojo);text-align:center;">${escaparHTML(errorRelaciones.message)}</td></tr>`;
-    return;
+    throw errorRelaciones;
   }
 
   const porCliente = new Map();
@@ -113,7 +112,17 @@ async function cargarClientes() {
     ...cliente,
     etiquetas: porCliente.get(cliente.id) || [],
   }));
+  clientesCargados = true;
   renderClientes();
+  return true;
+  } catch (error) {
+    clientesCargados = false;
+    ['tabla-activos', 'tabla-archivados', 'tabla-leads'].forEach((id) => {
+      document.getElementById(id).innerHTML =
+        `<tr><td colspan="5" style="color:var(--rojo);text-align:center;">No se pudo cargar la cartera: ${escaparHTML(error.message)}</td></tr>`;
+    });
+    return false;
+  }
 }
 
 async function cargarEtiquetas() {
@@ -167,6 +176,7 @@ async function alternarEtiqueta(clienteId, etiquetaId, asignada) {
 
 async function cargarInvitaciones() {
   const cont = document.getElementById('lista-invitaciones');
+  try {
   const { data, error } = await supabaseClient
     .from('invitaciones')
     .select('id, estado, email_destino, fecha_envio, fecha_expiracion, clientes(nombre, email)')
@@ -174,12 +184,12 @@ async function cargarInvitaciones() {
     .order('fecha_envio', { ascending: false });
 
   if (error) {
-    cont.innerHTML = `<p style="color:var(--rojo);">${error.message}</p>`;
-    return;
+    throw error;
   }
 
-  document.getElementById('count-invitaciones').textContent = data.length;
-  if (!data.length) {
+  const invitaciones = data || [];
+  document.getElementById('count-invitaciones').textContent = invitaciones.length;
+  if (!invitaciones.length) {
     cont.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">✉️</div>
@@ -194,10 +204,10 @@ async function cargarInvitaciones() {
     <table class="data-table">
       <thead><tr><th>Cliente</th><th>Enviada</th><th>Caduca</th><th>Estado</th><th>Acciones</th></tr></thead>
       <tbody>
-        ${data.map((inv) => {
+        ${invitaciones.map((inv) => {
           const nombre = inv.clientes?.nombre || inv.email_destino;
           const email = inv.clientes?.email || inv.email_destino;
-          const caducada = inv.estado === 'expirada';
+          const caducada = inv.estado === 'expirada' || new Date(inv.fecha_expiracion) <= new Date();
           return `
           <tr>
             <td class="cell-user">
@@ -215,16 +225,24 @@ async function cargarInvitaciones() {
         }).join('')}
       </tbody>
     </table>`;
+  } catch (error) {
+    document.getElementById('count-invitaciones').textContent = '—';
+    cont.innerHTML = `<p role="alert" style="color:var(--rojo);">No se pudieron cargar las invitaciones: ${escaparHTML(error.message)}</p>`;
+  }
 }
 
 function mostrarEnlaceInvitacion(fila) {
+  if (!fila?.token) throw new Error('No se recibió el enlace. Comprueba la invitación antes de intentarlo de nuevo.');
   const enlace = new URL('invitacion.html', FITNOVA_GO_URL);
   enlace.searchParams.set('token', fila.token);
 
   document.getElementById('nc-form').style.display = 'none';
   document.getElementById('nc-resultado').style.display = 'block';
   document.getElementById('nc-link').value = enlace.toString();
+  document.getElementById('nc-copia-estado').textContent = '';
   openModal('modal-nuevo-cliente');
+  enviarCorreoInvitacion('cliente', fila, document.getElementById('nc-correo-estado'),
+    document.getElementById('nc-correo-reintentar'));
 }
 
 async function enviarInvitacion() {
@@ -237,18 +255,20 @@ async function enviarInvitacion() {
     errorEl.textContent = 'Rellena el nombre y el email.';
     return;
   }
-
-  const { data, error } = await supabaseClient.rpc('crear_invitacion', {
-    p_nombre: nombre, p_email: email,
-  });
-
-  if (error) {
-    errorEl.textContent = error.message;
-    return;
+  if (invitacionOcupada) return;
+  invitacionOcupada = true;
+  try {
+    const { data, error } = await supabaseClient.rpc('crear_invitacion', {
+      p_nombre: nombre, p_email: email,
+    });
+    if (error) throw error;
+    mostrarEnlaceInvitacion(Array.isArray(data) ? data[0] : data);
+    await Promise.all([cargarInvitaciones(), cargarClientes()]);
+  } catch (error) {
+    errorEl.textContent = `No se pudo confirmar la invitación: ${error.message}`;
+  } finally {
+    invitacionOcupada = false;
   }
-
-  mostrarEnlaceInvitacion(Array.isArray(data) ? data[0] : data);
-  cargarInvitaciones();
 }
 
 // Reenviar: crea una invitación nueva (la anterior queda cancelada automáticamente).
@@ -256,45 +276,59 @@ async function reenviarInvitacion(nombreCodificado, emailCodificado) {
   const nombre = decodeURIComponent(nombreCodificado);
   const email = decodeURIComponent(emailCodificado);
 
-  const { data, error } = await supabaseClient.rpc('crear_invitacion', {
-    p_nombre: nombre, p_email: email,
-  });
-
-  if (error) {
+  if (invitacionOcupada) return;
+  invitacionOcupada = true;
+  try {
+    const { data, error } = await supabaseClient.rpc('crear_invitacion', {
+      p_nombre: nombre, p_email: email,
+    });
+    if (error) throw error;
+    mostrarEnlaceInvitacion(Array.isArray(data) ? data[0] : data);
+    await Promise.all([cargarInvitaciones(), cargarClientes()]);
+  } catch (error) {
     alert(`No se pudo reenviar la invitación: ${error.message}`);
-    return;
+  } finally {
+    invitacionOcupada = false;
   }
-
-  mostrarEnlaceInvitacion(Array.isArray(data) ? data[0] : data);
-  cargarInvitaciones();
 }
 
 async function cancelarInvitacion(invitacionId) {
+  if (invitacionOcupada) return;
   if (!confirm('¿Cancelar esta invitación? El enlace dejará de funcionar.')) return;
-
-  const { error } = await supabaseClient.rpc('cancelar_invitacion', {
-    p_invitacion_id: invitacionId,
-  });
-
-  if (error) {
+  invitacionOcupada = true;
+  try {
+    const { error } = await supabaseClient.rpc('cancelar_invitacion', {
+      p_invitacion_id: invitacionId,
+    });
+    if (error) throw error;
+    await Promise.all([cargarInvitaciones(), cargarClientes()]);
+  } catch (error) {
     alert(`No se pudo cancelar: ${error.message}`);
-    return;
+  } finally {
+    invitacionOcupada = false;
   }
-
-  cargarInvitaciones();
 }
 
-function copiarEnlaceInvitacion() {
+async function copiarEnlaceInvitacion() {
   const input = document.getElementById('nc-link');
   input.select();
-  navigator.clipboard.writeText(input.value);
+  const estado = document.getElementById('nc-copia-estado');
+  try {
+    await navigator.clipboard.writeText(input.value);
+    estado.textContent = 'Enlace copiado.';
+  } catch (error) {
+    estado.textContent = `No se pudo copiar. Selecciona y copia el enlace manualmente: ${error.message}`;
+  }
 }
 
 function cerrarModalCliente() {
   closeModal('modal-nuevo-cliente');
+  document.getElementById('nc-correo-estado').correoSolicitud = null;
+  document.getElementById('nc-correo-reintentar').hidden = true;
   document.getElementById('nc-nombre').value = '';
   document.getElementById('nc-email').value = '';
   document.getElementById('nc-error').textContent = '';
+  document.getElementById('nc-copia-estado').textContent = '';
   document.getElementById('nc-form').style.display = 'block';
   document.getElementById('nc-resultado').style.display = 'none';
 }
@@ -313,6 +347,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     filtroEtiqueta = event.target.value;
     renderClientes();
   });
-  await Promise.all([cargarEtiquetas(), cargarClientes(), cargarInvitaciones()]);
-  renderClientes();
+  const resultados = await Promise.all([cargarEtiquetas(), cargarClientes(), cargarInvitaciones()]);
+  if (resultados[1]) renderClientes();
 });

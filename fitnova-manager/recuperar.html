@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitNova Manager · Recuperar contraseña</title>
+<link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
+<link rel="stylesheet" href="css/styles.css?v=20260930.1" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body data-view="recuperacion" data-app="manager" style="background:var(--azul);min-height:100vh;display:flex;align-items:center;justify-content:center;">
+  <main class="card" style="width:100%;max-width:400px;">
+    <div style="text-align:center;margin-bottom:18px;">
+      <img src="../imagenes/LOGO FITNOVA MANAGER.png" alt="FitNova Manager" style="height:64px;" />
+    </div>
+    <h1>Recuperar contraseña</h1>
+    <p id="recuperacion-estado" role="status">Comprobando el enlace…</p>
+    <form id="recuperacion-formulario" hidden>
+      <label for="recuperacion-clave">Nueva contraseña</label>
+      <input id="recuperacion-clave" type="password" autocomplete="new-password" minlength="8" required style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <label for="recuperacion-confirmacion">Repite la contraseña</label>
+      <input id="recuperacion-confirmacion" type="password" autocomplete="new-password" minlength="8" required style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;" />
+      <button id="recuperacion-guardar" class="btn-secondary" style="width:100%;justify-content:center;" type="submit">Guardar contraseña</button>
+    </form>
+    <p><a id="recuperacion-acceso" href="login.html">Volver al acceso</a></p>
+  </main>
+  <script src="../js/recuperacion.js?v=20261201.1"></script>
+  <script src="js/supabase-client.js?v=20261201.4"></script>
+  <script>FitNovaRecuperacion.iniciar(supabaseClient);</script>
+</body>
+</html>
