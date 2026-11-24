@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitNova Go · Mis entrenamientos</title>
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#0A1A2F" />
+<link rel="stylesheet" href="css/styles.css?v=20261126.1" />
+</head>
+<body data-auth="required">
+  <div class="app">
+    <header class="app-header">
+      <a href="perfil.html" class="icon-square" title="Personalizar perfil">
+        <img src="../imagenes/LOGO-FITNOVA USUARIO.png" alt="Perfil" />
+      </a>
+      <div class="app-brand" aria-label="FitNova Go"><span>FitNova</span><strong>Go</strong></div>
+      <div class="header-actions">
+        <button class="icon-btn" onclick="openModal('modal-chat')" title="Chat">💬<span class="badge">2</span></button>
+        <button class="icon-btn" onclick="openModal('modal-notificaciones')" title="Notificaciones">🔔<span class="badge">3</span></button>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <a href="entrenamiento.html" class="btn-link ent-volver" id="ent-volver" hidden>‹ Mis entrenamientos</a>
+      <div class="agenda-heading">
+        <h1 id="ent-titulo">Mis entrenamientos</h1>
+      </div>
+      <div id="ent-contenido"><p class="agenda-empty">Cargando tus entrenamientos...</p></div>
+      <p class="agenda-local-aviso">Tus entrenamientos los prepara tu profesional. Lo que registres se guarda en tu cuenta y lo ve tu entrenador/a para ajustar tu plan.</p>
+    </main>
+
+    <nav class="bottom-nav">
+      <a href="index.html"><span class="nav-icon">🏠</span>Inicio</a>
+      <a href="agenda.html"><span class="nav-icon">📅</span>Agenda</a>
+      <a href="videos.html"><span class="nav-icon">▶️</span>Vídeos</a>
+      <a href="placeholder.html?vista=Evolución"><span class="nav-icon">📈</span>Evolución</a>
+    </nav>
+
+    <div class="modal-overlay" id="modal-chat"><div class="modal"><div class="modal-header"><h2>Chat</h2><button class="modal-close" onclick="closeModal('modal-chat')">✕</button></div><p>Tu equipo profesional está disponible para ayudarte.</p></div></div>
+    <div class="modal-overlay" id="modal-notificaciones"><div class="modal"><div class="modal-header"><h2>Notificaciones</h2><button class="modal-close" onclick="closeModal('modal-notificaciones')">✕</button></div><div class="list-item"><span>Carlos te ha enviado una nueva rutina</span><span>Hoy</span></div><div class="list-item"><span>Recuerda registrar tu peso de esta semana</span><span>Ayer</span></div></div></div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/supabase-client.js?v=20261111.1"></script>
+  <script src="../js/entrenos.js?v=20261126.1"></script>
+  <script src="js/app.js?v=20261126.1"></script>
+  <script src="js/entrenos-go.js?v=20261126.1"></script>
+</body>
+</html>

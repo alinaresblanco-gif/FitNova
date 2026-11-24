@@ -640,3 +640,38 @@ textarea { resize: vertical; min-height: 60px; }
 .nut-comentario strong { font-size: 13px; }
 .nut-comentario p { font-size: 13px; margin: 4px 0; overflow-wrap: anywhere; white-space: pre-line; }
 .nut-comentario span { color: #8a93a1; font-size: 11px; }
+/* ---------- Entrenamientos ---------- */
+.ent-volver { display: inline-block; font-size: 14px; margin-bottom: 4px; text-decoration: none; }
+.ent-volver[hidden] { display: none; }
+.ent-item { text-decoration: none; color: inherit; }
+.ent-inicio-texto { color: #55606f; font-size: 13px; margin: 0 0 10px; }
+.ent-cabecera { color: #55606f; font-size: 13px; margin: -6px 0 12px; }
+.ent-ejercicio { border-bottom: 1px solid var(--gris); padding: 12px 0; }
+.ent-ejercicio:last-of-type { border-bottom: 0; }
+.ent-ejercicio-cab { align-items: flex-start; display: flex; gap: 10px; }
+.ent-ejercicio-cab strong, .ent-ejercicio-cab span { display: block; }
+.ent-ejercicio-cab strong { font-size: 15px; }
+.ent-ejercicio-cab div span { color: #34404f; font-size: 13px; margin-top: 2px; }
+.ent-num { align-items: center; background: var(--naranja); border-radius: 50%; color: var(--blanco); display: flex; flex: 0 0 26px; font-size: 13px; font-weight: 700; height: 26px; justify-content: center; }
+.ent-notas { font-size: 13px; margin: 8px 0 0; overflow-wrap: anywhere; white-space: pre-line; }
+.ent-instrucciones { font-size: 13px; margin-top: 8px; }
+.ent-instrucciones summary { color: var(--naranja); cursor: pointer; font-weight: 600; }
+.ent-instrucciones p { margin: 6px 0 0; white-space: pre-line; }
+.ent-video-btn { margin-top: 8px; padding: 8px 12px; width: auto; }
+.ent-video { margin-top: 8px; }
+.ent-video[hidden] { display: none; }
+.ent-video iframe { border: 0; border-radius: 10px; }
+.ent-resultados { font-size: 13px; list-style: none; margin: 0 0 10px; padding: 0; }
+.ent-resultados li { border-bottom: 1px solid var(--gris); padding: 8px 0; }
+.ent-resultados li span { color: #55606f; display: block; margin-top: 2px; }
+.ent-hecho { align-items: center; display: flex; gap: 8px; margin-top: 0; }
+.ent-hecho input { width: auto; }
+.ent-hecho strong { color: var(--azul); font-size: 15px; }
+.ent-pres { color: #55606f; display: block; font-size: 12px; margin: 2px 0 6px; }
+.ent-serie { align-items: center; display: flex; gap: 6px; margin-top: 6px; }
+.ent-serie > span { color: #55606f; flex: 0 0 26px; font-size: 12px; font-weight: 600; }
+.ent-serie input { min-width: 0; padding: 8px; }
+.ent-serie-quitar { background: none; border: 0; color: #8a93a1; cursor: pointer; flex: 0 0 28px; font-size: 14px; }
+.ent-esfuerzo button { min-width: 38px; padding: 7px 10px; }
+.ent-count { color: var(--naranja); display: block; font-size: 10px; font-weight: 700; }
+.ent-count.hecho { color: #1a7f4b; }

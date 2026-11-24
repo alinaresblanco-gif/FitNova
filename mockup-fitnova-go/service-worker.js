@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fitnova-go-2026.11.25.1';
+const CACHE_NAME = 'fitnova-go-2026.11.26.1';
 const APP_SHELL = [
   './',
   './index.html',
@@ -8,6 +8,7 @@ const APP_SHELL = [
   './ajustes.html',
   './placeholder.html',
   './nutricion.html',
+  './entrenamiento.html',
   './login.html',
   './invitacion.html',
   './css/styles.css',
@@ -19,7 +20,9 @@ const APP_SHELL = [
   '../js/actividades.js',
   '../js/importar-actividad.js',
   '../js/nutricion.js',
+  '../js/entrenos.js',
   './js/nutricion-go.js',
+  './js/entrenos-go.js',
   './js/supabase-client.js',
   './js/perfil.js',
   './js/evolucion.js',

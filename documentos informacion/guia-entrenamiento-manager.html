@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitNova Manager · Workouts y entrenamientos de tus clientes</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f6fb; color: #263248; font: 16px/1.65 "Segoe UI", system-ui, sans-serif; }
+    main { max-width: 820px; margin: 24px auto 60px; padding: 0 16px; }
+    header { padding: 26px; border-radius: 14px; background: #0a1a2f; color: #fff; }
+    header p { margin: 0; }
+    h1 { margin: 8px 0; font-size: clamp(25px, 5vw, 34px); line-height: 1.25; }
+    h2 { margin: 0 0 12px; font-size: 21px; }
+    section { margin-top: 18px; padding: 22px; border: 1px solid #dce3ee; border-radius: 12px; background: #fff; }
+    li { margin: 9px 0; }
+    a { color: #1748c7; overflow-wrap: anywhere; }
+    .boton { display: inline-block; padding: 10px 16px; border-radius: 8px; color: #fff; background: #1748c7; text-decoration: none; }
+    .resultado { color: #147a52; font-weight: 600; }
+    .nota { background: #fff6e7; border-left: 5px solid #ac710b; }
+    footer { padding: 24px 0; text-align: center; color: #657189; font-size: 13px; }
+    @media print {
+      body { background: #fff; }
+      main { max-width: none; margin: 0; }
+      header { background: #fff; color: #263248; border-bottom: 2px solid #1748c7; }
+      h2 { break-after: avoid; }
+      .boton { background: none; color: #1748c7; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p>Para el profesional · Entrenamiento en FitNova Manager</p>
+    <h1>Crea workouts, asígnalos y revisa lo que hace tu cliente</h1>
+    <p>Prepara tu catálogo de ejercicios con vídeo, monta workouts reutilizables y asígnalos con fecha. Tu cliente los ve en FitNova Go, los registra y tú ves el resultado en su ficha.</p>
+  </header>
+
+  <section>
+    <h2>Qué vamos a comprobar</h2>
+    <ol>
+      <li>Creas ejercicios en tu catálogo, con un vídeo de YouTube o Vimeo.</li>
+      <li>Montas un workout con esos ejercicios y lo asignas a un cliente (una vez o repetido cada semana).</li>
+      <li>El cliente lo ve en <strong>FitNova Go</strong> y registra lo que ha hecho.</li>
+      <li>Tú ves lo realizado en su ficha, lo comparas con lo prescrito y le dejas un comentario.</li>
+    </ol>
+    <p>Necesitas un cliente <strong>activo</strong> del que seas su <strong>entrenador/a o nutricionista asignado</strong>. Dale la guía <a href="guia-entrenamiento-go.html">«Tus entrenamientos en FitNova Go»</a>.</p>
+    <p><a class="boton" href="https://alinaresblanco-gif.github.io/FitNova/fitnova-manager/login.html">Abrir FitNova Manager</a></p>
+  </section>
+
+  <section>
+    <h2>1. Crea tus ejercicios</h2>
+    <ol>
+      <li>Ve a <strong>Librería</strong> y pulsa la pestaña <strong>Ejercicios</strong>.</li>
+      <li>Pulsa <strong>Crear nuevo</strong>. Escribe el nombre (por ejemplo <em>Sentadilla goblet</em>), elige la categoría (opcional) y, si quieres, una explicación de cómo se hace.</li>
+      <li>En <strong>Vídeo de YouTube o Vimeo</strong> pega un enlace de YouTube o Vimeo. Verás la vista previa debajo. Otros enlaces no se aceptan.</li>
+      <li>Pulsa <strong>Guardar ejercicio</strong>. Crea otro, por ejemplo <em>Plancha</em>.</li>
+    </ol>
+    <p class="resultado">Resultado esperado: los ejercicios aparecen en la lista. Puedes buscarlos, filtrarlos por categoría, editarlos y eliminarlos.</p>
+    <p>Si intentas crear dos ejercicios con el mismo nombre, la app te avisa.</p>
+  </section>
+
+  <section>
+    <h2>2. Monta un workout</h2>
+    <ol>
+      <li>Pulsa la pestaña <strong>Workouts</strong> y después <strong>Crear nuevo</strong>.</li>
+      <li>Escribe el nombre (<em>Fuerza básica</em>) y, si quieres, indicaciones generales (<em>Calienta 10 minutos</em>).</li>
+      <li>Elige cada ejercicio de tu catálogo y pulsa <strong>Añadir</strong>. También puedes crear uno nuevo desde ahí con <strong>+ Nuevo ejercicio al catálogo</strong>.</li>
+      <li>Rellena lo que necesites de cada ejercicio: <strong>series</strong>, <strong>repeticiones</strong> (admite rangos como 8-10), <strong>carga en kg</strong> (puedes usar coma: 22,5), <strong>tiempo</strong> y <strong>descanso</strong> en segundos y <strong>notas</strong> para el cliente.</li>
+      <li>Ordena los ejercicios con las flechas ↑ ↓ y quita los que sobren con ✕. Pulsa <strong>Guardar</strong>.</li>
+    </ol>
+    <p class="resultado">Resultado esperado: el workout aparece en la lista con el número de ejercicios. Desde ahí puedes <strong>Asignar</strong>, <strong>Editar</strong>, <strong>Duplicar</strong> o <strong>Eliminar</strong>.</p>
+  </section>
+
+  <section>
+    <h2>3. Asigna el workout a tu cliente</h2>
+    <p>Puedes hacerlo de dos formas:</p>
+    <ul>
+      <li>Desde la <strong>Librería</strong>: botón <strong>Asignar</strong> del workout.</li>
+      <li>Desde la ficha del cliente: <strong>Clientes → nombre del cliente → pestaña Entrenamiento → Asignar workout</strong>.</li>
+    </ul>
+    <ol>
+      <li>Elige el cliente (o el workout), la <strong>fecha</strong> y, si quieres, en <strong>Repetir cada semana durante</strong>, 2, 4, 6, 8 o 12 semanas (por defecto, «Solo ese día»).</li>
+      <li>Pulsa <strong>Asignar</strong>.</li>
+    </ol>
+    <p class="resultado">Resultado esperado: se crea una copia para cada fecha. Si luego cambias el workout de la Librería, las copias ya asignadas no cambian.</p>
+    <p>Para algo puntual, en la ficha pulsa <strong>Crear uno solo para este cliente</strong>: no se guarda en la Librería.</p>
+  </section>
+
+  <section>
+    <h2>4. Revisa la pestaña Entrenamiento de la ficha</h2>
+    <p>Arriba verás el <strong>próximo entrenamiento</strong>, los <strong>realizados en el periodo</strong> (por ejemplo «1 de 2») y el <strong>esfuerzo medio</strong>. Con <strong>Anteriores</strong> eliges los últimos 30, 90 días o el último año.</p>
+    <p>Debajo están las listas <strong>Próximos</strong> y <strong>Anteriores y realizados</strong>, con su estado: 🕒 Pendiente, ✅ Realizado o ⚠️ Sin registrar.</p>
+    <p>Pulsa <strong>Ver detalle</strong> en uno:</p>
+    <ul>
+      <li>Tabla con cada ejercicio, lo <strong>prescrito</strong> y lo <strong>realizado</strong> serie a serie.</li>
+      <li>El <strong>registro del cliente</strong>: día, duración, esfuerzo de 1 a 10 y su comentario.</li>
+      <li>Mientras el cliente no lo haya registrado, puedes <strong>Editar para este cliente</strong> (fecha, ejercicios y cargas) o <strong>Eliminar</strong>.</li>
+    </ul>
+    <p class="resultado">Resultado esperado: cuando tu cliente lo registra en Go, aquí aparece como ✅ Realizado con sus series, cargas y esfuerzo.</p>
+  </section>
+
+  <section>
+    <h2>5. Comenta el entrenamiento</h2>
+    <ol>
+      <li>En el detalle, escribe en <strong>Comentario para el cliente</strong> (hasta 1000 caracteres). Por ejemplo: <em>¡Buen trabajo! Sube a 25 kg la próxima</em>.</li>
+      <li>Pulsa <strong>Comentar</strong>.</li>
+    </ol>
+    <p class="resultado">Resultado esperado: el comentario aparece con tu nombre y tu rol, y el cliente lo lee en ese entrenamiento en Go.</p>
+    <p>Puedes <strong>Borrar</strong> tus comentarios. No se editan: si quieres cambiar uno, bórralo y escribe otro.</p>
+  </section>
+
+  <section class="nota">
+    <h2>Ten en cuenta</h2>
+    <ul>
+      <li>Tus ejercicios y workouts de la Librería son solo tuyos; otros profesionales no los ven.</li>
+      <li>Asignar, editar y comentar solo pueden el <strong>entrenador/a o nutricionista asignado</strong> al cliente.</li>
+      <li>Cuando el cliente ya ha registrado un entrenamiento, ya no se puede editar ni eliminar, para no perder lo que hizo.</li>
+      <li>El registro (series, esfuerzo, comentario) es del cliente: tú no puedes modificarlo.</li>
+      <li>Los <strong>programas de varias semanas</strong> y la sección de <strong>vídeos</strong> de la Librería son las siguientes etapas.</li>
+    </ul>
+  </section>
+
+  <footer>FitNova Manager · Guía de entrenamientos · noviembre 2026</footer>
+</main>
+</body>
+</html>

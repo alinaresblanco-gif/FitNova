@@ -541,4 +541,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   cargarProgresoFicha();
   cargarActividadesFicha();
   cargarNutricionFicha();
+  cargarEntrenamientoFicha();
 });

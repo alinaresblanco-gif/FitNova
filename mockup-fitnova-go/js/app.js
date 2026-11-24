@@ -1,7 +1,7 @@
 // Utilidades genéricas para el mockup de FitNova Go (sin backend, solo simulación visual)
 
 // Incrementar en cada cambio visible del mockup para que se muestre el aviso de actualización.
-const APP_VERSION = '2026.11.25.1';
+const APP_VERSION = '2026.11.26.1';
 const ACTIVITIES_KEY = 'fitnova_activities';
 let selectedAgendaDay = '';
 let agendaFechaBase = new Date();
@@ -435,6 +435,7 @@ function openDayModal(date) {
   const activities = goAct.filas.filter((activity) => activity.fecha === date);
   document.getElementById('dia-modal-title').textContent = formatDate(date);
   const citas = window.FitNovaAgendaGo ? window.FitNovaAgendaGo.htmlDia(date) : '';
+  const entrenos = window.FitNovaEntrenosGo ? window.FitNovaEntrenosGo.htmlDia(date) : '';
   const lista = goAct.error ? `<p class="sesion-error">${A.escapar(goAct.error)}</p>`
     : !goAct.cargadas ? '<p>Cargando actividades...</p>'
     : activities.length ? activities.map((activity) => {
@@ -449,7 +450,7 @@ function openDayModal(date) {
       <button class="day-activity-delete" onclick="deleteActivityById('${activity.id}')" title="Eliminar actividad">🗑</button>
     </div>`;
     }).join('') : '<p class="agenda-empty">No hay actividades personales para este día.</p>';
-  document.getElementById('dia-activity-list').innerHTML = citas + lista;
+  document.getElementById('dia-activity-list').innerHTML = entrenos + citas + lista;
   openModal('modal-dia');
 }
 
@@ -558,6 +559,7 @@ function renderAgenda() {
       </details>`;
   }
   if (window.FitNovaAgendaGo) window.FitNovaAgendaGo.render();
+  if (window.FitNovaEntrenosGo) window.FitNovaEntrenosGo.render();
 }
 
 function renderWeek() {

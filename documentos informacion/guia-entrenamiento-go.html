@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitNova Go · Tus entrenamientos</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #fff7f0; color: #2b2b33; font: 17px/1.65 "Segoe UI", system-ui, sans-serif; }
+    main { max-width: 680px; margin: 20px auto 60px; padding: 0 16px; }
+    header { padding: 24px; border-radius: 16px; background: #0a1a2f; color: #fff; }
+    header p { margin: 0; }
+    h1 { margin: 8px 0; font-size: clamp(25px, 6vw, 32px); line-height: 1.25; color: #ff7a1a; }
+    h2 { margin: 0 0 10px; font-size: 20px; }
+    section { margin-top: 16px; padding: 20px; border: 1px solid #f1dccb; border-radius: 14px; background: #fff; }
+    li { margin: 8px 0; }
+    a { color: #d45d00; overflow-wrap: anywhere; }
+    .boton { display: inline-block; padding: 11px 18px; border-radius: 999px; color: #fff; background: #ff7a1a; text-decoration: none; font-weight: 600; }
+    .resultado { color: #147a52; font-weight: 600; }
+    .nota { background: #fff6e7; border-left: 5px solid #ac710b; }
+    footer { padding: 24px 0; text-align: center; color: #7a6f66; font-size: 13px; }
+    @media print {
+      body { background: #fff; }
+      header { background: #fff; color: #2b2b33; border-bottom: 2px solid #ff7a1a; }
+      .boton { background: none; color: #d45d00; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p>Para el cliente · FitNova Go</p>
+    <h1>Tus entrenamientos</h1>
+    <p>Tu entrenador/a te prepara los entrenamientos. Tú los ves en la app, con vídeos de cada ejercicio, y apuntas lo que has hecho.</p>
+  </header>
+
+  <section>
+    <h2>Antes de empezar</h2>
+    <p>Entra en FitNova Go con tu email y contraseña.</p>
+    <p><a class="boton" href="https://alinaresblanco-gif.github.io/FitNova/mockup-fitnova-go/login.html">Abrir FitNova Go</a></p>
+    <p>Tu entrenador/a debe haberte asignado al menos un entrenamiento.</p>
+  </section>
+
+  <section>
+    <h2>1. Encuentra tu entrenamiento</h2>
+    <ul>
+      <li>En <strong>Inicio</strong>, la tarjeta <strong>Entrenamiento de hoy</strong> te muestra el de hoy o el próximo. Si se te ha quedado alguno de la última semana sin apuntar, te lo recuerda.</li>
+      <li>En <strong>Agenda</strong>, los días con entrenamiento llevan 💪 (en verde si ya está hecho). Toca un día para verlo, o mira la sección <strong>Mis entrenamientos</strong>.</li>
+      <li>Con <strong>Ver mis entrenamientos</strong> tienes la lista completa: <strong>Hoy</strong>, <strong>Próximos</strong> y <strong>Anteriores</strong>.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>2. Mira qué tienes que hacer</h2>
+    <p>Toca el entrenamiento. Verás:</p>
+    <ul>
+      <li>Las indicaciones de tu entrenador/a.</li>
+      <li>Cada ejercicio con sus <strong>series</strong>, <strong>repeticiones</strong>, <strong>carga</strong>, <strong>tiempo</strong> y <strong>descanso</strong>, y sus notas.</li>
+      <li><strong>Cómo se hace</strong>: la explicación del ejercicio, si la hay.</li>
+      <li><strong>▶ Ver vídeo</strong>: abre el vídeo del ejercicio dentro de la app.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Apunta lo que has hecho</h2>
+    <ol>
+      <li>Al terminar, pulsa <strong>✅ Registrar entrenamiento</strong>.</li>
+      <li>Cada ejercicio viene marcado y con las series que te tocaban. Cambia las <strong>repeticiones</strong>, los <strong>kg</strong> o los <strong>segundos</strong> por lo que hiciste de verdad.</li>
+      <li>Si hiciste más series, pulsa <strong>+ Añadir serie</strong>; si hiciste menos, quítalas con ✕. Si no hiciste un ejercicio, desmárcalo.</li>
+      <li>Indica el <strong>día que lo hiciste</strong>, la <strong>duración</strong> en minutos y el <strong>esfuerzo</strong> de 1 (muy suave) a 10 (máximo).</li>
+      <li>Si quieres, escribe cómo te has sentido. Por ejemplo: <em>La última serie de sentadilla me costó mucho</em>.</li>
+      <li>Pulsa <strong>Guardar</strong>.</li>
+    </ol>
+    <p class="resultado">Resultado esperado: el entrenamiento pasa a ✅ Realizado y ves <strong>Tu registro</strong> con tus series. Tu entrenador/a lo ve en ese momento.</p>
+    <p>Si te equivocas, usa <strong>Editar registro</strong> o <strong>Borrar registro</strong>.</p>
+  </section>
+
+  <section>
+    <h2>4. Lee los comentarios de tu entrenador/a</h2>
+    <p>Cuando tu entrenador/a comenta un entrenamiento, verás 💬 en la lista y el comentario dentro del entrenamiento.</p>
+  </section>
+
+  <section class="nota">
+    <h2>Ten en cuenta</h2>
+    <ul>
+      <li>Los entrenamientos los prepara tu entrenador/a: tú no puedes cambiarlos, solo apuntar lo que has hecho.</li>
+      <li>Lo que registras se guarda en tu cuenta: lo verás igual desde el móvil o el ordenador.</li>
+      <li>Si no ves un entrenamiento nuevo, cierra y vuelve a abrir la app.</li>
+    </ul>
+  </section>
+
+  <footer>FitNova Go · Guía de entrenamientos · noviembre 2026</footer>
+</main>
+</body>
+</html>

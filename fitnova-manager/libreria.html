@@ -42,7 +42,8 @@
     <div class="page-body single">
       <section class="card">
         <div class="tabs">
-          <button class="tab-btn active" data-tab-group="lib" data-tab="workouts" onclick="switchTab('lib','workouts')">💪 Workouts <span class="count-pill">0</span></button>
+          <button class="tab-btn active" data-tab-group="lib" data-tab="workouts" onclick="switchTab('lib','workouts')">💪 Workouts <span class="count-pill" id="lib-count-workouts">0</span></button>
+          <button class="tab-btn" data-tab-group="lib" data-tab="ejercicios" onclick="switchTab('lib','ejercicios')">🏋️ Ejercicios <span class="count-pill" id="lib-count-ejercicios">0</span></button>
           <button class="tab-btn" data-tab-group="lib" data-tab="programas" onclick="switchTab('lib','programas')">📋 Programas <span class="count-pill">0</span></button>
           <button class="tab-btn" data-tab-group="lib" data-tab="nutricion" onclick="switchTab('lib','nutricion')">🥗 Nutrición <span class="count-pill">0</span></button>
           <button class="tab-btn" data-tab-group="lib" data-tab="recetas" onclick="switchTab('lib','recetas')">🍳 Recetas <span class="count-pill">0</span></button>
@@ -54,24 +55,24 @@
           <div class="list-toolbar-left">
             <div class="search-box">
               <span class="ico">🔍</span>
-              <input type="text" placeholder="Buscar en la librería..." />
+              <input type="text" id="lib-buscar" placeholder="Buscar en la librería..." />
             </div>
-            <button class="btn-outline">🧰 Filtros</button>
+            <select id="lib-filtro-categoria" class="btn-outline" style="display:none;" title="Filtrar por categoría">
+              <option value="">Todas las categorías</option>
+            </select>
           </div>
           <div class="list-toolbar-right">
-            <button class="btn-secondary" onclick="openModal('modal-crear-item')">➕ Crear nuevo</button>
+            <button class="btn-secondary" id="lib-crear">➕ Crear nuevo</button>
           </div>
         </div>
+        <p id="lib-error" role="alert" style="color:var(--rojo);margin:0 0 10px;"></p>
 
         <div class="tab-panel active" data-tab-panel-group="lib" data-tab-panel="workouts">
-          <div class="empty-state">
-            <div class="empty-icon">💪</div>
-            <h3>Todavía no has creado ningún workout</h3>
-            <p>Crea entrenamientos para tus clientes.</p>
-            <div style="display:flex;gap:10px;justify-content:center;">
-              <button class="btn-primary" onclick="openModal('modal-crear-item')">Crear workout</button>
-            </div>
-          </div>
+          <div id="lib-workouts"><p style="color:var(--gris-texto);">Cargando workouts...</p></div>
+        </div>
+
+        <div class="tab-panel" data-tab-panel-group="lib" data-tab-panel="ejercicios">
+          <div id="lib-ejercicios"><p style="color:var(--gris-texto);">Cargando ejercicios...</p></div>
         </div>
 
         <div class="tab-panel" data-tab-panel-group="lib" data-tab-panel="programas">
@@ -138,5 +139,8 @@
 
   <script src="js/app.js?v=20260924.2"></script>
   <script src="js/supabase-client.js"></script>
+  <script src="../js/entrenos.js?v=20261126.1"></script>
+  <script src="js/entrenos-manager.js?v=20261126.1"></script>
+  <script src="js/libreria.js?v=20261126.1"></script>
 </body>
 </html>

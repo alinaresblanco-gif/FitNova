@@ -88,12 +88,30 @@
         </div>
 
         <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="entrenamiento">
-          <div class="empty-state">
-            <div class="empty-icon">💪</div>
-            <h3>Sin workouts asignados todavía</h3>
-            <p>Asigna un workout o programa desde la librería para que aparezca aquí.</p>
-            <a href="libreria.html?tab=workouts" class="btn-primary">Ir a la librería</a>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;margin-bottom:12px;">
+            <div>
+              <h3 style="margin:0 0 4px;">Entrenamientos</h3>
+              <p style="font-size:13px;color:#55606f;margin:0;">Workouts asignados a este cliente y lo que ha registrado en FitNova Go (series, cargas, esfuerzo y comentarios).</p>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
+              <label for="cp-ent-periodo" style="font-size:13px;font-weight:600;color:var(--azul);">Anteriores
+                <select id="cp-ent-periodo" style="display:block;margin-top:6px;padding:8px 10px;border-radius:10px;border:1px solid #D9D9D9;min-width:160px;">
+                  <option value="30">Últimos 30 días</option>
+                  <option value="90">Últimos 90 días</option>
+                  <option value="365">Último año</option>
+                </select>
+              </label>
+              <button class="btn-primary" type="button" id="cp-ent-asignar">Asignar workout</button>
+              <button class="btn-outline" type="button" id="cp-ent-crear">Crear uno solo para este cliente</button>
+            </div>
           </div>
+          <div class="bottom-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:14px;">
+            <div class="mini-list-item"><div class="info"><strong>Próximo entrenamiento</strong><span id="cp-ent-proximo">Cargando...</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Realizados en el periodo</strong><span id="cp-ent-realizados">Cargando...</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Esfuerzo medio</strong><span id="cp-ent-esfuerzo">Cargando...</span></div></div>
+          </div>
+          <p id="cp-ent-aviso" role="status" style="margin:0 0 10px;font-size:13px;"></p>
+          <div id="cp-ent-lista"><p>Cargando entrenamientos...</p></div>
         </div>
 
         <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="nutricion">
@@ -264,6 +282,9 @@
   <script src="../js/fotos-progreso.js?v=20261125.1"></script>
   <script src="../js/actividades.js?v=20261125.1"></script>
   <script src="../js/nutricion.js?v=20261125.1"></script>
-  <script src="js/cliente-perfil.js?v=20261125.1"></script>
+  <script src="../js/entrenos.js?v=20261126.1"></script>
+  <script src="js/entrenos-manager.js?v=20261126.1"></script>
+  <script src="js/cliente-entrenos.js?v=20261126.1"></script>
+  <script src="js/cliente-perfil.js?v=20261126.1"></script>
 </body>
 </html>
