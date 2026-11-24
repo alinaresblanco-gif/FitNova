@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitNova Go · Registra tu evolución</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f6fb; color: #263248; font: 16px/1.65 "Segoe UI", system-ui, sans-serif; }
+    main { max-width: 780px; margin: 24px auto 60px; padding: 0 16px; }
+    header { padding: 26px; border-radius: 14px; background: #0a1a2f; color: #fff; }
+    header p { margin: 0; }
+    h1 { margin: 8px 0; font-size: clamp(25px, 5vw, 34px); line-height: 1.25; }
+    h2 { margin: 0 0 12px; font-size: 21px; }
+    section { margin-top: 18px; padding: 22px; border: 1px solid #dce3ee; border-radius: 12px; background: #fff; }
+    li { margin: 9px 0; }
+    a { color: #1748c7; overflow-wrap: anywhere; }
+    .boton { display: inline-block; padding: 10px 16px; border-radius: 8px; color: #fff; background: #1748c7; text-decoration: none; }
+    .ejemplo { padding: 16px; background: #edf3ff; border-radius: 8px; }
+    .ejemplo p { margin: 5px 0; }
+    .resultado { color: #147a52; font-weight: 600; }
+    .nota { background: #fff6e7; border-left: 5px solid #ac710b; }
+    footer { padding: 24px 0; text-align: center; color: #657189; font-size: 13px; }
+    @media print {
+      body { background: #fff; }
+      main { max-width: none; margin: 0; }
+      header { background: #fff; color: #263248; border-bottom: 2px solid #1748c7; }
+      h2 { break-after: avoid; }
+      .boton { background: none; color: #1748c7; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p>Para el cliente · Tu Evolución en FitNova Go</p>
+    <h1>Registra tu peso y tus medidas</h1>
+    <p>Lo que anotes aquí lo verá tu profesional en su ficha, para seguir tu progreso contigo.</p>
+  </header>
+
+  <section>
+    <h2>1. Entra con tu cuenta</h2>
+    <p><a class="boton" href="https://alinaresblanco-gif.github.io/FitNova/mockup-fitnova-go/login.html">Abrir FitNova Go</a></p>
+    <ol>
+      <li>Abre FitNova Go.</li>
+      <li>Introduce el correo y la contraseña que creaste al registrarte con la invitación de tu profesional.</li>
+      <li>Pulsa <strong>Entrar</strong>.</li>
+    </ol>
+    <p><strong>No necesitas registrarte otra vez.</strong> Si la app te muestra el aviso <strong>«Actualización disponible»</strong>, pulsa <strong>Actualizar aplicación</strong>.</p>
+  </section>
+
+  <section>
+    <h2>2. Abre Evolución</h2>
+    <ol>
+      <li>Pulsa <strong>Evolución</strong> en la barra inferior.</li>
+      <li>Verás tu peso del cuestionario inicial como primer registro.</li>
+    </ol>
+    <p>En esta pantalla tienes:</p>
+    <ul>
+      <li><strong>Selecciona la métrica:</strong> elige qué medida quieres ver (peso, grasa, cintura, etc.).</li>
+      <li><strong>Progreso:</strong> la línea de tu evolución. Aparece cuando tienes al menos dos registros de esa medida.</li>
+      <li><strong>Objetivo de peso:</strong> peso inicial, actual, objetivo y el porcentaje que llevas recorrido.</li>
+      <li><strong>Últimos registros:</strong> lo que has anotado de la medida elegida.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Anota tus medidas</h2>
+    <ol>
+      <li>Pulsa el botón naranja <strong>+</strong> (abajo a la derecha).</li>
+      <li>Comprueba la <strong>fecha</strong> (por defecto, hoy). No se permiten fechas futuras.</li>
+      <li>Rellena solo las medidas que tengas; las demás puedes dejarlas vacías.</li>
+      <li>Si no sabes cómo medir algo, pulsa el <strong>?</strong> junto a su nombre.</li>
+      <li>Pulsa <strong>Guardar métricas</strong>.</li>
+    </ol>
+    <div class="ejemplo">
+      <p><strong>Ejemplo para la prueba:</strong></p>
+      <p>Peso corporal: tu peso de hoy</p>
+      <p>Grasa corporal: 21,5 %</p>
+      <p>Cintura: 88 cm</p>
+    </div>
+    <p class="resultado">Resultado esperado: la ventana se cierra y el nuevo peso aparece en «Últimos registros» y como «Peso actual».</p>
+    <p>Elige <strong>Cintura</strong> en el selector para ver también esa medida.</p>
+  </section>
+
+  <section>
+    <h2>4. Fija tu peso objetivo</h2>
+    <ol>
+      <li>En la tarjeta <strong>Objetivo de peso</strong>, pulsa el icono de la balanza ⚖️.</li>
+      <li>Escribe el peso objetivo acordado con tu profesional (por ejemplo, 75).</li>
+      <li>Pulsa <strong>Actualizar</strong>.</li>
+    </ol>
+    <p class="resultado">Resultado esperado: aparece tu peso objetivo y el círculo muestra el porcentaje de avance.</p>
+    <p>Puedes comprobar que el dato es el mismo en <strong>Perfil</strong> (pulsa el icono de usuario de la parte superior).</p>
+  </section>
+
+  <section>
+    <h2>5. Avisa a tu profesional</h2>
+    <p>Dile que ya has guardado tus medidas. Él las verá en tu ficha, en la pestaña <strong>Progreso</strong>.</p>
+  </section>
+
+  <section>
+    <h2>6. Corregir un error</h2>
+    <ol>
+      <li>Si te equivocaste, pulsa la papelera 🗑 junto al registro.</li>
+      <li>Si ese registro incluye varias medidas, la app te avisará de que <strong>se eliminarán todas las medidas de ese registro</strong>. Acepta y vuelve a anotarlas bien.</li>
+    </ol>
+    <p>Los registros marcados como <strong>«profesional»</strong> no se pueden borrar desde Go.</p>
+    <p>Para la prueba, tu profesional puede pedirte que borres el registro de ejemplo y comprobar que también desaparece de su ficha.</p>
+  </section>
+
+  <section class="nota">
+    <h2>Ten en cuenta</h2>
+    <ul>
+      <li>Tus medidas se guardan en tu cuenta: las verás igual desde el móvil o desde otro dispositivo.</li>
+      <li>Solo las ves tú y los profesionales que te atienden.</li>
+      <li>La pestaña <strong>Fotos</strong> todavía es de demostración: las fotos no se guardan al salir.</li>
+      <li>Si aparece un mensaje en rojo, revisa tu conexión a internet e inténtalo de nuevo.</li>
+    </ul>
+  </section>
+
+  <footer>FitNova Go · Guía de Evolución · noviembre 2026</footer>
+</main>
+</body>
+</html>

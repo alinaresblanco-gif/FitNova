@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitNova Manager · Cómo ver el progreso de tus clientes</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f6fb; color: #263248; font: 16px/1.65 "Segoe UI", system-ui, sans-serif; }
+    main { max-width: 780px; margin: 24px auto 60px; padding: 0 16px; }
+    header { padding: 26px; border-radius: 14px; background: #0a1a2f; color: #fff; }
+    header p { margin: 0; }
+    h1 { margin: 8px 0; font-size: clamp(25px, 5vw, 34px); line-height: 1.25; }
+    h2 { margin: 0 0 12px; font-size: 21px; }
+    section { margin-top: 18px; padding: 22px; border: 1px solid #dce3ee; border-radius: 12px; background: #fff; }
+    li { margin: 9px 0; }
+    a { color: #1748c7; overflow-wrap: anywhere; }
+    .boton { display: inline-block; padding: 10px 16px; border-radius: 8px; color: #fff; background: #1748c7; text-decoration: none; }
+    .ejemplo { padding: 16px; background: #edf3ff; border-radius: 8px; }
+    .ejemplo p { margin: 5px 0; }
+    .resultado { color: #147a52; font-weight: 600; }
+    .nota { background: #fff6e7; border-left: 5px solid #ac710b; }
+    footer { padding: 24px 0; text-align: center; color: #657189; font-size: 13px; }
+    @media print {
+      body { background: #fff; }
+      main { max-width: none; margin: 0; }
+      header { background: #fff; color: #263248; border-bottom: 2px solid #1748c7; }
+      h2 { break-after: avoid; }
+      .boton { background: none; color: #1748c7; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p>Para el profesional · Progreso en FitNova Manager</p>
+    <h1>Consulta el peso y las medidas que registran tus clientes</h1>
+    <p>Las medidas que tu cliente anota en FitNova Go aparecen automáticamente en su ficha de Manager. No tienes que copiar nada.</p>
+  </header>
+
+  <section>
+    <h2>Qué vamos a comprobar</h2>
+    <ol>
+      <li>Tu cliente registra su peso y algunas medidas en <strong>FitNova Go → Evolución</strong>.</li>
+      <li>Tú lo ves en <strong>FitNova Manager → Clientes → ficha del cliente → Progreso</strong>.</li>
+      <li>Si el cliente borra un registro o cambia su peso objetivo, tu ficha también cambia.</li>
+    </ol>
+    <p>Para la prueba necesitas un cliente que ya esté <strong>activo</strong>, es decir, que ya se haya registrado con tu invitación y haya completado el cuestionario inicial. Dale la guía <a href="guia-progreso-go.html">«Registra tu evolución en FitNova Go»</a>.</p>
+  </section>
+
+  <section>
+    <h2>1. Entra en Manager</h2>
+    <p><a class="boton" href="https://alinaresblanco-gif.github.io/FitNova/fitnova-manager/login.html">Abrir FitNova Manager</a></p>
+    <ol>
+      <li>Inicia sesión con tu correo y tu contraseña de profesional.</li>
+      <li>En el menú superior pulsa <strong>Clientes</strong>.</li>
+      <li>Haz clic en el nombre del cliente que va a hacer la prueba para abrir su ficha.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>2. Abre la pestaña Progreso</h2>
+    <ol>
+      <li>En la ficha, pulsa la pestaña <strong>Progreso</strong>.</li>
+      <li>Aunque el cliente todavía no haya usado Evolución, verás al menos <strong>un registro de peso</strong>: el que indicó en el cuestionario inicial.</li>
+    </ol>
+    <p>La pestaña tiene tres partes:</p>
+    <ul>
+      <li><strong>Resumen de peso:</strong> peso inicial, peso actual (con su fecha), peso objetivo y porcentaje de avance hacia el objetivo.</li>
+      <li><strong>Medida + gráfico:</strong> elige cualquiera de las 15 medidas (peso, grasa corporal, pecho, cuello, hombros, bíceps, antebrazos, cintura, cadera, muslos y gemelos) para ver su evolución. Con un solo registro se muestra el valor; con dos o más, la línea.</li>
+      <li><strong>Historial:</strong> todas las mediciones, de la más reciente a la más antigua, con quién las registró y qué medidas incluye cada una.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Pide al cliente que registre sus medidas</h2>
+    <p>Mientras tienes la ficha abierta, pide a tu cliente que siga su guía. Un ejemplo sencillo:</p>
+    <div class="ejemplo">
+      <p><strong>Fecha:</strong> hoy</p>
+      <p><strong>Peso corporal:</strong> 1 o 2 kg menos que su peso inicial</p>
+      <p><strong>Grasa corporal:</strong> 21,5 %</p>
+      <p><strong>Cintura:</strong> 88 cm</p>
+      <p><strong>Peso objetivo:</strong> el que hayáis acordado, por ejemplo 75 kg</p>
+    </div>
+    <p>Cuando te diga que ya lo ha guardado, <strong>recarga la página</strong> (tecla F5) y vuelve a la pestaña <strong>Progreso</strong>.</p>
+    <p class="resultado">Resultado esperado: el peso actual y el porcentaje cambian, aparece el peso objetivo y el historial muestra una fila nueva «Cliente (Go)» con peso, grasa y cintura.</p>
+    <p>Elige <strong>Cintura</strong> o <strong>Grasa corporal</strong> en el selector de medida para ver su valor.</p>
+  </section>
+
+  <section>
+    <h2>4. Comprueba un borrado</h2>
+    <ol>
+      <li>Pide al cliente que borre ese registro de prueba desde Evolución (icono de papelera).</li>
+      <li>Recarga la ficha y abre <strong>Progreso</strong>.</li>
+    </ol>
+    <p class="resultado">Resultado esperado: la fila desaparece del historial y el peso actual vuelve al valor anterior.</p>
+    <p>Tú no puedes borrar las medidas de tu cliente desde Manager: solo él puede corregir lo que ha registrado.</p>
+  </section>
+
+  <section class="nota">
+    <h2>Qué todavía no está disponible</h2>
+    <ul>
+      <li>Registrar tú las medidas del cliente desde Manager (por ejemplo, en una revisión presencial). De momento las anota el cliente desde Go.</li>
+      <li>Fotos de progreso: en Go la pestaña Fotos todavía es de demostración y no se guardan.</li>
+      <li>Filtrar por mes o por periodo y corregir un único valor sin borrar la medición completa.</li>
+    </ul>
+    <p>Solo ven estas medidas el propio cliente y los profesionales asignados a él como entrenador o nutricionista. Otro profesional no tiene acceso.</p>
+  </section>
+
+  <section>
+    <h2>Si algo no aparece</h2>
+    <ul>
+      <li><strong>No veo nada nuevo:</strong> recarga la página; la ficha no se actualiza sola.</li>
+      <li><strong>«Aún no hay mediciones registradas»:</strong> comprueba que es el cliente correcto y que ya terminó el cuestionario inicial.</li>
+      <li><strong>Mensaje en rojo:</strong> revisa la conexión a internet y vuelve a cargar. Si continúa, anota el texto del mensaje y envíanoslo.</li>
+    </ul>
+  </section>
+
+  <footer>FitNova · Guía de Progreso para Manager · noviembre 2026</footer>
+</main>
+</body>
+</html>
