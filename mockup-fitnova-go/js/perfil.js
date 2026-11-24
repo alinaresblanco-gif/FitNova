@@ -4,6 +4,7 @@
 let pfCliente = null;
 let pfMetricas = []; // todas las filas de clientes_metricas, orden fecha ascendente
 let pfObjetivo = null;
+let pfErrorCarga = '';
 
 const METRICA_UNIDADES = {
   peso_kg: 'kg',
@@ -54,7 +55,12 @@ async function recargarMetricas() {
     .eq('cliente_id', pfCliente.id)
     .order('fecha', { ascending: true })
     .order('creado_en', { ascending: true });
+  pfErrorCarga = error ? `No se pudieron cargar tus registros: ${error.message}. Revisa tu conexión y vuelve a abrir Perfil.` : '';
   pfMetricas = error ? [] : (data || []);
+}
+
+function mensajeErrorCarga() {
+  return `<p role="alert" style="font-size:13px;color:#c0392b;margin:0;">${FitNovaMetricas.escapar(pfErrorCarga)}</p>`;
 }
 
 function renderEvolucionPeso() {
@@ -67,6 +73,8 @@ function renderEvolucionPeso() {
     linea.setAttribute('points', '');
     punto.style.display = 'none';
     vacio.style.display = 'block';
+    vacio.style.color = pfErrorCarga ? '#c0392b' : '#55606f';
+    vacio.textContent = pfErrorCarga || 'Todavía no hay suficientes registros de peso para dibujar la evolución.';
     document.getElementById('pf-evolucion-desde').textContent = '';
     document.getElementById('pf-evolucion-hasta').textContent = '';
     return;
@@ -127,11 +135,19 @@ function renderMetrica() {
 
   // Últimos registros (más recientes primero, máx. 12)
   const cont = document.getElementById('metrica-registros');
+  if (pfErrorCarga) {
+    vacio.style.display = 'none';
+    cont.innerHTML = mensajeErrorCarga();
+    return;
+  }
   const recientes = serie.slice().reverse().slice(0, 12);
   if (!recientes.length) {
     cont.innerHTML = '<p style="font-size:13px;color:#55606f;margin:0;">Todavía no hay registros. Añade el primero arriba.</p>';
     return;
   }
+  const masEnEvolucion = serie.length > recientes.length
+    ? `<p style="font-size:12px;color:#55606f;margin:8px 0 0;">Mostrando los 12 más recientes de ${serie.length}. Consulta todos en <a href="placeholder.html?vista=Evolución">Evolución</a>.</p>`
+    : '';
   cont.innerHTML = recientes.map((r) => `
     <div class="list-item">
       <span>${fechaCorta(r.fecha)} · ${r.valor.toLocaleString('es-ES')} ${unidad}</span>
@@ -139,7 +155,7 @@ function renderMetrica() {
         ? `<button class="delete-icon" onclick="eliminarMetrica('${r.id}')" title="Eliminar registro">🗑</button>`
         : '<span style="font-size:11px;color:#8a93a1;">profesional</span>'}
     </div>
-  `).join('');
+  `).join('') + masEnEvolucion;
 }
 
 async function guardarMetrica() {

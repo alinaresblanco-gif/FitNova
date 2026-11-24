@@ -448,6 +448,11 @@ textarea { resize: vertical; min-height: 60px; }
 .evolution-add-photos { margin-top: 14px; width: 100%; }
 .evolution-photo-grid { display: grid; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .evolution-photo-grid img { aspect-ratio: 1; border-radius: 10px; object-fit: cover; width: 100%; }
+.evolution-photo-grid figure { margin: 0; position: relative; }
+.evolution-photo-grid figcaption { color: #55606f; font-size: 12px; margin-top: 4px; text-align: center; }
+.evolution-photo-grid .delete-icon { background: rgba(255, 255, 255, 0.9); border-radius: 50%; position: absolute; right: 6px; top: 6px; }
+.evolution-add[hidden] { display: none; }
+.evolution-record-actions { align-items: center; display: flex; gap: 4px; }
 .evolution-empty { color: #55606f; font-size: 13px; line-height: 1.5; margin: 8px 0; text-align: center; }
 .evolution-add { align-items: center; background: var(--naranja); border: 0; border-radius: 50%; bottom: 78px; box-shadow: 0 4px 12px rgba(255, 106, 0, 0.35); color: var(--blanco); cursor: pointer; display: flex; font-size: 28px; height: 56px; justify-content: center; position: fixed; right: max(20px, calc((100vw - 480px) / 2 + 20px)); width: 56px; z-index: 60; }
 .metrics-modal { max-height: 90vh; overflow-y: auto; }

@@ -1,7 +1,7 @@
 // Utilidades genéricas para el mockup de FitNova Go (sin backend, solo simulación visual)
 
 // Incrementar en cada cambio visible del mockup para que se muestre el aviso de actualización.
-const APP_VERSION = '2026.11.24.1';
+const APP_VERSION = '2026.11.24.2';
 const ACTIVITIES_KEY = 'fitnova_activities';
 let selectedAgendaDay = '';
 let agendaFechaBase = new Date();
@@ -50,7 +50,7 @@ function aplicarActualizacion() {
 
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.register('./service-worker.js?v=20261124.1').then((registration) => {
+  navigator.serviceWorker.register('./service-worker.js?v=20261124.2').then((registration) => {
     registration.update();
   }).catch(() => {});
   navigator.serviceWorker.addEventListener('message', (event) => {
@@ -225,7 +225,6 @@ function initAgenda() {
 
 function initEvolution() {
   const tabs = document.querySelectorAll('[data-evolution-tab]');
-  const photoInput = document.getElementById('evolution-photo-input');
   if (!tabs.length) return;
 
   document.querySelectorAll('.metric-help').forEach((button) => button.addEventListener('click', () => openMetricHelp(button.dataset.help)));
@@ -235,23 +234,8 @@ function initEvolution() {
     tabs.forEach((item) => item.classList.toggle('active', item === tab));
     document.getElementById('evolution-metrics').hidden = selectedTab !== 'metrics';
     document.getElementById('evolution-photos').hidden = selectedTab !== 'photos';
+    document.querySelector('.evolution-add').hidden = selectedTab !== 'metrics';
   }));
-
-  photoInput.addEventListener('change', () => {
-    const grid = document.getElementById('evolution-photo-grid');
-    grid.querySelector('.evolution-empty')?.remove();
-    Array.from(photoInput.files).forEach((file) => {
-      const reader = new FileReader();
-      reader.addEventListener('load', () => {
-        const image = document.createElement('img');
-        image.src = reader.result;
-        image.alt = 'Foto de progreso';
-        grid.appendChild(image);
-      });
-      reader.readAsDataURL(file);
-    });
-    photoInput.value = '';
-  });
 }
 
 function openMetricHelp(type) {

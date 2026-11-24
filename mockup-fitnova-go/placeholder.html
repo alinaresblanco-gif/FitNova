@@ -31,6 +31,8 @@
           <p class="card-title">Métricas</p>
           <label for="evolution-metric-select">Selecciona la métrica</label>
           <select id="evolution-metric-select"></select>
+          <label for="evolution-period-select" style="margin-top:10px;display:block;">Periodo</label>
+          <select id="evolution-period-select"></select>
           <p class="evolution-progress-title">Progreso</p>
           <div class="card evolution-chart-card">
             <div class="line-chart-wrap"><svg id="evolution-chart" viewBox="0 0 300 100" preserveAspectRatio="none"><polyline fill="none" stroke="#FF6A00" stroke-width="3" points="" /></svg></div>
@@ -55,20 +57,25 @@
         <section class="card evolution-records-card">
           <p class="card-title" id="evolution-records-title">Últimos registros</p>
           <div id="evolution-records"></div>
+          <button class="btn-secondary" id="evolution-records-more" type="button" style="width:100%;margin-top:10px;" hidden>Ver más</button>
         </section>
       </section>
 
       <section id="evolution-photos" class="evolution-panel" role="tabpanel" hidden>
         <section class="card evolution-photos-card">
           <p class="card-title">Fotos de progreso</p>
-          <div id="evolution-photo-grid" class="evolution-photo-grid"><p class="evolution-empty">Añade fotos para seguir visualmente tu evolución.</p></div>
-          <input id="evolution-photo-input" type="file" accept="image/*" multiple hidden />
-          <button class="btn-primary evolution-add-photos" onclick="document.getElementById('evolution-photo-input').click()">+ Añadir fotos</button>
+          <div id="evolution-photo-grid" class="evolution-photo-grid"><p class="evolution-empty">Cargando tus fotos...</p></div>
+          <p id="evolution-photo-error" role="alert" style="color:#c0392b;font-size:13px;margin:10px 0 0;"></p>
+          <label for="evolution-photo-date" style="margin-top:12px;display:block;">Fecha de las fotos</label>
+          <input id="evolution-photo-date" type="date" />
+          <input id="evolution-photo-input" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden />
+          <button class="btn-primary evolution-add-photos" id="evolution-photo-add" onclick="document.getElementById('evolution-photo-input').click()">+ Añadir fotos</button>
+          <p class="evolution-empty">Solo las ves tú y tus profesionales.</p>
         </section>
       </section>
     </main>
 
-    <button class="evolution-add" onclick="openModal('modal-registrar-metricas')" title="Añadir métrica">+</button>
+    <button class="evolution-add" onclick="evoAbrirRegistro()" title="Añadir métrica">+</button>
 
     <nav class="bottom-nav">
       <a href="index.html"><span class="nav-icon">🏠</span>Inicio</a>
@@ -80,7 +87,7 @@
     <div class="modal-overlay" id="modal-objetivo"><div class="modal"><div class="modal-header"><h2>Definir objetivo</h2><button class="modal-close" onclick="closeModal('modal-objetivo')">✕</button></div><label for="objetivo-peso">Peso objetivo (kg)</label><input type="number" id="objetivo-peso" step="0.1" min="0.1" inputmode="decimal" /><p id="objetivo-error" role="alert" style="color:#c0392b;font-size:13px;margin:8px 0 0;"></p><div class="row" style="margin-top:18px;"><button class="btn-secondary" onclick="closeModal('modal-objetivo')">Cancelar</button><button class="btn-primary" id="objetivo-guardar" onclick="guardarObjetivoEvolucion()">Actualizar</button></div></div></div>
     <div class="modal-overlay" id="modal-registrar-metricas">
       <div class="modal metrics-modal">
-        <div class="modal-header"><h2>Registrar métricas</h2><button class="modal-close" onclick="closeModal('modal-registrar-metricas')">✕</button></div>
+        <div class="modal-header"><h2 id="metrics-modal-title">Registrar métricas</h2><button class="modal-close" onclick="closeModal('modal-registrar-metricas')">✕</button></div>
         <form id="metrics-form" onsubmit="guardarMetricasEvolucion(event)" novalidate>
           <label for="metric-date">Fecha</label>
           <input id="metric-date" name="date" type="date" required />
@@ -113,9 +120,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/supabase-client.js?v=20261111.1"></script>
-  <script src="../js/metricas.js?v=20261124.1"></script>
-  <script src="js/app.js?v=20261124.1"></script>
-  <script src="js/evolucion.js?v=20261124.1"></script>
+  <script src="../js/metricas.js?v=20261124.2"></script>
+  <script src="../js/fotos-progreso.js?v=20261124.2"></script>
+  <script src="js/app.js?v=20261124.2"></script>
+  <script src="js/evolucion.js?v=20261124.2"></script>
   <script>initEvolution();</script>
 </body>
 </html>

@@ -104,10 +104,18 @@
         </div>
 
         <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="progreso">
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;margin-bottom:14px;">
+            <div>
+              <label for="cp-prog-periodo" style="font-size:13px;font-weight:600;color:var(--azul);">Periodo</label>
+              <select id="cp-prog-periodo" style="display:block;margin-top:6px;padding:8px 10px;border-radius:10px;border:1px solid #D9D9D9;min-width:200px;"></select>
+            </div>
+            <button class="btn-primary" id="cp-prog-nueva" type="button">+ Registrar medidas</button>
+          </div>
+          <p id="cp-progreso-error" role="alert" style="color:var(--rojo);" hidden></p>
           <div id="cp-progreso-vacio" class="empty-state" hidden>
             <div class="empty-icon">📈</div>
             <h3>Aún no hay mediciones registradas</h3>
-            <p>Cuando el cliente registre su peso o sus medidas desde FitNova Go (Evolución o Perfil), aparecerán aquí automáticamente.</p>
+            <p>Cuando el cliente registre su peso o sus medidas desde FitNova Go, aparecerán aquí automáticamente. También puedes registrarlas tú con «Registrar medidas».</p>
           </div>
           <p id="cp-progreso-estado">Cargando mediciones...</p>
           <div id="cp-progreso-contenido" hidden>
@@ -125,10 +133,12 @@
               <p id="cp-prog-grafica-vacio" style="font-size:13px;color:#55606f;margin:6px 0 0;" hidden></p>
             </div>
             <table class="data-table">
-              <thead><tr><th>Fecha</th><th>Registrado por</th><th>Medidas</th></tr></thead>
+              <thead><tr><th>Fecha</th><th>Registrado por</th><th>Medidas</th><th>Acciones</th></tr></thead>
               <tbody id="cp-prog-historial"></tbody>
             </table>
           </div>
+          <h3 style="margin:24px 0 10px;">Fotos de progreso</h3>
+          <div id="cp-fotos"><p>Cargando fotos...</p></div>
         </div>
 
         <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="formularios">
@@ -189,10 +199,27 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="modal-cp-metricas">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="cp-metricas-titulo">Registrar medidas</h2>
+        <button class="modal-close" type="button" onclick="closeModal('modal-cp-metricas')">✕</button>
+      </div>
+      <form id="cp-metricas-form" novalidate>
+        <label for="cp-metricas-fecha">Fecha</label>
+        <input type="date" id="cp-metricas-fecha" name="date" required style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
+        <div id="cp-metricas-campos" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;"></div>
+        <p id="cp-metricas-error" role="alert" style="color:var(--rojo);font-size:13px;margin:10px 0 0;"></p>
+        <button class="btn-primary" id="cp-metricas-guardar" type="submit" style="width:100%;justify-content:center;margin-top:14px;">Guardar medidas</button>
+      </form>
+    </div>
+  </div>
+
   <script src="js/app.js?v=20260924.2"></script>
   <script src="js/supabase-client.js"></script>
   <script src="../js/sesiones.js?v=20261123.2"></script>
-  <script src="../js/metricas.js?v=20261124.1"></script>
-  <script src="js/cliente-perfil.js?v=20261124.1"></script>
+  <script src="../js/metricas.js?v=20261124.2"></script>
+  <script src="../js/fotos-progreso.js?v=20261124.2"></script>
+  <script src="js/cliente-perfil.js?v=20261124.2"></script>
 </body>
 </html>

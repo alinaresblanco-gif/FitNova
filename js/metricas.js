@@ -53,8 +53,9 @@ window.FitNovaMetricas = (() => {
   }
 
   // Convierte {columna: texto} en una fila válida para clientes_metricas.
-  function filaDesdeValores(valores, { clienteId, fecha, origen = 'cliente' }) {
+  function filaDesdeValores(valores, { clienteId, fecha, origen = 'cliente', registradoPor = null }) {
     const fila = { cliente_id: clienteId, fecha: fechaParaGuardar(fecha), origen };
+    if (registradoPor) fila.registrado_por = registradoPor;
     let medidas = 0;
     catalogo.forEach(({ col, etiqueta }) => {
       const texto = String(valores[col] ?? '').trim().replace(',', '.');
@@ -68,6 +69,40 @@ window.FitNovaMetricas = (() => {
     });
     if (!medidas) throw new Error('Rellena al menos una medida.');
     return fila;
+  }
+
+  // Cambios para editar una medición: las medidas vaciadas pasan a null.
+  function cambiosDesdeValores(valores, fecha) {
+    const fila = filaDesdeValores(valores, { clienteId: null, fecha });
+    const cambios = { fecha: fila.fecha };
+    catalogo.forEach(({ col }) => { cambios[col] = fila[col] ?? null; });
+    return cambios;
+  }
+
+  // Valores de una fila como texto para rellenar un formulario.
+  function valoresDeFila(fila) {
+    const valores = { date: String(fila.fecha).slice(0, 10) };
+    catalogo.forEach(({ col }) => { valores[col] = fila[col] == null ? '' : String(Number(fila[col])); });
+    return valores;
+  }
+
+  const periodos = [
+    { meses: 0, etiqueta: 'Todo el historial' },
+    { meses: 1, etiqueta: 'Último mes' },
+    { meses: 3, etiqueta: 'Últimos 3 meses' },
+    { meses: 6, etiqueta: 'Últimos 6 meses' },
+    { meses: 12, etiqueta: 'Último año' },
+  ];
+
+  function periodosHtml() {
+    return periodos.map((p) => `<option value="${p.meses}">${p.etiqueta}</option>`).join('');
+  }
+
+  function filtrarPeriodo(filas, meses, hoy = new Date()) {
+    const n = Number(meses) || 0;
+    if (!n) return filas;
+    const desde = new Date(Date.UTC(hoy.getFullYear(), hoy.getMonth() - n, hoy.getDate()));
+    return filas.filter((fila) => new Date(fila.fecha) >= desde);
   }
 
   async function consultar(client, clienteId) {
@@ -113,6 +148,7 @@ window.FitNovaMetricas = (() => {
 
   return {
     catalogo, porColumna, escapar, opcionesHtml, formatear, fechaCorta, hoyIso, fechaParaGuardar,
-    filaDesdeValores, consultar, serie, medidasDeFila, polyline, progresoPeso,
+    filaDesdeValores, cambiosDesdeValores, valoresDeFila, periodosHtml, filtrarPeriodo,
+    consultar, serie, medidasDeFila, polyline, progresoPeso,
   };
 })();
