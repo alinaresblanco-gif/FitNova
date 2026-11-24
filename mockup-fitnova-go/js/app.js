@@ -1,9 +1,8 @@
 // Utilidades genéricas para el mockup de FitNova Go (sin backend, solo simulación visual)
 
 // Incrementar en cada cambio visible del mockup para que se muestre el aviso de actualización.
-const APP_VERSION = '2026.11.23.2';
+const APP_VERSION = '2026.11.24.1';
 const ACTIVITIES_KEY = 'fitnova_activities';
-const METRICS_KEY = 'fitnova_metrics';
 let selectedAgendaDay = '';
 let agendaFechaBase = new Date();
 
@@ -51,7 +50,7 @@ function aplicarActualizacion() {
 
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.register('./service-worker.js?v=20261123.2').then((registration) => {
+  navigator.serviceWorker.register('./service-worker.js?v=20261124.1').then((registration) => {
     registration.update();
   }).catch(() => {});
   navigator.serviceWorker.addEventListener('message', (event) => {
@@ -226,12 +225,9 @@ function initAgenda() {
 
 function initEvolution() {
   const tabs = document.querySelectorAll('[data-evolution-tab]');
-  const metricSelect = document.getElementById('evolution-metric-select');
   const photoInput = document.getElementById('evolution-photo-input');
   if (!tabs.length) return;
 
-  const dateInput = document.getElementById('metric-date');
-  if (dateInput) dateInput.value = todayIso();
   document.querySelectorAll('.metric-help').forEach((button) => button.addEventListener('click', () => openMetricHelp(button.dataset.help)));
 
   tabs.forEach((tab) => tab.addEventListener('click', () => {
@@ -240,12 +236,6 @@ function initEvolution() {
     document.getElementById('evolution-metrics').hidden = selectedTab !== 'metrics';
     document.getElementById('evolution-photos').hidden = selectedTab !== 'photos';
   }));
-
-  metricSelect.addEventListener('change', () => {
-    const chart = document.querySelector('#evolution-chart polyline');
-    const points = metricSelect.value === 'Grasa corporal' ? '0,40 50,45 100,52 150,48 200,58 250,62 300,68' : '0,80 50,75 100,68 150,60 200,55 250,48 300,42';
-    chart.setAttribute('points', points);
-  });
 
   photoInput.addEventListener('change', () => {
     const grid = document.getElementById('evolution-photo-grid');
@@ -281,18 +271,6 @@ function openMetricHelp(type) {
   document.getElementById('metric-help-title').textContent = help[0];
   document.getElementById('metric-help-text').textContent = help[1];
   openModal('modal-metric-help');
-}
-
-function saveMetrics(event) {
-  event.preventDefault();
-  const form = event.target;
-  const values = Object.fromEntries(new FormData(form).entries());
-  const metrics = JSON.parse(localStorage.getItem(METRICS_KEY) || '[]');
-  metrics.unshift(values);
-  localStorage.setItem(METRICS_KEY, JSON.stringify(metrics));
-  closeModal('modal-registrar-metricas');
-  form.reset();
-  document.getElementById('metric-date').value = todayIso();
 }
 
 function renderAgenda() {

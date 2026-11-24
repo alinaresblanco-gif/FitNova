@@ -52,7 +52,8 @@ async function recargarMetricas() {
     .from('clientes_metricas')
     .select('*')
     .eq('cliente_id', pfCliente.id)
-    .order('fecha', { ascending: true });
+    .order('fecha', { ascending: true })
+    .order('creado_en', { ascending: true });
   pfMetricas = error ? [] : (data || []);
 }
 
@@ -154,8 +155,13 @@ async function guardarMetrica() {
     return;
   }
 
-  const fila = { cliente_id: pfCliente.id, fecha, origen: 'cliente' };
-  fila[col] = valor;
+  let fila;
+  try {
+    fila = FitNovaMetricas.filaDesdeValores({ [col]: String(valor) }, { clienteId: pfCliente.id, fecha });
+  } catch (e) {
+    errorEl.textContent = e.message;
+    return;
+  }
 
   const { error } = await supabaseClient.from('clientes_metricas').insert(fila);
   if (error) {
@@ -170,7 +176,12 @@ async function guardarMetrica() {
 }
 
 async function eliminarMetrica(id) {
-  if (!confirm('¿Eliminar este registro?')) return;
+  const fila = pfMetricas.find((m) => m.id === id);
+  const medidas = fila ? FitNovaMetricas.medidasDeFila(fila) : [];
+  const aviso = medidas.length > 1
+    ? `Este registro incluye ${medidas.length} medidas (${medidas.map((m) => m.etiqueta).join(', ')}). Se eliminarán todas. ¿Continuar?`
+    : '¿Eliminar este registro?';
+  if (!confirm(aviso)) return;
   const { error } = await supabaseClient.from('clientes_metricas').delete().eq('id', id);
   if (error) {
     alert(error.message);

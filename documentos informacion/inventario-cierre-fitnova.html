@@ -78,9 +78,9 @@
       <strong>El alta del cliente y la Agenda individual compartida ya son bloques reales.</strong>
       Manager crea la invitación; Go permite registrarse y completar el cuestionario; el cliente queda activo en Manager. Las citas se crean, editan, cancelan y completan en Manager y se consultan en Go. No hay que rehacer estos recorridos.
     </div>
-    <div class="notice">
-      <strong>El principal pendiente inmediato es unificar el seguimiento.</strong>
-      Perfil de Go guarda sus métricas en Supabase, pero Evolución todavía muestra ejemplos y guarda su formulario en local. Manager no consulta esas métricas en su pestaña Progreso. Por eso puede haber datos reales guardados y, aun así, pantallas que aparenten no tenerlos o muestren cifras inventadas.
+    <div class="notice good">
+      <strong>Actualización 24/11/2026 · Seguimiento corporal unificado.</strong>
+      Evolución de Go ya lee y guarda las 15 medidas y el peso objetivo en Supabase (sin ejemplos ni <code>localStorage</code>). Perfil y Evolución muestran los mismos datos, y la pestaña Progreso de la ficha en Manager enseña resumen de peso, gráfico por medida e historial completo. Cerrados G15 y G16 y la lectura de M15; G17, G19 y G21 quedan parciales (ver sección 2.6). Probado con cuentas sintéticas: cliente, entrenador asignado y profesional ajeno sin acceso.
     </div>
     <p><strong>Qué se ha revisado:</strong> las 8 páginas HTML de Go y las 9 de Manager, sus scripts propios, el helper de Agenda, el service worker, el manifest y las 8 migraciones versionadas. Este informe es una revisión de implementación; no una nueva prueba completa de cada botón contra la base remota ni una auditoría legal o de seguridad especializada.</p>
     <p><strong>Cómo leer los estados:</strong></p>
@@ -184,15 +184,15 @@
 
     <article class="card" id="g-evolucion">
       <h3>2.6. Evolución: Métricas y Fotos</h3>
-      <p><span class="tag demo">GRÁFICOS Y OBJETIVO DE EJEMPLO</span> <span class="tag local">FORMULARIO EN LOCAL</span> Esta es la pantalla abierta desde la barra inferior, alojada actualmente en <a href="../mockup-fitnova-go/placeholder.html?vista=Evoluci%C3%B3n">Evolución</a>. No carga el script de Perfil que sí consulta Supabase.</p>
+      <p><span class="tag real">MÉTRICAS: SUPABASE</span> <span class="tag demo">FOTOS: MAQUETA</span> Pantalla abierta desde la barra inferior en <a href="../mockup-fitnova-go/placeholder.html?vista=Evoluci%C3%B3n">Evolución</a>. Desde el 24/11/2026 usa <code>clientes_metricas</code> y <code>clientes_objetivo</code> mediante el módulo compartido <code>js/metricas.js</code>, el mismo que usa Progreso en Manager.</p>
       <ul class="tasks">
-        <li><strong>G15 · Una única fuente de métricas:</strong> conectar selector, gráfico, objetivo y registros a <code>clientes_metricas</code> y <code>clientes_objetivo</code>; reutilizar la lógica de Perfil. Eliminar pesos 82/76,4/70, porcentaje 47% y registros de septiembre de ejemplo.</li>
-        <li><strong>G16 · Formulario completo de 15 medidas:</strong> sustituir <code>saveMetrics</code> local por escritura validada a Supabase; rechazar formularios sin ninguna medida, conservar campos omitidos como null y refrescar ambas vistas tras éxito. Los nombres locales no coinciden con las columnas: ver la tabla de métricas.</li>
-        <li><strong>G17 · Historial y correcciones:</strong> dar función real a las papeleras, filtrar de verdad por mes/periodo y decidir edición o corrección de registros. Si las 15 medidas se guardan en una misma fila, definir si borrar una medida elimina solo ese valor o toda la medición: hoy Perfil borra la fila completa.</li>
+        <li><strong>G15 · Una única fuente de métricas — HECHO:</strong> selector, gráfico, objetivo y registros leen Supabase. Se eliminaron los pesos, el porcentaje y los registros de ejemplo.</li>
+        <li><strong>G16 · Formulario completo de 15 medidas — HECHO:</strong> guarda una fila con las medidas rellenadas (las vacías quedan null), valida fecha (no futura), valores positivos y grasa ≤ 100 %, y refresca la vista. Ya no se usa <code>fitnova_metrics</code>.</li>
+        <li><strong>G17 · Historial y correcciones — PARCIAL:</strong> las papeleras borran de verdad y avisan si el registro incluye varias medidas (se borra la medición completa, también en Perfil). Pendiente: filtro por mes/periodo y edición de un valor sin borrar la fila.</li>
         <li><strong>G18 · Fotos de progreso:</strong> ahora solo se leen archivos y se añaden imágenes al DOM; desaparecen al recargar. Implementar subida privada, fecha, listado, visualización, eliminación y acceso del profesional autorizado; definir límites de tamaño, formatos y retención.</li>
       </ul>
-      <p>El modal «Definir objetivo» de Evolución solo se cierra al pulsar Actualizar; el de Perfil sí escribe el peso objetivo. Ambos deben acabar mostrando y modificando el mismo dato.</p>
-      <p class="source">Fuentes: <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/mockup-fitnova-go/placeholder.html#L29">Pantalla Evolución</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/mockup-fitnova-go/js/app.js#L227">Gráficos, fotos y guardado local</a>.</p>
+      <p>El modal «Definir objetivo» de Evolución ya guarda el peso objetivo en Supabase; Perfil, Evolución y Manager muestran el mismo valor.</p>
+      <p class="source">Fuentes: <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/mockup-fitnova-go/placeholder.html#L29">Pantalla Evolución</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/mockup-fitnova-go/js/evolucion.js">Lógica de Evolución</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/js/metricas.js">Módulo compartido de métricas</a>.</p>
     </article>
 
     <article class="card" id="g-perfil">
@@ -245,7 +245,7 @@
 
   <section id="metricas">
     <h2>3. Inventario completo de métricas corporales</h2>
-    <p>Las siguientes <strong>15 métricas ya tienen columna en Supabase y alta/consulta desde Perfil</strong>. Todas aparecen también en el formulario de Evolución, pero allí su guardado sigue siendo local. En Manager, Progreso todavía no las consulta. La altura pertenece a <code>clientes_objetivo.altura_cm</code>; no es una decimosexta serie histórica en <code>clientes_metricas</code>.</p>
+    <p>Las siguientes <strong>15 métricas ya tienen columna en Supabase y alta/consulta desde Perfil</strong>. Todas aparecen también en el formulario de Evolución, que desde el 24/11/2026 guarda en Supabase con los nombres de columna; la columna «nombre local» queda como referencia histórica. Progreso de Manager ya las consulta. La altura pertenece a <code>clientes_objetivo.altura_cm</code>; no es una decimosexta serie histórica en <code>clientes_metricas</code>.</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Métrica</th><th>Columna Supabase</th><th>Nombre local en Evolución</th><th>Unidad</th></tr></thead>
@@ -334,7 +334,7 @@
             <tr><td>Entrenamiento</td><td>Estado vacío fijo y enlace a Librería.</td><td><strong>M13:</strong> asignar workouts/programas al cliente, fechas/versiones, ver ejecución y feedback; conservar el cliente seleccionado al llegar a Librería.</td></tr>
             <tr><td>Nutrición</td><td>Estado vacío fijo y enlace a Librería.</td><td><strong>M14:</strong> asignar plan, consultar diario real de Go, revisar adherencia/comentarios y cambios.</td></tr>
             <tr><td>Agenda</td><td>Sesiones reales y enlace de alta con cliente preseleccionado.</td><td>Bloque individual hecho. Ampliaciones opcionales de M20 y tratamiento de sesiones al archivar/desasignar.</td></tr>
-            <tr><td>Progreso</td><td>Siempre afirma que no hay mediciones; botón sin acción.</td><td><strong>M15:</strong> mostrar las 15 medidas de Go, gráficos, periodos, objetivo y fotos. Añadir registro por profesional con escritura autorizada, si se incluye; no crear otra tabla paralela de pesos.</td></tr>
+            <tr><td>Progreso</td><td>Siempre afirma que no hay mediciones; botón sin acción.</td><td><strong>M15 — LECTURA HECHA (24/11):</strong> resumen de peso inicial/actual/objetivo y %, selector de las 15 medidas con gráfico e historial completo con origen. Pendiente: periodos, fotos y registro por el profesional (requiere política de escritura nueva); no crear otra tabla paralela de pesos.</td></tr>
             <tr><td>Formularios</td><td>Estado vacío fijo y enlace a Librería.</td><td><strong>M16:</strong> enviar, ver pendientes, respuestas y fecha. Separar formularios nuevos del PAR-Q inicial, que ya existe en la base.</td></tr>
             <tr><td>Archivos</td><td>Estado vacío fijo; «Subir archivo» sin acción.</td><td><strong>M17:</strong> subida, listado, acceso privado, descarga, eliminación y destinatario; recepción en Go.</td></tr>
             <tr><td>Pagos</td><td>Plan, precio, fecha y estado ficticios.</td><td><strong>M18:</strong> cargar suscripción, pagos y próximo cobro reales del módulo Negocio; no mostrar «Al día» sin fuente.</td></tr>
@@ -415,8 +415,8 @@
           <tr><td>Go · Detalles del día</td><td>Citas reales + actividades locales; edición/borrado de estas últimas.</td><td>Mantener diferenciación al conectar G11; no convertir «añadir actividad» en reserva.</td></tr>
           <tr><td>Go · Registrar nutrición</td><td>Guardar cierra, sin persistencia.</td><td>G09.</td></tr>
           <tr><td>Go · Métrica (Perfil)</td><td>Consulta/inserta/borra en Supabase.</td><td>G19–G21; no duplicar backend.</td></tr>
-          <tr><td>Go · Definir objetivo</td><td>Perfil guarda en Supabase; Evolución solo cierra.</td><td>G15; misma fuente y validación.</td></tr>
-          <tr><td>Go · Registrar métricas (Evolución)</td><td>FormData a <code>fitnova_metrics</code>.</td><td>G16–G17; las 15 medidas.</td></tr>
+          <tr><td>Go · Definir objetivo</td><td>Perfil y Evolución guardan en Supabase (24/11).</td><td>Hecho.</td></tr>
+                    <tr><td>Go · Registrar métricas (Evolución)</td><td>Inserta en <code>clientes_metricas</code> con validación (24/11).</td><td>G17: edición de un valor.</td></tr>
           <tr><td>Go · Ayuda «Cómo medir»</td><td>Abre texto según medida.</td><td>Revisión de contenido/accesibilidad; función ya presente.</td></tr>
           <tr><td>Go · Buscar vídeos por</td><td>Cambia campo de búsqueda sobre catálogo fijo.</td><td>G13–G14.</td></tr>
           <tr><td>Go · Chat</td><td>Profesionales ficticios o texto, sin mensajes.</td><td>G29 y M25–M27.</td></tr>
@@ -441,7 +441,7 @@
         <tbody>
           <tr><td>Identidad, objetivo, PAR-Q, medidas desde Perfil y citas</td><td>Tablas Supabase; sesiones Auth gestionadas por SDK.</td><td>Conservar y completar las pantallas que no consultan estos datos.</td></tr>
           <tr><td>Actividades personales</td><td><code>localStorage: fitnova_activities</code>, sin separación por cuenta.</td><td>Registros propios en Supabase; origen, permisos y migración explícita.</td></tr>
-          <tr><td>Formulario de Evolución</td><td><code>localStorage: fitnova_metrics</code>; el gráfico no lee esa colección.</td><td><code>clientes_metricas</code>, sin una segunda tabla de métricas duplicada.</td></tr>
+          <tr><td>Formulario de Evolución</td><td>Resuelto el 24/11: escribe en <code>clientes_metricas</code>; ya no usa <code>fitnova_metrics</code>.</td><td><code>clientes_metricas</code>, sin una segunda tabla de métricas duplicada.</td></tr>
           <tr><td>Fotos de progreso</td><td>FileReader y elementos de la página, solo memoria/DOM.</td><td>Storage privado + metadatos de propietario, fecha y archivo.</td></tr>
           <tr><td>Favoritos de vídeo</td><td>Propiedad de los cuatro objetos JavaScript, solo memoria.</td><td>Relación cliente/vídeo persistente.</td></tr>
           <tr><td>Nutrición, facturación y tarea nueva</td><td>No se guardan con los botones actuales.</td><td>Modelos y operaciones reales; no hay datos locales que migrar de estos formularios.</td></tr>
@@ -465,7 +465,7 @@
         <tbody>
           <tr><td>Manager invita → Go se registra → cliente activo</td><td>Hecho en el recorrido normal.</td><td>Correo automático y recuperación de altas interrumpidas, sin rehacer la base.</td></tr>
           <tr><td>Manager agenda → Go consulta → cambios e historial</td><td>Hecho para sesiones individuales.</td><td>Conservarlo; notificaciones/ampliaciones solo cuando se aprueben.</td></tr>
-          <tr><td>Go registra medida → Perfil/Evolución → Progreso Manager</td><td>Solo Perfil escribe/consulta de verdad.</td><td><strong>Próximo cierre recomendado: G15–G21 + M15.</strong></td></tr>
+          <tr><td>Go registra medida → Perfil/Evolución → Progreso Manager</td><td>Supabase en Perfil, Evolución y Progreso de Manager (24/11).</td><td><strong>Cerrado en lo esencial.</strong> Queda: fotos, periodos y edición de valores.</td></tr>
           <tr><td>Go registra actividad → semana real → profesional revisa</td><td>Actividad local, semana fija, revisión inexistente.</td><td>G06–G08, G11 y M04.</td></tr>
           <tr><td>Manager crea/asigna workout → Go realiza → Manager revisa</td><td>No implementado.</td><td>M13, M22–M23 y G31; ejecución distinta de estado de cita.</td></tr>
           <tr><td>Manager publica vídeo → Go reproduce y guarda favorito</td><td>Ambos extremos son maqueta.</td><td>M22–M23 y G13–G14.</td></tr>
@@ -519,7 +519,7 @@
         </tbody>
       </table>
     </div>
-    <div class="notice good"><strong>Mi recomendación para el siguiente paso concreto:</strong> cerrar las 15 métricas en Evolución de Go y Progreso de Manager. Es el recorrido más inmediato que aprovecha tablas ya existentes y permite enseñar otro resultado compartido sin abrir seis módulos a la vez.</div>
+    <div class="notice good"><strong>Actualización 24/11/2026:</strong> el seguimiento corporal (15 métricas en Evolución de Go y Progreso de Manager) ya está cerrado en lo esencial. Lo pendiente de ese bloque es menor: fotos, periodos y edición de un valor. El siguiente recorrido completo se elige entre los demás bloques de esta tabla.</div>
   </section>
 
   <section id="aceptacion">
