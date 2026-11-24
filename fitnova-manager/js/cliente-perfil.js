@@ -285,10 +285,86 @@ async function cargarProgresoFicha() {
   cpProgRender();
 }
 
+const cpAct = { filas: [], mostradas: 20 };
+
+function cpActRender() {
+  const A = FitNovaActividades;
+  const hoy = A.hoyIso();
+  document.getElementById('cp-act-semana').textContent = A.textoSemana(A.semana(cpAct.filas, hoy));
+  const desde = A.sumarDias(hoy, -29);
+  const ultimas = cpAct.filas.filter((a) => a.fecha >= desde && a.fecha <= hoy);
+  document.getElementById('cp-act-30').textContent = ultimas.length
+    ? A.textoSemana({
+      cuenta: ultimas.length,
+      minutos: ultimas.reduce((s, a) => s + (a.duracion_min || 0), 0),
+      km: Math.round(ultimas.reduce((s, a) => s + (a.distancia_km || 0), 0) * 100) / 100,
+    })
+    : 'Sin actividades en los últimos 30 días.';
+  const cont = document.getElementById('cp-act-lista');
+  if (!cpAct.filas.length) {
+    cont.innerHTML = '<p style="color:#55606f;">El cliente todavía no ha registrado actividades desde FitNova Go.</p>';
+    return;
+  }
+  const visibles = cpAct.filas.slice(0, cpAct.mostradas);
+  cont.innerHTML = `<table class="data-table">
+      <thead><tr><th>Fecha</th><th>Actividad</th><th>Duración</th><th>Distancia</th><th>Comentario</th><th>Foto</th></tr></thead>
+      <tbody>${visibles.map((a) => {
+        const est = a.distancia_km ? A.estimaciones(a.distancia_km) : null;
+        return `<tr>
+          <td>${A.escapar(A.fechaCorta(a.fecha))}${a.fecha > hoy ? ' <small>(planificada)</small>' : ''}</td>
+          <td>${A.escapar(a.nombre)}</td>
+          <td>${a.duracion_min ? A.escapar(A.formatearDuracion(a.duracion_min)) : '—'}</td>
+          <td>${a.distancia_km ? `${A.escapar(A.formatearKm(a.distancia_km))}<br><small style="color:#8a93a1;">≈ ${est.pasos.toLocaleString('es-ES')} pasos · ${est.calorias.toLocaleString('es-ES')} kcal</small>` : '—'}</td>
+          <td>${a.comentario ? A.escapar(a.comentario) : '—'}</td>
+          <td>${a.foto_ruta ? `<button class="btn-outline" type="button" data-foto="${A.escapar(a.foto_ruta)}">Ver foto</button>` : '—'}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>
+    ${cpAct.filas.length > cpAct.mostradas ? `<button class="btn-secondary" type="button" id="cp-act-mas" style="margin-top:10px;">Ver más (${cpAct.filas.length - cpAct.mostradas} restantes)</button>` : ''}`;
+}
+
+async function cargarActividadesFicha() {
+  const clienteId = new URLSearchParams(location.search).get('id');
+  const cont = document.getElementById('cp-act-lista');
+  if (!clienteId) {
+    cont.textContent = 'No se pueden consultar las actividades sin identificar al cliente.';
+    return;
+  }
+  cont.addEventListener('click', async (event) => {
+    if (event.target.closest('#cp-act-mas')) {
+      cpAct.mostradas += 20;
+      cpActRender();
+      return;
+    }
+    const boton = event.target.closest('[data-foto]');
+    if (!boton) return;
+    boton.disabled = true;
+    boton.textContent = 'Cargando...';
+    try {
+      const url = FitNovaActividades.escapar(await FitNovaActividades.urlFoto(supabaseClient, boton.dataset.foto));
+      boton.parentElement.innerHTML = `<a href="${url}" target="_blank" rel="noopener" title="Abrir a tamaño completo"><img src="${url}" alt="Foto de la ruta" style="width:96px;height:72px;object-fit:cover;border-radius:8px;display:block;" /></a>`;
+    } catch (error) {
+      boton.disabled = false;
+      boton.textContent = 'Ver foto';
+      alert(`No se pudo cargar la foto: ${error.message}`);
+    }
+  });
+  try {
+    cpAct.filas = await FitNovaActividades.consultar(supabaseClient, clienteId);
+    cpActRender();
+  } catch (error) {
+    const texto = `No se pudieron cargar las actividades: ${FitNovaActividades.escapar(error.message)}`;
+    document.getElementById('cp-act-semana').textContent = '—';
+    document.getElementById('cp-act-30').textContent = '—';
+    cont.innerHTML = `<p style="color:var(--rojo);" role="alert">${texto}</p>`;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const session = await requireSession();
   if (!session) return;
   cargarFichaCliente();
   cargarSesionesFicha();
   cargarProgresoFicha();
+  cargarActividadesFicha();
 });

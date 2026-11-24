@@ -19,7 +19,7 @@
     const citas = sesiones.filter((s) => ui.enDia(s, fecha));
     return `<h3>Citas del profesional</h3>${errorCarga ? `<p class="sesion-error">${ui.escapar(errorCarga)}</p>` :
       !cargadas ? '<p>Cargando citas...</p>' : citas.map(tarjeta).join('') || '<p>No hay citas para este día.</p>'}
-      <h3>Actividades personales · locales</h3>`;
+      <h3>Mis actividades personales</h3>`;
   }
 
   function render() {

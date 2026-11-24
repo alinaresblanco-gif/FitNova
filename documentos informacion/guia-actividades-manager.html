@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitNova Manager · Actividad física de tus clientes</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f6fb; color: #263248; font: 16px/1.65 "Segoe UI", system-ui, sans-serif; }
+    main { max-width: 820px; margin: 24px auto 60px; padding: 0 16px; }
+    header { padding: 26px; border-radius: 14px; background: #0a1a2f; color: #fff; }
+    header p { margin: 0; }
+    h1 { margin: 8px 0; font-size: clamp(25px, 5vw, 34px); line-height: 1.25; }
+    h2 { margin: 0 0 12px; font-size: 21px; }
+    section { margin-top: 18px; padding: 22px; border: 1px solid #dce3ee; border-radius: 12px; background: #fff; }
+    li { margin: 9px 0; }
+    a { color: #1748c7; overflow-wrap: anywhere; }
+    .boton { display: inline-block; padding: 10px 16px; border-radius: 8px; color: #fff; background: #1748c7; text-decoration: none; }
+    .resultado { color: #147a52; font-weight: 600; }
+    .nota { background: #fff6e7; border-left: 5px solid #ac710b; }
+    footer { padding: 24px 0; text-align: center; color: #657189; font-size: 13px; }
+    @media print {
+      body { background: #fff; }
+      main { max-width: none; margin: 0; }
+      header { background: #fff; color: #263248; border-bottom: 2px solid #1748c7; }
+      h2 { break-after: avoid; }
+      .boton { background: none; color: #1748c7; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p>Para el profesional · Actividad física en FitNova Manager</p>
+    <h1>Consulta las actividades que registran tus clientes</h1>
+    <p>Las carreras, paseos o sesiones que tu cliente anota en FitNova Go aparecen solas en su ficha de Manager.</p>
+  </header>
+
+  <section>
+    <h2>Qué vamos a comprobar</h2>
+    <ol>
+      <li>Tu cliente registra una actividad (con distancia y foto de la ruta) en <strong>FitNova Go</strong>, desde Inicio o Agenda.</li>
+      <li>Su resumen semanal en Go se actualiza con datos reales.</li>
+      <li>Tú lo ves en <strong>Manager → Clientes → ficha del cliente → Resumen → Actividad física</strong>.</li>
+      <li>Si el cliente corrige o borra la actividad, tu ficha también cambia.</li>
+    </ol>
+    <p>Necesitas un cliente <strong>activo</strong>. Dale la guía <a href="guia-actividades-go.html">«Registra tus actividades en FitNova Go»</a>.</p>
+  </section>
+
+  <section>
+    <h2>1. Pide al cliente que registre una actividad</h2>
+    <p>Por ejemplo: <em>Carrera en el parque · 0:45 · 7,5 km · con foto</em>, y otra de un día anterior desde la Agenda (por ejemplo, <em>Bici · 1:30</em>).</p>
+    <p class="resultado">En Go verá «¡Bien hecho! Hoy has registrado...» y la barra de hoy en el resumen semanal.</p>
+  </section>
+
+  <section>
+    <h2>2. Abre la ficha del cliente</h2>
+    <p><a class="boton" href="https://alinaresblanco-gif.github.io/FitNova/fitnova-manager/login.html">Abrir FitNova Manager</a></p>
+    <ol>
+      <li>Inicia sesión y pulsa <strong>Clientes</strong> en el menú superior.</li>
+      <li>Haz clic en el nombre del cliente.</li>
+      <li>En la pestaña <strong>Resumen</strong>, baja hasta <strong>Actividad física</strong>.</li>
+    </ol>
+    <p>Verás:</p>
+    <ul>
+      <li><strong>Esta semana:</strong> número de actividades, tiempo total y kilómetros (de lunes a hoy).</li>
+      <li><strong>Últimos 30 días:</strong> el mismo resumen para el último mes.</li>
+      <li><strong>Tabla de actividades:</strong> fecha, nombre, duración, distancia (con pasos y calorías estimados), comentario y foto. Las de días futuros aparecen como <em>(planificada)</em>. Si hay más de 20, pulsa <strong>Ver más</strong>.</li>
+    </ul>
+    <p class="resultado">Resultado esperado: aparecen las dos actividades del ejemplo con los mismos datos que en Go.</p>
+  </section>
+
+  <section>
+    <h2>3. Mira la foto de la ruta</h2>
+    <ol>
+      <li>En la columna <strong>Foto</strong>, pulsa <strong>Ver foto</strong>.</li>
+      <li>Aparece la miniatura. Haz clic en ella para abrirla a tamaño completo.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>4. Comprueba que los cambios llegan</h2>
+    <ol>
+      <li>Pide al cliente que edite una actividad en Go (por ejemplo, que cambie la duración) o que la borre.</li>
+      <li>Recarga la ficha (F5).</li>
+    </ol>
+    <p class="resultado">Resultado esperado: la tabla y los totales reflejan el cambio.</p>
+  </section>
+
+  <section class="nota">
+    <h2>Ten en cuenta</h2>
+    <ul>
+      <li>Es de <strong>solo lectura</strong>: las actividades son del cliente; tú no puedes crearlas, editarlas ni borrarlas.</li>
+      <li>Solo ven estas actividades el cliente y sus profesionales asignados (entrenador o nutricionista).</li>
+      <li>Pasos y calorías son estimaciones a partir de la distancia, no lecturas de un dispositivo.</li>
+      <li>La conexión con relojes o Strava todavía no está disponible: el registro es manual.</li>
+    </ul>
+  </section>
+
+  <footer>FitNova Manager · Guía de actividad física · noviembre 2026</footer>
+</main>
+</body>
+</html>

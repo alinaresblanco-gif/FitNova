@@ -113,7 +113,7 @@
         <h3>Los bloques grandes pendientes</h3>
         <ul>
           <li><s>Evolución real en Go y Progreso real en Manager.</s> <strong>Hecho (24/11), con fotos de progreso.</strong></li>
-          <li>Actividades personales y resumen semanal (G06–G08, G11). Las fotos de progreso ya están hechas.</li>
+          <li><s>Actividades personales y resumen semanal (G06–G08, G11).</s> <strong>Hecho (24/11):</strong> en Supabase, con foto de ruta y visibles en la ficha de Manager.</li>
           <li>Workouts, programas, vídeos y registro de realización.</li>
           <li>Nutrición, recetas y diario alimentario.</li>
           <li>Chat, notificaciones y tareas.</li>
@@ -153,11 +153,11 @@
 
     <article class="card" id="g-inicio">
       <h3>2.3. Inicio</h3>
-      <p><span class="tag partial">PARCIAL</span> El saludo carga el nombre/alias real. El aviso de actualización tiene lógica local. El resto de tarjetas no constituye todavía un panel de seguimiento real.</p>
+      <p><span class="tag partial">PARCIAL</span> El saludo carga el nombre/alias real. Estado de hoy, resumen semanal y registro de actividad son reales (24/11). Quedan nutrición y dispositivo.</p>
       <ul class="tasks">
-        <li><strong>G06 · Estado de hoy y resumen semanal:</strong> quitar las barras fijas y el mensaje permanente «no has registrado actividad». Calcularlos con datos reales; definir qué cuenta como actividad, su unidad y la semana mostrada. Actualizar el resumen después de guardar.</li>
-        <li><strong>G07 · Registrar actividad:</strong> pasar nombre, fecha, duración, distancia y comentario a Supabase; permitir consulta, edición y borrado coherentes desde Inicio y Agenda. Inicializar fecha de hoy y limpiar el formulario; Inicio ahora abre directamente el modal, sin la preparación que sí usa Agenda.</li>
-        <li><strong>G08 · Pasos, calorías y foto de ruta:</strong> los pasos y calorías son estimaciones fijas derivadas de kilómetros, no lecturas de un dispositivo. No se almacenan como campos propios del registro local. Definir si se conservan, su procedencia y la advertencia de estimación. La caja «Subir foto» no selecciona ni sube archivos: requiere carga real y almacenamiento privado.</li>
+        <li><strong>G06 · Estado de hoy y resumen semanal — HECHO (24/11):</strong> calculados con las actividades de Supabase. La semana va de lunes a domingo y no cuenta días futuros; las barras miden minutos. Se actualizan al guardar.</li>
+        <li><strong>G07 · Registrar actividad — HECHO (24/11):</strong> tabla <code>clientes_actividades</code> (nombre, fecha, duración, distancia, comentario). Inicio y Agenda usan el mismo formulario, con fecha de hoy por defecto, edición y borrado con confirmación.</li>
+        <li><strong>G08 · Pasos, calorías y foto de ruta — HECHO (24/11):</strong> pasos y calorías no se guardan; se muestran como estimación (0,63 m por paso y 60 kcal por km) con aviso. La foto de ruta se comprime y se sube al bucket privado <code>progreso-fotos</code> (<code>&lt;cliente&gt;/actividades/</code>); se puede ver, cambiar y quitar.</li>
         <li><strong>G09 · Registrar nutrición:</strong> guardar fecha, tipo de comida, alimentos y vasos de agua, y permitir consultar/modificar el diario. Hoy «Guardar» solo cierra la ventana; no guarda ni siquiera en local.</li>
         <li><strong>G10 · Conectar dispositivo:</strong> el botón no tiene integración. Elegir primero proveedor y alcance: Strava, un dispositivo concreto o registro manual. Requiere autorización, importación sin duplicados, desconexión y gestión de errores. Es ampliación, no requisito del registro manual.</li>
       </ul>
@@ -166,9 +166,9 @@
 
     <article class="card" id="g-agenda">
       <h3>2.4. Agenda</h3>
-      <p><span class="tag real">SUPABASE: CITAS</span> <span class="tag local">LOCAL: ACTIVIDADES</span> Semana/mes, navegación por fechas, detalles del día, próximas citas, historial y actualización funcionan para sesiones del profesional.</p>
+      <p><span class="tag real">SUPABASE: CITAS Y ACTIVIDADES</span> Semana/mes, navegación por fechas, detalles del día, próximas citas, historial y actualización funcionan para sesiones del profesional. Las actividades personales también son reales.</p>
       <ul class="tasks">
-        <li><strong>G11 · Unificar actividades personales:</strong> conectar las actividades del «+» al mismo backend que G07, separándolas de las citas. Migrar datos locales solo mediante un proceso explícito y ligado a la cuenta correcta; comprobar recarga y segundo dispositivo.</li>
+        <li><strong>G11 · Unificar actividades personales — HECHO (24/11):</strong> el «+» y los detalles del día usan la misma tabla que G07, separadas de las citas. El calendario marca los días con actividad («N act.») y muestra un bloque «Actividades anteriores». Los datos locales antiguos se suben o descartan solo si el cliente lo pide (aviso en Inicio y Agenda).</li>
         <li><strong>G12 · Ampliaciones de Agenda:</strong> decidir reservas, solicitud de cambio/cancelación, confirmación del cliente, grupos, aforo, recurrencias y calendario externo. Ninguna está implementada; no hace falta introducirlas para dar por cerrado el bloque individual ya probado.</li>
       </ul>
       <p><strong>No confundir:</strong> una sesión «completada» solo indica su estado en Agenda. No contiene ejercicios, series, repeticiones ni resultados del entrenamiento. Los cambios se ven al actualizar; no hay sincronización en tiempo real ni recordatorio automático.</p>
@@ -334,7 +334,7 @@
         <table>
           <thead><tr><th>Pestaña</th><th>Estado actual</th><th>Cierre pendiente</th></tr></thead>
           <tbody>
-            <tr><td>Resumen</td><td>Nombre, email, estado, teléfono, actividad, alta y parte del objetivo reales.</td><td><strong>M12:</strong> completar nacimiento, género, peso inicial/actual, observaciones/lesiones y revisión PAR-Q con permisos adecuados. No confundir «sin datos» con errores de consulta.</td></tr>
+            <tr><td>Resumen</td><td>Nombre, email, estado, teléfono, actividad, alta y parte del objetivo reales. <strong>Actividad física real (24/11):</strong> esta semana, últimos 30 días y tabla de actividades con foto de ruta (solo lectura).</td><td><strong>M12:</strong> completar nacimiento, género, peso inicial/actual, observaciones/lesiones y revisión PAR-Q con permisos adecuados. No confundir «sin datos» con errores de consulta.</td></tr>
             <tr><td>Entrenamiento</td><td>Estado vacío fijo y enlace a Librería.</td><td><strong>M13:</strong> asignar workouts/programas al cliente, fechas/versiones, ver ejecución y feedback; conservar el cliente seleccionado al llegar a Librería.</td></tr>
             <tr><td>Nutrición</td><td>Estado vacío fijo y enlace a Librería.</td><td><strong>M14:</strong> asignar plan, consultar diario real de Go, revisar adherencia/comentarios y cambios.</td></tr>
             <tr><td>Agenda</td><td>Sesiones reales y enlace de alta con cliente preseleccionado.</td><td>Bloque individual hecho. Ampliaciones opcionales de M20 y tratamiento de sesiones al archivar/desasignar.</td></tr>
@@ -415,8 +415,8 @@
       <table>
         <thead><tr><th>App y ventana</th><th>Qué hace hoy</th><th>Tarea de cierre</th></tr></thead>
         <tbody>
-          <tr><td>Go · Registrar actividad / Editar actividad</td><td>Guarda local; no sincroniza. Inicio y Agenda no preparan el formulario de la misma manera.</td><td>G07–G08, G11.</td></tr>
-          <tr><td>Go · Detalles del día</td><td>Citas reales + actividades locales; edición/borrado de estas últimas.</td><td>Mantener diferenciación al conectar G11; no convertir «añadir actividad» en reserva.</td></tr>
+          <tr><td>Go · Registrar actividad / Editar actividad</td><td>Supabase (24/11), mismo formulario en Inicio y Agenda, con foto de ruta.</td><td>Hecho.</td></tr>
+          <tr><td>Go · Detalles del día</td><td>Citas reales + actividades reales; edición/borrado de estas últimas.</td><td>Hecho; «añadir actividad» no es una reserva.</td></tr>
           <tr><td>Go · Registrar nutrición</td><td>Guardar cierra, sin persistencia.</td><td>G09.</td></tr>
           <tr><td>Go · Métrica (Perfil)</td><td>Consulta/inserta/borra en Supabase.</td><td>G19–G21; no duplicar backend.</td></tr>
           <tr><td>Go · Definir objetivo</td><td>Perfil y Evolución guardan en Supabase (24/11).</td><td>Hecho.</td></tr>
@@ -444,7 +444,7 @@
         <thead><tr><th>Dato</th><th>Almacenamiento actual</th><th>Destino o decisión</th></tr></thead>
         <tbody>
           <tr><td>Identidad, objetivo, PAR-Q, medidas desde Perfil y citas</td><td>Tablas Supabase; sesiones Auth gestionadas por SDK.</td><td>Conservar y completar las pantallas que no consultan estos datos.</td></tr>
-          <tr><td>Actividades personales</td><td><code>localStorage: fitnova_activities</code>, sin separación por cuenta.</td><td>Registros propios en Supabase; origen, permisos y migración explícita.</td></tr>
+          <tr><td>Actividades personales</td><td><strong>Hecho (24/11):</strong> tabla <code>clientes_actividades</code> con RLS; foto en <code>progreso-fotos</code>. El antiguo <code>fitnova_activities</code> solo se lee para ofrecer subirlo o descartarlo.</td><td>Conservar.</td></tr>
           <tr><td>Formulario de Evolución</td><td>Resuelto el 24/11: escribe en <code>clientes_metricas</code>; ya no usa <code>fitnova_metrics</code>.</td><td><code>clientes_metricas</code>, sin una segunda tabla de métricas duplicada.</td></tr>
           <tr><td>Fotos de progreso</td><td><strong>Hecho (24/11):</strong> bucket privado <code>progreso-fotos</code> + tabla <code>clientes_fotos</code>.</td><td>Conservar.</td></tr>
           <tr><td>Favoritos de vídeo</td><td>Propiedad de los cuatro objetos JavaScript, solo memoria.</td><td>Relación cliente/vídeo persistente.</td></tr>
@@ -470,7 +470,7 @@
           <tr><td>Manager invita → Go se registra → cliente activo</td><td>Hecho en el recorrido normal.</td><td>Correo automático y recuperación de altas interrumpidas, sin rehacer la base.</td></tr>
           <tr><td>Manager agenda → Go consulta → cambios e historial</td><td>Hecho para sesiones individuales.</td><td>Conservarlo; notificaciones/ampliaciones solo cuando se aprueben.</td></tr>
           <tr><td>Go registra medida → Perfil/Evolución → Progreso Manager</td><td>Supabase en Perfil, Evolución y Progreso de Manager (24/11).</td><td><strong>Cerrado (24/11).</strong> Incluye fotos, periodos, edición y registro por el profesional.</td></tr>
-          <tr><td>Go registra actividad → semana real → profesional revisa</td><td>Actividad local, semana fija, revisión inexistente.</td><td>G06–G08, G11 y M04.</td></tr>
+          <tr><td>Go registra actividad → semana real → profesional revisa</td><td>Hecho (24/11): Supabase, semana real y lectura en la ficha de Manager.</td><td>Comentarios del profesional sobre actividades, si se aprueban.</td></tr>
           <tr><td>Manager crea/asigna workout → Go realiza → Manager revisa</td><td>No implementado.</td><td>M13, M22–M23 y G31; ejecución distinta de estado de cita.</td></tr>
           <tr><td>Manager publica vídeo → Go reproduce y guarda favorito</td><td>Ambos extremos son maqueta.</td><td>M22–M23 y G13–G14.</td></tr>
           <tr><td>Manager asigna nutrición → Go registra alimentación → revisión</td><td>No implementado.</td><td>M14, M22–M23 y G09/G32.</td></tr>
@@ -510,7 +510,7 @@
         <thead><tr><th>Prioridad / bloque</th><th>Qué cerrar</th><th>Depende de</th><th>Resultado visible</th></tr></thead>
         <tbody>
           <tr><td><strong>P1 · Seguimiento corporal</strong></td><td>G15–G21 y M15; error/identidad T01–T03 en el recorrido.</td><td>Tablas actuales, definición de fechas y borrado.</td><td>Una medida de Go aparece igual en Perfil, Evolución y Manager.</td></tr>
-          <tr><td><strong>P1 · Actividad real</strong></td><td>G06–G08, G11 y revisión del profesional.</td><td>Modelo de actividad y política de importación local.</td><td>Registro persistente, semana real y lectura del profesional.</td></tr>
+          <tr><td><strong>P1 · Actividad real — HECHO (24/11)</strong></td><td>G06–G08, G11 y revisión del profesional.</td><td>Modelo de actividad y política de importación local.</td><td>Registro persistente, semana real y lectura del profesional.</td></tr>
           <tr><td><strong>P1 · Cuentas recuperables</strong></td><td>G01–G05, M01 y T01–T02/T07.</td><td>Configuración de correo/retorno y reanudación.</td><td>Recuperar contraseña y retomar alta sin crear otra cuenta.</td></tr>
           <tr><td><strong>P2 · Workouts y programas</strong></td><td>M13, M22–M23 y G31.</td><td>Modelo de ejercicios, asignación y ejecución.</td><td>Profesional prescribe, cliente realiza y profesional revisa.</td></tr>
           <tr><td><strong>P2 · Vídeos y fotos</strong></td><td>G13–G14, G18/G22, M15/M17 y parte de Librería.</td><td>Storage/proveedor, permisos y catálogo.</td><td>Reproducción real y fotos conservadas con acceso autorizado.</td></tr>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitNova Go · Registra tus actividades</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f6fb; color: #263248; font: 16px/1.65 "Segoe UI", system-ui, sans-serif; }
+    main { max-width: 780px; margin: 24px auto 60px; padding: 0 16px; }
+    header { padding: 26px; border-radius: 14px; background: #0a1a2f; color: #fff; }
+    header p { margin: 0; }
+    h1 { margin: 8px 0; font-size: clamp(25px, 5vw, 34px); line-height: 1.25; }
+    h2 { margin: 0 0 12px; font-size: 21px; }
+    section { margin-top: 18px; padding: 22px; border: 1px solid #dce3ee; border-radius: 12px; background: #fff; }
+    li { margin: 9px 0; }
+    a { color: #1748c7; overflow-wrap: anywhere; }
+    .boton { display: inline-block; padding: 10px 16px; border-radius: 8px; color: #fff; background: #1748c7; text-decoration: none; }
+    .ejemplo { padding: 16px; background: #edf3ff; border-radius: 8px; }
+    .ejemplo p { margin: 5px 0; }
+    .resultado { color: #147a52; font-weight: 600; }
+    .nota { background: #fff6e7; border-left: 5px solid #ac710b; }
+    footer { padding: 24px 0; text-align: center; color: #657189; font-size: 13px; }
+    @media print {
+      body { background: #fff; }
+      main { max-width: none; margin: 0; }
+      header { background: #fff; color: #263248; border-bottom: 2px solid #1748c7; }
+      h2 { break-after: avoid; }
+      .boton { background: none; color: #1748c7; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p>Para el cliente · Tus actividades en FitNova Go</p>
+    <h1>Registra tus entrenamientos y tu semana</h1>
+    <p>Lo que anotes (carreras, paseos, bici...) se guarda en tu cuenta y lo ve tu profesional en su ficha.</p>
+  </header>
+
+  <section>
+    <h2>1. Entra con tu cuenta</h2>
+    <p><a class="boton" href="https://alinaresblanco-gif.github.io/FitNova/mockup-fitnova-go/login.html">Abrir FitNova Go</a></p>
+    <ol>
+      <li>Abre FitNova Go e introduce tu correo y contraseña.</li>
+      <li>Si aparece el aviso <strong>«Actualización disponible»</strong>, pulsa <strong>Actualizar aplicación</strong>.</li>
+    </ol>
+    <p>Si habías anotado actividades con una versión anterior, verás el aviso <strong>«Tienes N actividades guardadas solo en este navegador»</strong>. Pulsa <strong>Subir a mi cuenta</strong> para conservarlas, o <strong>Descartar</strong> si no te interesan.</p>
+  </section>
+
+  <section>
+    <h2>2. Registra la actividad de hoy (desde Inicio)</h2>
+    <ol>
+      <li>En <strong>Inicio</strong>, pulsa <strong>Registrar Actividad de Hoy</strong>.</li>
+      <li>Escribe el <strong>nombre</strong> (obligatorio). La fecha ya viene con el día de hoy.</li>
+      <li>Escribe la <strong>duración</strong> en horas y minutos (por ejemplo <em>0:45</em> o <em>1:30</em>).</li>
+      <li>Si la sabes, escribe la <strong>distancia</strong> en km. Los pasos y calorías se calculan solos.</li>
+      <li>Opcional: deja un comentario y pulsa <strong>📷 Subir foto de la ruta</strong> para añadir una captura o foto del recorrido.</li>
+      <li>Pulsa <strong>Guardar</strong>.</li>
+    </ol>
+    <div class="ejemplo">
+      <p><strong>Ejemplo para la prueba:</strong></p>
+      <p>Nombre: Carrera en el parque</p>
+      <p>Duración: 0:45 · Distancia: 7,5 km</p>
+      <p>Comentario: Buen ritmo · Foto: cualquier imagen del móvil</p>
+    </div>
+    <p class="resultado">Resultado esperado: Inicio muestra «¡Bien hecho! Hoy has registrado: Carrera en el parque (45 min · 7,5 km)» y la barra de hoy sube en el <strong>Resumen semanal</strong>.</p>
+  </section>
+
+  <section>
+    <h2>3. Mira tu resumen semanal</h2>
+    <ul>
+      <li>Las barras van de lunes (L) a domingo (D) de la semana actual. Cuanto más alta, más minutos de actividad ese día.</li>
+      <li>Debajo verás el total: número de actividades, tiempo y kilómetros.</li>
+      <li>Las actividades planificadas para días que aún no han llegado no cuentan hasta ese día.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>4. Usa la Agenda para otros días</h2>
+    <ol>
+      <li>Pulsa <strong>Agenda</strong> en la barra inferior. Los días con actividades muestran <strong>«1 act.»</strong>, «2 act.»...</li>
+      <li>Para anotar un día pasado (o planificar uno futuro), pulsa ese día y luego <strong>+ Añadir actividad</strong>. También puedes usar el botón naranja <strong>+</strong>.</li>
+      <li>En <strong>Mis actividades personales</strong> verás «Hoy y próximas» y, desplegando <strong>Actividades anteriores</strong>, las ya realizadas.</li>
+    </ol>
+    <p>Las <strong>citas de tu profesional</strong> aparecen en su propio apartado: tus actividades personales no son reservas ni le envían una cita.</p>
+  </section>
+
+  <section>
+    <h2>5. Corregir o borrar</h2>
+    <ol>
+      <li>Pulsa la actividad en la Agenda (o en los detalles del día). Se abre con los datos rellenos.</li>
+      <li>Cambia lo que quieras. Con la foto puedes <strong>Cambiar foto</strong> o <strong>Quitar foto</strong>.</li>
+      <li>Pulsa <strong>Guardar</strong>, o <strong>Eliminar actividad</strong> y confirma si quieres borrarla.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>6. Avisa a tu profesional</h2>
+    <p>Dile que ya has registrado tus actividades. Él las verá en tu ficha, en la pestaña <strong>Resumen</strong>, apartado <strong>Actividad física</strong>, incluida la foto de la ruta.</p>
+  </section>
+
+  <section class="nota">
+    <h2>Ten en cuenta</h2>
+    <ul>
+      <li>Tus actividades se guardan en tu cuenta: las verás igual desde otro móvil u ordenador.</li>
+      <li>Pasos y calorías son una <strong>estimación</strong> a partir de los kilómetros, no una lectura de un reloj o pulsera.</li>
+      <li>La foto de la ruta es privada: solo la ves tú y tus profesionales.</li>
+      <li>Si aparece un mensaje en rojo, revisa tu conexión a internet e inténtalo de nuevo.</li>
+    </ul>
+  </section>
+
+  <footer>FitNova Go · Guía de actividades · noviembre 2026</footer>
+</main>
+</body>
+</html>

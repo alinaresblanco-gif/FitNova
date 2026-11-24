@@ -58,5 +58,5 @@ window.FitNovaFotos = (() => {
     await client.storage.from(BUCKET).remove([foto.ruta]);
   }
 
-  return { consultar, subir, eliminar };
+  return { consultar, subir, eliminar, comprimir };
 })();

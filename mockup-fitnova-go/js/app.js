@@ -1,7 +1,7 @@
 // Utilidades genéricas para el mockup de FitNova Go (sin backend, solo simulación visual)
 
 // Incrementar en cada cambio visible del mockup para que se muestre el aviso de actualización.
-const APP_VERSION = '2026.11.24.2';
+const APP_VERSION = '2026.11.24.3';
 const ACTIVITIES_KEY = 'fitnova_activities';
 let selectedAgendaDay = '';
 let agendaFechaBase = new Date();
@@ -50,7 +50,7 @@ function aplicarActualizacion() {
 
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.register('./service-worker.js?v=20261124.2').then((registration) => {
+  navigator.serviceWorker.register('./service-worker.js?v=20261124.3').then((registration) => {
     registration.update();
   }).catch(() => {});
   navigator.serviceWorker.addEventListener('message', (event) => {
@@ -94,29 +94,19 @@ function selectChip(button) {
   if (onSelect && window[onSelect]) window[onSelect](button.dataset.value);
 }
 
-// Cálculo automático de pasos y calorías a partir de la distancia (mock simplificado)
+// ---------- Actividades personales (Supabase: clientes_actividades) ----------
+const goAct = { clienteId: null, filas: [], cargadas: false, error: '', archivo: null, quitarFoto: false, fotoActual: null };
+
+// Pasos y calorías son estimaciones a partir de la distancia; no se guardan.
 function calcularActividad() {
-  const distanciaInput = document.getElementById('act-distancia');
-  const pasosInput = document.getElementById('act-pasos');
-  const caloriasInput = document.getElementById('act-calorias');
-  const km = parseFloat(distanciaInput.value) || 0;
-  const metrosPorPaso = 0.63;
-  const pasos = Math.round((km * 1000) / metrosPorPaso);
-  const calorias = Math.round(km * 60); // estimación simple: ~60 kcal/km
-  pasosInput.value = pasos;
-  caloriasInput.value = calorias;
+  const km = parseFloat(String(document.getElementById('act-distancia').value).replace(',', '.')) || 0;
+  const estimado = FitNovaActividades.estimaciones(km);
+  document.getElementById('act-pasos').value = km ? estimado.pasos : '';
+  document.getElementById('act-calorias').value = km ? estimado.calorias : '';
 }
 
 function getActivities() {
-  try {
-    return JSON.parse(localStorage.getItem(ACTIVITIES_KEY)) || [];
-  } catch (error) {
-    return [];
-  }
-}
-
-function saveActivities(activities) {
-  localStorage.setItem(ACTIVITIES_KEY, JSON.stringify(activities));
+  return goAct.filas;
 }
 
 function todayIso() {
@@ -125,78 +115,290 @@ function todayIso() {
   return new Date(now.getTime() - offset).toISOString().slice(0, 10);
 }
 
-function openActivityModal(activityId) {
+function ensureActivityModal() {
+  if (document.getElementById('modal-actividad')) return;
+  document.querySelector('.app').insertAdjacentHTML('beforeend', `
+    <div class="modal-overlay" id="modal-actividad">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 id="actividad-modal-title">Registrar actividad</h2>
+          <button class="modal-close" type="button" onclick="closeModal('modal-actividad')">✕</button>
+        </div>
+        <input type="hidden" id="actividad-id" />
+        <label for="act-nombre">Nombre de la actividad</label>
+        <input type="text" id="act-nombre" maxlength="120" placeholder="Ej. Carrera en el parque" />
+        <div class="field-row">
+          <div><label for="act-fecha">Fecha</label><input type="date" id="act-fecha" /></div>
+          <div><label for="act-duracion">Duración (h:mm)</label><input type="text" id="act-duracion" inputmode="numeric" placeholder="Ej. 00:45" /></div>
+        </div>
+        <p class="section-title">Detalles de la actividad</p>
+        <div class="field-row field-row-align">
+          <div><label for="act-distancia">Distancia (Km)</label><input type="number" id="act-distancia" step="0.01" min="0" inputmode="decimal" oninput="calcularActividad()" /></div>
+          <div><label for="act-pasos">Pasos (est.)</label><input type="number" id="act-pasos" readonly /></div>
+          <div><label for="act-calorias">Calorías (est.)</label><input type="number" id="act-calorias" readonly /></div>
+        </div>
+        <p class="act-nota">Pasos y calorías son una estimación a partir de la distancia (0,63 m por paso y 60 kcal por km); no son lecturas de un dispositivo.</p>
+        <label for="act-comentario">Deja un comentario de la actividad</label>
+        <textarea id="act-comentario" maxlength="1000" placeholder="¿Cómo te has sentido?"></textarea>
+        <label for="act-foto-input">Foto de la ruta (opcional)</label>
+        <div class="upload-box act-foto">
+          <img id="act-foto-preview" alt="Foto de la ruta" hidden />
+          <label class="act-foto-elegir" for="act-foto-input" id="act-foto-elegir">📷 Subir foto de la ruta</label>
+          <input type="file" id="act-foto-input" accept="image/jpeg,image/png,image/webp" hidden />
+          <button type="button" class="btn-link" id="act-foto-quitar" onclick="quitarFotoActividad()" hidden>Quitar foto</button>
+        </div>
+        <p id="actividad-error" class="sesion-error" role="alert"></p>
+        <div class="row" style="margin-top:18px;">
+          <button class="btn-secondary" type="button" onclick="closeModal('modal-actividad')">Cancelar</button>
+          <button class="btn-primary" type="button" id="actividad-guardar" onclick="saveActivity()">Guardar</button>
+        </div>
+        <button id="actividad-delete" type="button" class="btn-link" onclick="deleteActivity()" style="display:none;margin:14px auto 0;">Eliminar actividad</button>
+      </div>
+    </div>`);
+  document.getElementById('act-foto-input').addEventListener('change', (event) => elegirFotoActividad(event.target.files[0]));
+}
+
+function actividadError(texto) {
+  document.getElementById('actividad-error').textContent = texto || '';
+}
+
+function mostrarFotoActividad(url) {
+  const img = document.getElementById('act-foto-preview');
+  img.hidden = !url;
+  if (url) img.src = url;
+  else img.removeAttribute('src');
+  document.getElementById('act-foto-quitar').hidden = !url;
+  document.getElementById('act-foto-elegir').textContent = url ? '📷 Cambiar foto' : '📷 Subir foto de la ruta';
+}
+
+function elegirFotoActividad(archivo) {
+  if (!archivo) return;
+  if (!['image/jpeg', 'image/png', 'image/webp'].includes(archivo.type)) {
+    document.getElementById('act-foto-input').value = '';
+    actividadError('Formato no admitido: usa una imagen JPG, PNG o WebP.');
+    return;
+  }
+  actividadError('');
+  goAct.archivo = archivo;
+  goAct.quitarFoto = false;
+  mostrarFotoActividad(URL.createObjectURL(archivo));
+}
+
+function quitarFotoActividad() {
+  goAct.archivo = null;
+  goAct.quitarFoto = Boolean(goAct.fotoActual);
+  document.getElementById('act-foto-input').value = '';
+  mostrarFotoActividad(null);
+}
+
+function openActivityModal(activityId, fecha) {
+  ensureActivityModal();
   closeModal('modal-dia');
-  const activity = getActivities().find((item) => item.id === activityId);
+  const activity = goAct.filas.find((item) => item.id === activityId);
   document.getElementById('actividad-id').value = activity ? activity.id : '';
   document.getElementById('actividad-modal-title').textContent = activity ? 'Editar actividad' : 'Registrar actividad';
   document.getElementById('actividad-delete').style.display = activity ? 'block' : 'none';
-  document.getElementById('act-nombre').value = activity ? activity.name : '';
-  document.getElementById('act-fecha').value = activity ? activity.date : todayIso();
-  document.getElementById('act-duracion').value = activity ? activity.duration : '';
-  document.getElementById('act-distancia').value = activity ? activity.distance : '';
-  document.getElementById('act-comentario').value = activity ? activity.comment : '';
+  document.getElementById('act-nombre').value = activity ? activity.nombre : '';
+  document.getElementById('act-fecha').value = activity ? activity.fecha : (fecha || todayIso());
+  document.getElementById('act-duracion').value = activity ? FitNovaActividades.minutosATexto(activity.duracion_min) : '';
+  document.getElementById('act-distancia').value = activity && activity.distancia_km ? activity.distancia_km : '';
+  document.getElementById('act-comentario').value = activity ? (activity.comentario || '') : '';
+  goAct.archivo = null;
+  goAct.quitarFoto = false;
+  goAct.fotoActual = activity ? activity.foto_ruta : null;
+  document.getElementById('act-foto-input').value = '';
+  mostrarFotoActividad(null);
+  actividadError('');
   calcularActividad();
   openModal('modal-actividad');
+  if (activity && activity.foto_ruta) {
+    FitNovaActividades.urlFoto(supabaseClient, activity.foto_ruta).then((url) => {
+      if (document.getElementById('actividad-id').value === activity.id && !goAct.archivo && !goAct.quitarFoto) mostrarFotoActividad(url);
+    }).catch(() => actividadError('No se pudo cargar la foto de la ruta.'));
+  }
 }
 
-function saveActivity() {
-  const name = document.getElementById('act-nombre').value.trim();
-  const date = document.getElementById('act-fecha').value;
-  if (!name || !date) return;
-
-  const idInput = document.getElementById('actividad-id');
-  const id = (idInput ? idInput.value : '') || String(Date.now());
-  const activity = {
-    id,
-    name,
-    date,
-    duration: document.getElementById('act-duracion').value.trim(),
-    distance: document.getElementById('act-distancia').value,
-    comment: document.getElementById('act-comentario').value.trim()
-  };
-  const activities = getActivities().filter((item) => item.id !== id);
-  activities.push(activity);
-  saveActivities(activities);
-  closeModal('modal-actividad');
-  if (typeof initAgenda === 'function' && document.getElementById('agenda-calendar')) initAgenda();
+async function saveActivity() {
+  const { fila, error } = FitNovaActividades.validar({
+    nombre: document.getElementById('act-nombre').value,
+    fecha: document.getElementById('act-fecha').value,
+    duracion: document.getElementById('act-duracion').value,
+    distancia: document.getElementById('act-distancia').value,
+    comentario: document.getElementById('act-comentario').value,
+  });
+  if (error) return actividadError(error);
+  if (!goAct.clienteId) return actividadError('No se ha podido identificar tu cuenta. Revisa tu conexión y recarga la página.');
+  const boton = document.getElementById('actividad-guardar');
+  boton.disabled = true;
+  boton.textContent = 'Guardando...';
+  try {
+    await FitNovaActividades.guardar(supabaseClient, goAct.clienteId, document.getElementById('actividad-id').value || null, fila, {
+      archivo: goAct.archivo, quitarFoto: goAct.quitarFoto, fotoAnterior: goAct.fotoActual,
+    });
+    closeModal('modal-actividad');
+    await cargarActividades();
+  } catch (e) {
+    actividadError(`No se pudo guardar la actividad: ${e.message}`);
+  } finally {
+    boton.disabled = false;
+    boton.textContent = 'Guardar';
+  }
 }
 
-function deleteActivity() {
-  const id = document.getElementById('actividad-id').value;
-  saveActivities(getActivities().filter((item) => item.id !== id));
-  closeModal('modal-actividad');
-  if (typeof initAgenda === 'function' && document.getElementById('agenda-calendar')) initAgenda();
+async function eliminarActividad(activity) {
+  if (!activity || !confirm(`¿Eliminar la actividad «${activity.nombre}» del ${FitNovaActividades.fechaCorta(activity.fecha)}?`)) return false;
+  try {
+    await FitNovaActividades.eliminar(supabaseClient, activity);
+  } catch (e) {
+    alert(`No se pudo eliminar la actividad: ${e.message}`);
+    return false;
+  }
+  await cargarActividades();
+  return true;
 }
 
-function deleteActivityById(activityId) {
-  saveActivities(getActivities().filter((item) => item.id !== activityId));
-  renderAgenda();
-  openDayModal(selectedAgendaDay);
+async function deleteActivity() {
+  const activity = goAct.filas.find((item) => item.id === document.getElementById('actividad-id').value);
+  if (await eliminarActividad(activity)) closeModal('modal-actividad');
+}
+
+async function deleteActivityById(activityId) {
+  await eliminarActividad(goAct.filas.find((item) => item.id === activityId));
+}
+
+async function cargarActividades() {
+  try {
+    if (!goAct.clienteId) {
+      if (!await requireSessionGo()) return;
+      const { data, error } = await supabaseClient.rpc('cliente_actual_id');
+      if (error) throw new Error(error.message);
+      if (!data) throw new Error('No hay un cliente vinculado a esta cuenta.');
+      goAct.clienteId = data;
+    }
+    goAct.filas = await FitNovaActividades.consultar(supabaseClient, goAct.clienteId);
+    goAct.cargadas = true;
+    goAct.error = '';
+  } catch (e) {
+    goAct.cargadas = false;
+    goAct.error = `No se pudieron cargar tus actividades: ${e.message}. Revisa tu conexión y recarga la página.`;
+  }
+  renderActividades();
+}
+
+function renderActividades() {
+  if (document.getElementById('agenda-calendar')) renderAgenda();
+  if (document.getElementById('inicio-semana')) renderInicio();
+  const dia = document.getElementById('modal-dia');
+  if (dia && dia.classList.contains('open')) openDayModal(selectedAgendaDay);
+  renderAvisoLocales();
+}
+
+function renderInicio() {
+  const A = FitNovaActividades;
+  const hoy = todayIso();
+  const deHoy = goAct.filas.filter((a) => a.fecha === hoy);
+  const texto = document.getElementById('inicio-hoy-texto');
+  if (goAct.error) texto.textContent = goAct.error;
+  else if (!goAct.cargadas) texto.textContent = 'Cargando tu actividad de hoy...';
+  else if (deHoy.length) {
+    texto.innerHTML = `¡Bien hecho! Hoy has registrado: ${deHoy.map((a) => {
+      const detalle = A.detalle(a);
+      return `<strong>${A.escapar(a.nombre)}</strong>${detalle ? ` (${A.escapar(detalle)})` : ''}`;
+    }).join(', ')} 💪`;
+  } else texto.textContent = 'Hoy aún no has registrado ninguna actividad. ¡Vamos, tú puedes con esto! 💪';
+  document.getElementById('inicio-hoy-boton').textContent = deHoy.length ? 'Registrar otra actividad' : 'Registrar Actividad de Hoy';
+  const resumen = A.semana(goAct.cargadas ? goAct.filas : [], hoy);
+  document.getElementById('inicio-semana').innerHTML = A.barrasHtml(resumen);
+  document.getElementById('inicio-semana-texto').textContent = goAct.error
+    ? 'No se pudo calcular el resumen.'
+    : (goAct.cargadas ? A.textoSemana(resumen) : 'Cargando...');
+}
+
+// Actividades que quedaron en localStorage de versiones anteriores de la app.
+function actividadesLocales() {
+  try {
+    const lista = JSON.parse(localStorage.getItem(ACTIVITIES_KEY));
+    return Array.isArray(lista) ? lista : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function renderAvisoLocales() {
+  const cont = document.getElementById('actividades-locales');
+  if (!cont) return;
+  const total = actividadesLocales().length;
+  cont.hidden = !total || !goAct.clienteId;
+  if (cont.hidden) return;
+  cont.innerHTML = `<p>Tienes ${total} ${total === 1 ? 'actividad guardada' : 'actividades guardadas'} solo en este navegador (versión anterior de la app). Súbelas a tu cuenta para no perderlas y que tu profesional las vea.</p>
+    <div class="row">
+      <button class="btn-secondary" type="button" onclick="descartarActividadesLocales()">Descartar</button>
+      <button class="btn-primary" type="button" id="actividades-locales-subir" onclick="migrarActividadesLocales()">Subir a mi cuenta</button>
+    </div>
+    <p class="sesion-error" id="actividades-locales-error" role="alert"></p>`;
+}
+
+async function migrarActividadesLocales() {
+  document.getElementById('actividades-locales-subir').disabled = true;
+  const fallidas = [];
+  for (const a of actividadesLocales()) {
+    const { fila, error } = FitNovaActividades.validar({ nombre: a.name, fecha: a.date, duracion: a.duration, distancia: a.distance, comentario: a.comment });
+    if (error) {
+      fallidas.push(a);
+      continue;
+    }
+    try {
+      await FitNovaActividades.guardar(supabaseClient, goAct.clienteId, null, fila);
+    } catch (e) {
+      fallidas.push(a);
+    }
+  }
+  if (fallidas.length) localStorage.setItem(ACTIVITIES_KEY, JSON.stringify(fallidas));
+  else localStorage.removeItem(ACTIVITIES_KEY);
+  await cargarActividades();
+  const aviso = document.getElementById('actividades-locales-error');
+  if (fallidas.length && aviso) aviso.textContent = `${fallidas.length} ${fallidas.length === 1 ? 'no se pudo subir' : 'no se pudieron subir'} (datos incompletos o error de conexión). Puedes reintentarlo o descartarlas.`;
+}
+
+function descartarActividadesLocales() {
+  if (!confirm('¿Descartar las actividades guardadas solo en este navegador? No se podrán recuperar.')) return;
+  localStorage.removeItem(ACTIVITIES_KEY);
+  renderAvisoLocales();
 }
 
 function openDayModal(date) {
+  const A = FitNovaActividades;
   selectedAgendaDay = date;
-  const activities = getActivities().filter((activity) => activity.date === date);
+  const activities = goAct.filas.filter((activity) => activity.fecha === date);
   document.getElementById('dia-modal-title').textContent = formatDate(date);
   const citas = window.FitNovaAgendaGo ? window.FitNovaAgendaGo.htmlDia(date) : '';
-  document.getElementById('dia-activity-list').innerHTML = citas + (activities.length ? activities.map((activity) => `
+  const lista = goAct.error ? `<p class="sesion-error">${A.escapar(goAct.error)}</p>`
+    : !goAct.cargadas ? '<p>Cargando actividades...</p>'
+    : activities.length ? activities.map((activity) => {
+      const detalle = A.detalle(activity);
+      return `
     <div class="day-activity">
       <div class="day-activity-info" onclick="openActivityModal('${activity.id}')">
-        <strong>${escapeHtml(activity.name)}</strong>
-        <span>${activity.duration ? `${escapeHtml(activity.duration)} · ` : ''}Pulsa para consultar o editar</span>
+        <strong>${A.escapar(activity.nombre)}${activity.foto_ruta ? ' 📷' : ''}</strong>
+        <span>${detalle ? `${A.escapar(detalle)} · ` : ''}Pulsa para consultar o editar</span>
       </div>
       <button class="day-activity-open" onclick="openActivityModal('${activity.id}')" title="Abrir actividad">›</button>
       <button class="day-activity-delete" onclick="deleteActivityById('${activity.id}')" title="Eliminar actividad">🗑</button>
-    </div>`).join('') : '<p class="agenda-empty">No hay actividades personales para este día.</p>');
+    </div>`;
+    }).join('') : '<p class="agenda-empty">No hay actividades personales para este día.</p>';
+  document.getElementById('dia-activity-list').innerHTML = citas + lista;
   openModal('modal-dia');
 }
 
 function addActivityForSelectedDay() {
-  closeModal('modal-dia');
-  openActivityModal();
-  document.getElementById('act-fecha').value = selectedAgendaDay;
+  openActivityModal(null, selectedAgendaDay);
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (!document.getElementById('inicio-semana') && !document.getElementById('agenda-calendar')) return;
+  ensureActivityModal();
+  cargarActividades();
+});
 
 function toggleAgendaView() {
   const calendar = document.getElementById('agenda-calendar');
@@ -265,13 +467,33 @@ function renderAgenda() {
   document.getElementById('agenda-view-toggle').textContent = view === 'week' ? '▦' : '▤';
   calendar.innerHTML = view === 'week' ? renderWeek() : renderMonth();
 
-  const activities = getActivities()
-    .filter((activity) => activity.date >= todayIso())
-    .sort((first, second) => first.date.localeCompare(second.date));
-  list.innerHTML = activities.length ? activities.map((activity) => `
-    <button class="activity-item" onclick="openActivityModal('${activity.id}')">
-      <span><strong>${escapeHtml(activity.name)}</strong><span>${formatDate(activity.date)}${activity.duration ? ` · ${escapeHtml(activity.duration)}` : ''}</span></span><span>›</span>
-    </button>`).join('') : '<p class="agenda-empty">Hoy no hay planificado ninguna actividad, puedes incluir tu próxima actividad o tomarte un merecido descanso</p>';
+  const A = FitNovaActividades;
+  calendar.querySelectorAll('[data-agenda-date]').forEach((boton) => {
+    const cuenta = goAct.filas.filter((a) => a.fecha === boton.dataset.agendaDate).length;
+    if (cuenta) boton.insertAdjacentHTML('beforeend', `<small class="act-count">${cuenta} act.</small>`);
+  });
+  const item = (activity) => {
+    const detalle = A.detalle(activity);
+    return `<button class="activity-item" onclick="openActivityModal('${activity.id}')">
+      <span><strong>${A.escapar(activity.nombre)}${activity.foto_ruta ? ' 📷' : ''}</strong><span>${formatDate(activity.fecha)}${detalle ? ` · ${A.escapar(detalle)}` : ''}</span></span><span>›</span>
+    </button>`;
+  };
+  if (goAct.error) {
+    list.innerHTML = `<p class="sesion-error" role="alert">${A.escapar(goAct.error)}</p>`;
+  } else if (!goAct.cargadas) {
+    list.innerHTML = '<p>Cargando actividades...</p>';
+  } else {
+    const hoy = todayIso();
+    const proximas = goAct.filas.filter((a) => a.fecha >= hoy).sort((x, y) => x.fecha.localeCompare(y.fecha));
+    const anteriores = goAct.filas.filter((a) => a.fecha < hoy);
+    const abierto = list.querySelector('details')?.open;
+    list.innerHTML = `<h3>Hoy y próximas</h3>${proximas.length ? proximas.map(item).join('')
+      : '<p class="agenda-empty">Hoy no hay planificado ninguna actividad, puedes incluir tu próxima actividad o tomarte un merecido descanso</p>'}
+      <details${abierto ? ' open' : ''}><summary>Actividades anteriores (${anteriores.length})</summary>
+        ${anteriores.slice(0, 30).map(item).join('') || '<p>Aún no has registrado actividades anteriores.</p>'}
+        ${anteriores.length > 30 ? '<p class="agenda-local-aviso">Se muestran las 30 más recientes. Consulta las demás pulsando su día en el calendario.</p>' : ''}
+      </details>`;
+  }
   if (window.FitNovaAgendaGo) window.FitNovaAgendaGo.render();
 }
 

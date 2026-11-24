@@ -6,7 +6,7 @@
 <title>FitNova Go · Agenda</title>
 <link rel="manifest" href="manifest.webmanifest" />
 <meta name="theme-color" content="#0A1A2F" />
-<link rel="stylesheet" href="css/styles.css?v=20261123.1" />
+<link rel="stylesheet" href="css/styles.css?v=20261124.3" />
 </head>
 <body data-auth="required">
   <div class="app">
@@ -39,8 +39,9 @@
         <div id="go-agenda-sesiones"><p>Cargando citas...</p></div>
       </section>
       <section class="agenda-activities">
-        <h2>Mis actividades personales · solo en este navegador</h2>
-        <p class="agenda-local-aviso">Estas actividades todavía no se sincronizan con Manager. No son las citas del profesional.</p>
+        <h2>Mis actividades personales</h2>
+        <p class="agenda-local-aviso">Se guardan en tu cuenta y las ven tus profesionales. No son las citas del profesional.</p>
+        <div id="actividades-locales" class="actividades-locales" hidden></div>
         <div id="agenda-activity-list"></div>
       </section>
     </main>
@@ -53,35 +54,6 @@
       <a href="videos.html"><span class="nav-icon">▶️</span>Vídeos</a>
       <a href="placeholder.html?vista=Evolución"><span class="nav-icon">📈</span>Evolución</a>
     </nav>
-
-    <div class="modal-overlay" id="modal-actividad">
-      <div class="modal">
-        <div class="modal-header">
-          <h2 id="actividad-modal-title">Registrar actividad</h2>
-          <button class="modal-close" onclick="closeModal('modal-actividad')">✕</button>
-        </div>
-        <input type="hidden" id="actividad-id" />
-        <label for="act-nombre">Nombre de la actividad</label>
-        <input type="text" id="act-nombre" placeholder="Ej. Carrera en el parque" />
-        <div class="field-row">
-          <div><label for="act-fecha">Fecha</label><input type="date" id="act-fecha" /></div>
-          <div><label for="act-duracion">Duración</label><input type="text" id="act-duracion" placeholder="Ej. 00:45" /></div>
-        </div>
-        <p class="section-title">Detalles de la actividad</p>
-        <div class="field-row field-row-align">
-          <div><label for="act-distancia">Distancia (Km)</label><input type="number" id="act-distancia" step="0.1" oninput="calcularActividad()" /></div>
-          <div><label for="act-pasos">Pasos</label><input type="number" id="act-pasos" readonly /></div>
-          <div><label for="act-calorias">Calorías</label><input type="number" id="act-calorias" readonly /></div>
-        </div>
-        <label for="act-comentario">Deja un comentario de la actividad</label>
-        <textarea id="act-comentario" placeholder="¿Cómo te has sentido?"></textarea>
-        <div class="row" style="margin-top:18px;">
-          <button class="btn-secondary" onclick="closeModal('modal-actividad')">Cancelar</button>
-          <button class="btn-primary" onclick="saveActivity()">Guardar</button>
-        </div>
-        <button id="actividad-delete" class="btn-link" onclick="deleteActivity()" style="display:none;margin:14px auto 0;">Eliminar actividad</button>
-      </div>
-    </div>
 
     <div class="modal-overlay" id="modal-dia">
       <div class="modal">
@@ -100,7 +72,9 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/supabase-client.js?v=20261111.1"></script>
   <script src="../js/sesiones.js?v=20261123.2"></script>
-  <script src="js/app.js?v=20261124.2"></script>
-  <script src="js/agenda.js?v=20261123.2"></script>
+  <script src="../js/fotos-progreso.js?v=20261124.3"></script>
+  <script src="../js/actividades.js?v=20261124.3"></script>
+  <script src="js/app.js?v=20261124.3"></script>
+  <script src="js/agenda.js?v=20261124.3"></script>
 </body>
 </html>
