@@ -1,6 +1,6 @@
-// FitNova Manager · Librería: pestañas reales de Workouts y Ejercicios (Supabase).
+// FitNova Manager · Librería de entrenamientos y vídeos (Supabase).
 const E = window.FitNovaEntrenos;
-const lib = { workouts: [], ejercicios: [], programas: [], cargado: false };
+const lib = { workouts: [], ejercicios: [], programas: [], videos: [], cargado: false };
 
 function libPestanaActiva() {
   const activa = document.querySelector('.tab-btn.active[data-tab-group="lib"]');
@@ -24,6 +24,23 @@ function libPintarContadores() {
   document.getElementById('lib-count-workouts').textContent = lib.workouts.length;
   document.getElementById('lib-count-ejercicios').textContent = lib.ejercicios.length;
   document.getElementById('lib-count-programas').textContent = lib.programas.length;
+  document.getElementById('lib-count-videos').textContent = lib.videos.length;
+}
+
+function libPintarVideos() {
+  const caja = document.getElementById('lib-videos');
+  if (!lib.videos.length) {
+    caja.innerHTML = libVacio('🎬', 'Aún no tienes vídeos', 'Añade enlaces de YouTube o Vimeo y elige qué clientes pueden verlos.', 'Añadir vídeo', 'nuevo-video');
+    return;
+  }
+  const q = libNormalizar(document.getElementById('lib-buscar').value);
+  const lista = lib.videos.filter((v) => libNormalizar(`${v.titulo} ${v.descripcion || ''} ${v.categoria || ''}`).includes(q));
+  if (!lista.length) { caja.innerHTML = '<p>Ningún vídeo coincide con la búsqueda.</p>'; return; }
+  caja.innerHTML = `<table class="data-table"><thead><tr><th>Vídeo</th><th>Actividad</th><th>Estado</th><th>Clientes</th><th>Acciones</th></tr></thead>
+    <tbody>${lista.map((v) => `<tr><td><strong>${E.escapar(v.titulo)}</strong>${v.duracion_min ? ` · ${v.duracion_min} min` : ''}</td>
+      <td>${E.escapar(v.categoria || '—')}</td><td>${v.publicado ? 'Publicado' : 'Borrador'}</td><td>${v.video_destinatarios.length}</td>
+      <td><button class="btn-outline" type="button" data-lib-accion="editar-video" data-id="${v.id}">Editar y destinatarios</button>
+      <button class="btn-outline" type="button" data-lib-accion="borrar-video" data-id="${v.id}">Eliminar</button></td></tr>`).join('')}</tbody></table>`;
 }
 
 function libPintarProgramas() {
@@ -110,6 +127,7 @@ function libPintar() {
   libPintarWorkouts();
   libPintarEjercicios();
   libPintarProgramas();
+  libPintarVideos();
   document.getElementById('lib-filtro-categoria').style.display = libPestanaActiva() === 'ejercicios' ? '' : 'none';
 }
 
@@ -117,10 +135,11 @@ async function libCargar() {
   const aviso = document.getElementById('lib-error');
   aviso.textContent = '';
   try {
-    const [workouts, ejercicios, programas] = await Promise.all([E.listarWorkouts(supabaseClient), EntMgr.catalogo(true), ProgramasMgr.listar()]);
+    const [workouts, ejercicios, programas, videos] = await Promise.all([E.listarWorkouts(supabaseClient), EntMgr.catalogo(true), ProgramasMgr.listar(), VideosMgr.listar()]);
     lib.workouts = workouts;
     lib.ejercicios = ejercicios;
     lib.programas = programas;
+    lib.videos = videos;
     lib.cargado = true;
     libPintar();
   } catch (e) {
@@ -128,6 +147,7 @@ async function libCargar() {
     document.getElementById('lib-workouts').innerHTML = '';
     document.getElementById('lib-ejercicios').innerHTML = '';
     document.getElementById('lib-programas').innerHTML = '';
+    document.getElementById('lib-videos').innerHTML = '';
   }
 }
 
@@ -160,11 +180,19 @@ async function libAccion(accion, id) {
   const workout = lib.workouts.find((w) => w.id === id);
   const ejercicio = lib.ejercicios.find((e) => e.id === id);
   const programa = lib.programas.find((p) => p.id === id);
+  const video = lib.videos.find((v) => v.id === id);
   aviso.textContent = '';
   try {
     if (accion === 'nuevo-workout') libEditorWorkout(null);
     if (accion === 'nuevo-ejercicio') libEditorEjercicio(null);
     if (accion === 'nuevo-programa') ProgramasMgr.abrirEditor(null, libCargar);
+    if (accion === 'nuevo-video') VideosMgr.abrir(null, libCargar);
+    if (accion === 'editar-video' && video) VideosMgr.abrir(video, libCargar);
+    if (accion === 'borrar-video' && video) {
+      if (!window.confirm(`¿Eliminar «${video.titulo}»? Los clientes dejarán de verlo en FitNova Go.`)) return;
+      await VideosMgr.eliminar(video.id);
+      await libCargar();
+    }
     if (accion === 'editar-programa' && programa) ProgramasMgr.abrirEditor(programa, libCargar);
     if (accion === 'duplicar-programa' && programa) ProgramasMgr.abrirEditor(programa, libCargar, true);
     if (accion === 'asignar-programa' && programa) {
@@ -220,7 +248,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const filtro = document.getElementById('lib-filtro-categoria');
   filtro.insertAdjacentHTML('beforeend', E.CATEGORIAS.map((c) => `<option value="${c.valor}">${c.texto}</option>`).join(''));
   filtro.addEventListener('change', libPintarEjercicios);
-  document.getElementById('lib-buscar').addEventListener('input', () => { libPintarWorkouts(); libPintarEjercicios(); libPintarProgramas(); });
+  document.getElementById('lib-buscar').addEventListener('input', () => { libPintarWorkouts(); libPintarEjercicios(); libPintarProgramas(); libPintarVideos(); });
   document.querySelectorAll('.tab-btn[data-tab-group="lib"]').forEach((btn) => btn.addEventListener('click', () => {
     filtro.style.display = btn.dataset.tab === 'ejercicios' ? '' : 'none';
   }));
@@ -229,6 +257,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (pestana === 'workouts') libAccion('nuevo-workout');
     else if (pestana === 'ejercicios') libAccion('nuevo-ejercicio');
     else if (pestana === 'programas') libAccion('nuevo-programa');
+    else if (pestana === 'videos') libAccion('nuevo-video');
     else openModal('modal-crear-item');
   });
   document.querySelector('.page-body').addEventListener('click', (event) => {

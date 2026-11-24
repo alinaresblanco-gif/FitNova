@@ -92,11 +92,15 @@
     </div>
     <div class="notice good">
       <strong>Actualización 26/11/2026 · Workouts y registro de realización (etapa 1 de 3).</strong>
-      La Librería de Manager tiene catálogo real de <strong>Ejercicios</strong> (categoría, explicación y vídeo de YouTube o Vimeo) y <strong>Workouts</strong> con series, repeticiones, kg, tiempo, descanso y notas por ejercicio; se pueden editar, duplicar, eliminar y asignar a un cliente con fecha, una vez o cada semana (copia por cliente). La pestaña Entrenamiento de la ficha muestra próximos y anteriores, prescrito frente a realizado, esfuerzo medio, edición o borrado mientras no haya registro y comentarios del profesional. En Go hay página <em>Mis entrenamientos</em> (<code>entrenamiento.html</code>) con vídeo incrustado y registro de series reales, duración, esfuerzo 1–10 y comentario; tarjeta en Inicio y 💪 en la Agenda. Tablas <code>ejercicios</code>, <code>workouts</code>, <code>clientes_workouts</code>, <code>clientes_workout_registros</code> y <code>clientes_workout_comentarios</code> con privilegios mínimos y RLS. Cerrado G31 y M13 en lo relativo a workouts; faltan programas de varias semanas (etapa 2) y vídeos de la Librería (etapa 3).
+      La Librería de Manager tiene catálogo real de <strong>Ejercicios</strong> (categoría, explicación y vídeo de YouTube o Vimeo) y <strong>Workouts</strong> con series, repeticiones, kg, tiempo, descanso y notas por ejercicio; se pueden editar, duplicar, eliminar y asignar a un cliente con fecha, una vez o cada semana (copia por cliente). La pestaña Entrenamiento de la ficha muestra próximos y anteriores, prescrito frente a realizado, esfuerzo medio, edición o borrado mientras no haya registro y comentarios del profesional. En Go hay página <em>Mis entrenamientos</em> (<code>entrenamiento.html</code>) con vídeo incrustado y registro de series reales, duración, esfuerzo 1–10 y comentario; tarjeta en Inicio y 💪 en la Agenda. Tablas <code>ejercicios</code>, <code>workouts</code>, <code>clientes_workouts</code>, <code>clientes_workout_registros</code> y <code>clientes_workout_comentarios</code> con privilegios mínimos y RLS. Cerrado G31 y M13 en lo relativo a workouts.
     </div>
     <div class="notice good">
       <strong>Actualización posterior · Programas de varias semanas (etapa 2 de 3).</strong>
-      Manager permite crear, editar, duplicar y asignar programas con workouts por semana y día. Una asignación crea las copias fechadas en una transacción; Go y la ficha muestran el nombre y la semana del programa en cada entrenamiento. Las copias ya asignadas no cambian al editar la plantilla y se gestionan individualmente. Falta la biblioteca general de vídeos (etapa 3).
+      Manager permite crear, editar, duplicar y asignar programas con workouts por semana y día. Una asignación crea las copias fechadas en una transacción; Go y la ficha muestran el nombre y la semana del programa en cada entrenamiento. Las copias ya asignadas no cambian al editar la plantilla y se gestionan individualmente.
+    </div>
+    <div class="notice good">
+      <strong>Actualización posterior · Biblioteca de vídeos (etapa 3 de 3).</strong>
+      Manager guarda enlaces de YouTube o Vimeo, permite borradores, publicación y selección de clientes activos asignados. Go muestra los vídeos autorizados, los reproduce y guarda favoritos en Supabase. Las miniaturas dependen del proveedor y pueden no estar disponibles. Retirar el acceso en FitNova no invalida enlaces externos ya copiados. Guías: <a href="guia-videos-manager.html">profesional</a> y <a href="guia-videos-go.html">cliente</a>.
     </div>
     <p><strong>Qué se ha revisado:</strong> las 8 páginas HTML de Go y las 9 de Manager, sus scripts propios, el helper de Agenda, el service worker, el manifest y las 8 migraciones versionadas. Este informe es una revisión de implementación; no una nueva prueba completa de cada botón contra la base remota ni una auditoría legal o de seguridad especializada.</p>
     <p><strong>Cómo leer los estados:</strong></p>
@@ -126,7 +130,7 @@
         <ul>
           <li><s>Evolución real en Go y Progreso real en Manager.</s> <strong>Hecho (24/11), con fotos de progreso.</strong></li>
           <li><s>Actividades personales y resumen semanal (G06–G08, G11).</s> <strong>Hecho (24/11):</strong> en Supabase, con foto de ruta y visibles en la ficha de Manager.</li>
-          <li>Workouts, programas, vídeos y registro de realización. <strong>Workouts, programas y registro hechos:</strong> catálogo de ejercicios, asignación por fecha o programa, registro en Go y revisión en Manager. Falta la biblioteca general de vídeos.</li>
+          <li><s>Workouts, programas, vídeos y registro de realización.</s> <strong>Hecho:</strong> ejercicios, asignaciones y programas, registro y revisión, y vídeos para clientes seleccionados.</li>
           <li>Nutrición, recetas y diario alimentario. <strong>Diario hecho (25/11):</strong> comidas con foto, agua y comentarios del profesional. Faltan el recetario y el plan semanal.</li>
           <li>Chat, notificaciones y tareas.</li>
           <li>Equipo, archivos y formularios de seguimiento.</li>
@@ -189,13 +193,13 @@
 
     <article class="card" id="g-videos">
       <h3>2.5. Vídeos</h3>
-      <p><span class="tag demo">MAQUETA</span> «Todos», «Mis favoritos», buscador y filtro por nombre/fecha/actividad operan sobre cuatro objetos de ejemplo escritos en JavaScript. La estrella cambia en memoria y se pierde al recargar. La miniatura no reproduce un vídeo real.</p>
+      <p><span class="tag real">SUPABASE</span> «Todos» y «Mis favoritos» muestran vídeos publicados para el cliente; el buscador filtra por nombre, fecha o actividad. La estrella persiste y el reproductor utiliza YouTube o Vimeo.</p>
       <ul class="tasks">
-        <li><strong>G13 · Catálogo y reproducción:</strong> recibir vídeos publicados/asignados por Manager, mostrar título, fecha, categoría, duración y miniatura reales; abrir reproductor y gestionar vídeos retirados o sin acceso.</li>
-        <li><strong>G14 · Favoritos persistentes:</strong> guardarlos por cliente en Supabase y aplicar búsqueda/filtros a contenido real. Comprobar recarga, dos dispositivos y que retirar una asignación no deje acceso indebido al recurso.</li>
+        <li><strong>G13 · Catálogo y reproducción: hecho.</strong> Muestra título, fecha, categoría y duración cuando se han indicado, y miniaturas de YouTube o Vimeo cuando el proveedor las facilita. Al abrir se vuelve a comprobar el acceso.</li>
+        <li><strong>G14 · Favoritos persistentes: hecho.</strong> Se guardan por cliente en Supabase y se ocultan si pierde el acceso; pueden reaparecer si se restablece. Probada la recarga y la restricción a clientes no seleccionados; queda conveniente comprobar dos dispositivos físicos.</li>
       </ul>
-      <p>Requiere cerrar también Librería de Manager y decidir dónde se alojará el vídeo; guardar un título o una URL no equivale a disponer de una plataforma de reproducción.</p>
-      <p class="source">Fuentes: <a href="../mockup-fitnova-go/videos.html">Vídeos Go</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/mockup-fitnova-go/js/app.js#L353">Catálogo fijo y favoritos en memoria</a>.</p>
+      <p>La reproducción y las miniaturas dependen de la conexión, del proveedor y de las restricciones del vídeo; FitNova no aloja el archivo ni puede revocar un enlace externo compartido.</p>
+      <p class="source">Fuentes: <a href="../mockup-fitnova-go/videos.html">Vídeos Go</a> · <a href="guia-videos-go.html">Guía del cliente</a> · <a href="guia-videos-manager.html">Guía del profesional</a>.</p>
     </article>
 
     <article class="card" id="g-evolucion">
@@ -374,14 +378,14 @@
     </article>
 
     <article class="card" id="m-libreria">
-      <h3>4.6. Librería: las seis pestañas</h3>
-      <p><span class="tag demo">MAQUETA</span> Las seis pestañas muestran vacíos fijos y contadores 0. Crear nuevo abre el mismo formulario de nombre/descripción para todas. Guardar solo cierra; buscador y Filtros no tienen lógica funcional. Los botones «Crear con IA» se han quitado (25/11) para no prometer una función que no existe.</p>
+      <h3>4.6. Librería</h3>
+      <p><span class="tag partial">PARCIAL</span> Workouts, Ejercicios, Programas y Vídeos tienen contenido real y buscador; las pestañas de Nutrición, Recetas y Formularios siguen siendo maqueta. Los botones «Crear con IA» se han quitado para no prometer una función que no existe.</p>
       <ul class="tasks">
-        <li><strong>M22 · Contenido y asignación:</strong> <em>Workouts, Ejercicios y Programas hechos.</em> Siguen pendientes los modelos y CRUD de Nutrición, Recetas, Vídeos y Formularios. Un único título/descripción no resuelve estos módulos.</li>
-        <li><strong>M23 · Publicación y destinatarios:</strong> <em>Workouts: asignación por cliente y fecha hecha (26/11).</em> Borradores/publicados, clientes o grupos autorizados, asignación, retirada, cambios/versiones y copia de plantillas si se incluye. Conectar ficha Manager y vistas Go; probar que el contenido llega al cliente correcto.</li>
+        <li><strong>M22 · Contenido y asignación:</strong> <em>Workouts, Ejercicios, Programas y Vídeos hechos.</em> Siguen pendientes los modelos y CRUD de Nutrición, Recetas y Formularios.</li>
+        <li><strong>M23 · Publicación y destinatarios:</strong> asignación de entrenamientos y programas por cliente y publicación o retirada de vídeos para clientes seleccionados hechas. Los demás tipos y posibles grupos o versiones siguen pendientes de definición.</li>
         <li><strong>M24 · Búsqueda, filtros e IA:</strong> hacer búsquedas y contadores reales. La IA es ampliación: decidir proveedor, coste, revisión profesional y tratamiento de datos antes de implementarla. No bloquea la creación manual.</li>
       </ul>
-      <p>Para empezar por entrenamientos, se puede desarrollar únicamente Workouts y su asignación, sin fingir que el resto de Librería queda terminado. Cada pestaña debe tener su prueba de cierre independiente.</p>
+      <p>Cada pestaña pendiente debe tener su prueba de cierre independiente.</p>
       <p class="source">Fuente: <a href="../fitnova-manager/libreria.html">Librería y formulario actual</a>.</p>
     </article>
 
@@ -434,13 +438,13 @@
           <tr><td>Go · Definir objetivo</td><td>Perfil y Evolución guardan en Supabase (24/11).</td><td>Hecho.</td></tr>
                     <tr><td>Go · Registrar métricas (Evolución)</td><td>Inserta en <code>clientes_metricas</code> con validación (24/11).</td><td>G17: edición de un valor.</td></tr>
           <tr><td>Go · Ayuda «Cómo medir»</td><td>Abre texto según medida.</td><td>Revisión de contenido/accesibilidad; función ya presente.</td></tr>
-          <tr><td>Go · Buscar vídeos por</td><td>Cambia campo de búsqueda sobre catálogo fijo.</td><td>G13–G14.</td></tr>
+          <tr><td>Go · Buscar vídeos por</td><td>Filtra los vídeos reales autorizados.</td><td>G13–G14 hechos.</td></tr>
           <tr><td>Go · Chat</td><td>Profesionales ficticios o texto, sin mensajes.</td><td>G29 y M25–M27.</td></tr>
           <tr><td>Go · Notificaciones</td><td>Avisos y badges fijos.</td><td>G30.</td></tr>
           <tr><td>Go · Actualización disponible</td><td>Recuerda versión/descartado y recarga.</td><td>T06: verificar actualización de PWA instalada.</td></tr>
           <tr><td>Manager · Añadir cliente / Resultado con enlace</td><td>RPC real, enlace, copia; sin email automático.</td><td>M10–M11; conservar flujo probado.</td></tr>
           <tr><td>Manager · Agendar / Editar sesión</td><td>RPC real y validaciones.</td><td>Conservar; M20–M21 solo al ampliar.</td></tr>
-          <tr><td>Manager · Crear nuevo contenido</td><td>Nombre/descripción; Guardar cierra.</td><td>M22–M24; formularios propios por tipo.</td></tr>
+          <tr><td>Manager · Crear nuevo contenido</td><td>Formularios reales para ejercicios, workouts, programas y vídeos; otras pestañas siguen siendo maqueta.</td><td>M22–M24 para los tipos pendientes.</td></tr>
           <tr><td>Manager · Invitar colaborador</td><td>Email/rol; Enviar cierra.</td><td>M29–M30.</td></tr>
           <tr><td>Manager · Nueva tarea</td><td>Título/fecha; Guardar cierra.</td><td>M28.</td></tr>
         </tbody>
@@ -459,7 +463,7 @@
           <tr><td>Actividades personales</td><td><strong>Hecho (24/11):</strong> tabla <code>clientes_actividades</code> con RLS; foto en <code>progreso-fotos</code>. El antiguo <code>fitnova_activities</code> solo se lee para ofrecer subirlo o descartarlo.</td><td>Conservar.</td></tr>
           <tr><td>Formulario de Evolución</td><td>Resuelto el 24/11: escribe en <code>clientes_metricas</code>; ya no usa <code>fitnova_metrics</code>.</td><td><code>clientes_metricas</code>, sin una segunda tabla de métricas duplicada.</td></tr>
           <tr><td>Fotos de progreso</td><td><strong>Hecho (24/11):</strong> bucket privado <code>progreso-fotos</code> + tabla <code>clientes_fotos</code>.</td><td>Conservar.</td></tr>
-          <tr><td>Favoritos de vídeo</td><td>Propiedad de los cuatro objetos JavaScript, solo memoria.</td><td>Relación cliente/vídeo persistente.</td></tr>
+          <tr><td>Favoritos de vídeo</td><td>Relación cliente/vídeo persistente en Supabase.</td><td>Conservar y respetar las restricciones de acceso.</td></tr>
           <tr><td>Nutrición, facturación y tarea nueva</td><td>No se guardan con los botones actuales.</td><td>Modelos y operaciones reales; no hay datos locales que migrar de estos formularios.</td></tr>
           <tr><td>Idioma, medidas y notificaciones</td><td>Selectores sin persistencia propia.</td><td>Preferencias por cliente y aplicación funcional.</td></tr>
           <tr><td>Versiones vistas/descartadas</td><td><code>fitnova_seen_version</code> y <code>fitnova_dismissed_version</code> en localStorage.</td><td>Pueden seguir locales: son estado técnico de ese navegador, no seguimiento del cliente.</td></tr>
@@ -468,8 +472,8 @@
         </tbody>
       </table>
     </div>
-    <p><strong>Backend versionado existente:</strong> 11 tablas: <code>profesionales</code>, <code>clientes</code>, <code>profesional_cliente</code>, <code>invitaciones</code>, <code>clientes_objetivo</code>, <code>clientes_salud_parq</code>, <code>clientes_metricas</code>, <code>consentimientos</code>, <code>etiquetas</code>, <code>cliente_etiqueta</code> y <code>sesiones</code>.</p>
-    <p><strong>Modelos que faltan en el repositorio:</strong> actividades, fotos/archivos, catálogo/asignaciones/resultados de entrenamientos, vídeos/favoritos, planes/diario nutricional/recetas, mensajes/lecturas, notificaciones, tareas, formularios/respuestas, organizaciones/invitaciones de equipo, preferencias y negocio/facturación/pagos. Los nombres concretos se diseñarán al abordar cada bloque: esta lista no implica crear de golpe todas las tablas.</p>
+    <p><strong>Backend versionado existente:</strong> incluye cuentas y clientes, agenda, medidas, actividades, fotos de progreso, diario alimentario, entrenamientos, programas y vídeos con sus destinatarios y favoritos. Consultar las migraciones para el detalle y los permisos.</p>
+    <p><strong>Modelos aún pendientes:</strong> planes y recetas de nutrición, mensajes/lecturas, notificaciones, tareas, formularios/respuestas, organizaciones/invitaciones de equipo, preferencias y negocio/facturación/pagos; los archivos generales también necesitan definición. Esta lista no implica crear de golpe todas las tablas.</p>
     <p>No hay una carpeta de Edge Functions implementadas en esta revisión. No se ha inspeccionado de nuevo toda la configuración remota de correo, Storage, tareas programadas o integraciones; confirmar lo ya existente en el servicio antes de crearlo de nuevo.</p>
   </section>
 
@@ -484,7 +488,7 @@
           <tr><td>Go registra medida → Perfil/Evolución → Progreso Manager</td><td>Supabase en Perfil, Evolución y Progreso de Manager (24/11).</td><td><strong>Cerrado (24/11).</strong> Incluye fotos, periodos, edición y registro por el profesional.</td></tr>
           <tr><td>Go registra actividad → semana real → profesional revisa</td><td>Hecho (24/11): Supabase, semana real y lectura en la ficha de Manager.</td><td>Comentarios del profesional sobre actividades, si se aprueban.</td></tr>
           <tr><td>Manager crea/asigna workout → Go realiza → Manager revisa</td><td><strong>Hecho (26/11)</strong> y probado de extremo a extremo: asignar, registrar en Go, revisar y comentar.</td><td>M13, M22–M23 y G31; ejecución distinta de estado de cita.</td></tr>
-          <tr><td>Manager publica vídeo → Go reproduce y guarda favorito</td><td>Ambos extremos son maqueta.</td><td>M22–M23 y G13–G14.</td></tr>
+          <tr><td>Manager publica vídeo → Go reproduce y guarda favorito</td><td>Hecho para clientes seleccionados, con favoritos persistentes y retirada de acceso en FitNova.</td><td>Conservar; el proveedor controla la reproducción y el enlace externo.</td></tr>
           <tr><td>Manager asigna nutrición → Go registra alimentación → revisión</td><td>Parcial (25/11): Go registra el diario y Manager lo revisa y comenta. Falta la asignación del plan.</td><td>M14, M22–M23 y G09/G32.</td></tr>
           <tr><td>Go escribe → Manager responde → lectura/avisos</td><td>No implementado.</td><td>G29–G30 y M25–M27.</td></tr>
           <tr><td>Profesional comparte formulario/archivo → cliente responde/consulta</td><td>No implementado.</td><td>M16–M17, M22–M23 y G32.</td></tr>
@@ -525,7 +529,7 @@
           <tr><td><strong>P1 · Actividad real — HECHO (24/11)</strong></td><td>G06–G08, G11 y revisión del profesional.</td><td>Modelo de actividad y política de importación local.</td><td>Registro persistente, semana real y lectura del profesional.</td></tr>
           <tr><td><strong>P1 · Cuentas recuperables</strong></td><td>G01–G05, M01 y T01–T02/T07.</td><td>Configuración de correo/retorno y reanudación.</td><td>Recuperar contraseña y retomar alta sin crear otra cuenta.</td></tr>
           <tr><td><strong>P2 · Workouts y programas</strong> · <em>implementados</em></td><td>M13, M22–M23 y G31.</td><td>Modelo de ejercicios, asignación y ejecución.</td><td>Profesional prescribe, cliente realiza y profesional revisa.</td></tr>
-          <tr><td><strong>P2 · Vídeos y fotos</strong></td><td>G13–G14, G18/G22, M15/M17 y parte de Librería.</td><td>Storage/proveedor, permisos y catálogo.</td><td>Reproducción real y fotos conservadas con acceso autorizado.</td></tr>
+          <tr><td><strong>P2 · Vídeos y fotos</strong> · <em>vídeos y fotos de progreso implementados</em></td><td>G13–G14 y G18/M15 hechos; revisar G22 y archivos generales M17.</td><td>Storage/proveedor y permisos.</td><td>Vídeos y fotos de progreso con acceso autorizado; completar archivos generales.</td></tr>
           <tr><td><strong>P2 · Nutrición y recetas</strong></td><td>G09/G32, M14 y pestañas específicas de M22–M23.</td><td>Modelo de plan/receta/diario.</td><td>Plan asignado y alimentación revisable.</td></tr>
           <tr><td><strong>P2 · Chat, tareas y formularios</strong></td><td>G29–G30/G32, M16/M19/M25–M28.</td><td>Participantes, eventos, modelos y permisos.</td><td>Comunicación y seguimiento reales, sin mensajes ficticios.</td></tr>
           <tr><td><strong>P2 · Cartera y equipo</strong></td><td>M02/M07–M11/M21/M29–M30.</td><td>Modelo de negocio/equipo y reglas de archivo.</td><td>Invitaciones entregadas, cartera gestionable y colaboradores autorizados.</td></tr>

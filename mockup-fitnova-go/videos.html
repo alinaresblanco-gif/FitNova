@@ -6,7 +6,7 @@
 <title>FitNova Go · Vídeos</title>
 <link rel="manifest" href="manifest.webmanifest" />
 <meta name="theme-color" content="#0A1A2F" />
-<link rel="stylesheet" href="css/styles.css?v=20260922.14" />
+<link rel="stylesheet" href="css/styles.css?v=20261126.3" />
 </head>
 <body data-auth="required">
   <div class="app">
@@ -27,10 +27,11 @@
       </div>
       <div class="video-panel" role="tabpanel">
         <div class="video-search-row">
-          <button class="video-filter-button" onclick="openVideoFilters()" title="Filtrar vídeos">☷</button>
+          <button class="video-filter-button" type="button" title="Filtrar vídeos" aria-label="Filtrar vídeos">☷</button>
           <label class="video-search"><span>⌕</span><input id="video-search" type="search" placeholder="Buscar..." aria-label="Buscar vídeos" /></label>
         </div>
         <p id="video-filter-summary" class="video-filter-summary">Buscando por nombre</p>
+        <p id="video-error" class="sesion-error" role="alert"></p>
         <section id="video-list" class="video-list" aria-live="polite"></section>
       </div>
     </main>
@@ -57,7 +58,8 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/supabase-client.js?v=20261111.1"></script>
-  <script src="js/app.js?v=20261126.2"></script>
-  <script>initVideos();</script>
+  <script src="../js/entrenos.js?v=20261126.2"></script>
+  <script src="js/app.js?v=20261126.3"></script>
+  <script src="js/videos-go.js?v=20261126.3"></script>
 </body>
 </html>

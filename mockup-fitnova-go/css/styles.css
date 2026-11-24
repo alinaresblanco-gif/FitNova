@@ -486,11 +486,12 @@ textarea { resize: vertical; min-height: 60px; }
 .video-filter-summary { color: #8a93a1; font-size: 11px; margin: 8px 0 12px 50px; }
 .video-list { display: grid; gap: 12px; }
 .video-card { border: 1px solid var(--gris); border-radius: 12px; overflow: hidden; }
-.video-thumb { align-items: center; color: var(--blanco); display: flex; height: 118px; justify-content: center; position: relative; }
+.video-thumb { align-items: center; border: 0; color: var(--blanco); cursor: pointer; display: flex; height: 118px; justify-content: center; position: relative; width: 100%; }
 .video-thumb.orange { background: linear-gradient(135deg, #ff6a00, #f7b267); }
 .video-thumb.blue { background: linear-gradient(135deg, #0a1a2f, #287cae); }
 .video-thumb.green { background: linear-gradient(135deg, #1d6654, #78b889); }
 .video-thumb.navy { background: linear-gradient(135deg, #26364e, #697d95); }
+.video-thumb.blue, .video-thumb.navy { background-size: cover; background-position: center; }
 .video-thumb span { align-items: center; background: rgba(255, 255, 255, 0.22); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 50%; display: flex; font-size: 20px; height: 48px; justify-content: center; padding-left: 3px; width: 48px; }
 .video-thumb small { bottom: 8px; background: rgba(10, 26, 47, 0.72); border-radius: 6px; font-size: 11px; padding: 4px 7px; position: absolute; right: 8px; }
 .video-card-body { align-items: center; display: flex; gap: 8px; justify-content: space-between; padding: 12px; }

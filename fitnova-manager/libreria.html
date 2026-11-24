@@ -47,7 +47,7 @@
           <button class="tab-btn" data-tab-group="lib" data-tab="programas" onclick="switchTab('lib','programas')">📋 Programas <span class="count-pill" id="lib-count-programas">0</span></button>
           <button class="tab-btn" data-tab-group="lib" data-tab="nutricion" onclick="switchTab('lib','nutricion')">🥗 Nutrición <span class="count-pill">0</span></button>
           <button class="tab-btn" data-tab-group="lib" data-tab="recetas" onclick="switchTab('lib','recetas')">🍳 Recetas <span class="count-pill">0</span></button>
-          <button class="tab-btn" data-tab-group="lib" data-tab="videos" onclick="switchTab('lib','videos')">🎬 Vídeos <span class="count-pill">0</span></button>
+          <button class="tab-btn" data-tab-group="lib" data-tab="videos" onclick="switchTab('lib','videos')">🎬 Vídeos <span class="count-pill" id="lib-count-videos">0</span></button>
           <button class="tab-btn" data-tab-group="lib" data-tab="formularios" onclick="switchTab('lib','formularios')">📝 Formularios <span class="count-pill">0</span></button>
         </div>
 
@@ -98,12 +98,7 @@
         </div>
 
         <div class="tab-panel" data-tab-panel-group="lib" data-tab-panel="videos">
-          <div class="empty-state">
-            <div class="empty-icon">🎬</div>
-            <h3>Sube tu primer vídeo</h3>
-            <p>Comparte contenido en vídeo con tus clientes para guiar sus entrenamientos.</p>
-            <button class="btn-primary" onclick="openModal('modal-crear-item')">Subir vídeo</button>
-          </div>
+          <div id="lib-videos"><p>Cargando vídeos...</p></div>
         </div>
 
         <div class="tab-panel" data-tab-panel-group="lib" data-tab-panel="formularios">
@@ -137,6 +132,7 @@
   <script src="../js/entrenos.js?v=20261126.2"></script>
   <script src="js/entrenos-manager.js?v=20261126.1"></script>
   <script src="js/programas-manager.js?v=20261126.2"></script>
-  <script src="js/libreria.js?v=20261126.2"></script>
+  <script src="js/videos-manager.js?v=20261126.3"></script>
+  <script src="js/libreria.js?v=20261126.3"></script>
 </body>
 </html>
