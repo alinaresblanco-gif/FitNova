@@ -608,3 +608,35 @@ textarea { resize: vertical; min-height: 60px; }
   border-color: var(--naranja);
   color: var(--blanco);
 }
+
+/* ---------- Diario alimentario ---------- */
+.nut-boton-enlace { box-sizing: border-box; display: block; text-align: center; text-decoration: none; }
+.nut-dia-nav { align-items: center; display: flex; gap: 10px; margin-bottom: 6px; }
+.nut-dia-nav > .btn-secondary { flex: 0 0 52px; padding: 10px 0; }
+.nut-dia-nav > .btn-secondary:disabled { cursor: default; opacity: 0.4; }
+.nut-dia-centro { flex: 1; text-align: center; }
+.nut-dia-centro strong, .nut-dia-centro span { display: block; }
+.nut-dia-centro strong { font-size: 17px; }
+.nut-dia-centro span { color: #55606f; font-size: 12px; margin-top: 2px; }
+.nut-dia-centro .btn-link { font-size: 13px; margin-top: 4px; }
+.nut-resumen { color: #55606f; font-size: 13px; margin: 4px 0 12px; text-align: center; }
+.nut-agua-control { align-items: center; display: flex; gap: 18px; justify-content: center; }
+.nut-agua-control button { background: var(--blanco); border: 1px solid var(--gris); border-radius: 50%; color: var(--azul); cursor: pointer; font-size: 24px; height: 48px; width: 48px; }
+.nut-agua-control button:disabled { cursor: default; opacity: 0.4; }
+.nut-agua-control div { min-width: 70px; text-align: center; }
+.nut-agua-control strong { display: block; font-size: 30px; line-height: 1; }
+.nut-agua-control span { color: #55606f; font-size: 12px; }
+.nut-agua-vasos { font-size: 18px; letter-spacing: 2px; margin: 10px 0 0; min-height: 22px; text-align: center; }
+.nut-agua-estado { color: #55606f; font-size: 12px; margin: 6px 0 0; min-height: 16px; text-align: center; }
+.nut-comida { align-items: flex-start; border-bottom: 1px solid var(--gris); display: flex; gap: 10px; padding: 12px 0; }
+.nut-comida:last-of-type { margin-bottom: 12px; }
+.nut-comida-info { cursor: pointer; flex: 1; min-width: 0; }
+.nut-comida-info strong { font-size: 14px; }
+.nut-comida-info p { color: #34404f; font-size: 13px; margin: 4px 0 0; overflow-wrap: anywhere; white-space: pre-line; }
+.nut-foto { border-radius: 10px; display: block; margin-top: 8px; max-height: 160px; max-width: 100%; object-fit: cover; }
+.nut-foto[hidden] { display: none; }
+.nut-chips button { padding: 7px 11px; }
+.nut-comentario { background: #fff6ef; border-left: 3px solid var(--naranja); border-radius: 8px; margin-bottom: 10px; padding: 10px 12px; }
+.nut-comentario strong { font-size: 13px; }
+.nut-comentario p { font-size: 13px; margin: 4px 0; overflow-wrap: anywhere; white-space: pre-line; }
+.nut-comentario span { color: #8a93a1; font-size: 11px; }

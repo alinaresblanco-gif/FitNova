@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitNova Go · Mi diario alimentario</title>
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#0A1A2F" />
+<link rel="stylesheet" href="css/styles.css?v=20261125.1" />
+</head>
+<body data-auth="required">
+  <div class="app">
+    <header class="app-header">
+      <a href="perfil.html" class="icon-square" title="Personalizar perfil">
+        <img src="../imagenes/LOGO-FITNOVA USUARIO.png" alt="Perfil" />
+      </a>
+      <div class="app-brand" aria-label="FitNova Go"><span>FitNova</span><strong>Go</strong></div>
+      <div class="header-actions">
+        <button class="icon-btn" onclick="openModal('modal-chat')" title="Chat">💬<span class="badge">2</span></button>
+        <button class="icon-btn" onclick="openModal('modal-notificaciones')" title="Notificaciones">🔔<span class="badge">3</span></button>
+      </div>
+    </header>
+
+    <main class="app-content" id="nut-diario">
+      <div class="agenda-heading">
+        <h1>Mi diario alimentario</h1>
+      </div>
+
+      <div class="nut-dia-nav">
+        <button class="btn-secondary" type="button" onclick="cambiarDiaNutricion(-1)" aria-label="Día anterior">←</button>
+        <div class="nut-dia-centro">
+          <strong id="nut-dia-titulo">Hoy</strong>
+          <span id="nut-dia-fecha"></span>
+          <button class="btn-link" type="button" id="nut-dia-hoy" onclick="irAHoyNutricion()" hidden>Volver a hoy</button>
+        </div>
+        <button class="btn-secondary" type="button" id="nut-dia-siguiente" onclick="cambiarDiaNutricion(1)" aria-label="Día siguiente">→</button>
+      </div>
+      <p class="nut-resumen" id="nut-resumen"></p>
+      <p id="nut-error" role="alert" class="sesion-error"></p>
+
+      <section class="card nut-agua" id="nut-agua" hidden>
+        <p class="card-title">Agua</p>
+        <div class="nut-agua-control">
+          <button type="button" id="nut-agua-menos" onclick="cambiarAgua(-1)" aria-label="Quitar un vaso">−</button>
+          <div><strong id="nut-agua-numero">0</strong><span>vasos</span></div>
+          <button type="button" id="nut-agua-mas" onclick="cambiarAgua(1)" aria-label="Añadir un vaso">+</button>
+        </div>
+        <p class="nut-agua-vasos" id="nut-agua-vasos"></p>
+        <p class="nut-agua-estado" id="nut-agua-estado" role="status"></p>
+      </section>
+
+      <section class="card">
+        <p class="card-title">Comidas</p>
+        <div id="nut-comidas"><p class="agenda-empty">Cargando tu diario...</p></div>
+        <button class="btn-primary" type="button" onclick="abrirModalComida(null, goNut.fecha)">+ Añadir comida</button>
+      </section>
+
+      <section class="card" id="nut-comentarios-bloque" hidden>
+        <p class="card-title">Comentarios de tu profesional</p>
+        <div id="nut-comentarios"></div>
+      </section>
+
+      <p class="agenda-local-aviso">Tu diario se guarda en tu cuenta y lo ven tu entrenador/a y tu nutricionista para orientarte.</p>
+    </main>
+
+    <nav class="bottom-nav">
+      <a href="index.html"><span class="nav-icon">🏠</span>Inicio</a>
+      <a href="agenda.html"><span class="nav-icon">📅</span>Agenda</a>
+      <a href="videos.html"><span class="nav-icon">▶️</span>Vídeos</a>
+      <a href="placeholder.html?vista=Evolución"><span class="nav-icon">📈</span>Evolución</a>
+    </nav>
+
+    <div class="modal-overlay" id="modal-chat"><div class="modal"><div class="modal-header"><h2>Chat</h2><button class="modal-close" onclick="closeModal('modal-chat')">✕</button></div><p>Tu equipo profesional está disponible para ayudarte.</p></div></div>
+    <div class="modal-overlay" id="modal-notificaciones"><div class="modal"><div class="modal-header"><h2>Notificaciones</h2><button class="modal-close" onclick="closeModal('modal-notificaciones')">✕</button></div><div class="list-item"><span>Carlos te ha enviado una nueva rutina</span><span>Hoy</span></div><div class="list-item"><span>Recuerda registrar tu peso de esta semana</span><span>Ayer</span></div></div></div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/supabase-client.js?v=20261111.1"></script>
+  <script src="../js/fotos-progreso.js?v=20261125.1"></script>
+  <script src="../js/nutricion.js?v=20261125.1"></script>
+  <script src="js/app.js?v=20261125.1"></script>
+  <script src="js/nutricion-go.js?v=20261125.1"></script>
+</body>
+</html>

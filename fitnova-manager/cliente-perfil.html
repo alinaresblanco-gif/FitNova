@@ -97,7 +97,42 @@
         </div>
 
         <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="nutricion">
-          <div class="empty-state">
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;margin-bottom:12px;">
+            <div>
+              <h3 style="margin:0 0 4px;">Diario alimentario</h3>
+              <p style="font-size:13px;color:#55606f;margin:0;">Lo que el cliente registra en FitNova Go: comidas (con foto opcional y cómo se ha sentido) y vasos de agua. Lo ven su entrenador/a y su nutricionista asignados.</p>
+            </div>
+            <div>
+              <label for="cp-nut-periodo" style="font-size:13px;font-weight:600;color:var(--azul);">Periodo</label>
+              <select id="cp-nut-periodo" style="display:block;margin-top:6px;padding:8px 10px;border-radius:10px;border:1px solid #D9D9D9;min-width:180px;">
+                <option value="7">Últimos 7 días</option>
+                <option value="14">Últimos 14 días</option>
+                <option value="30">Últimos 30 días</option>
+                <option value="90">Últimos 90 días</option>
+              </select>
+            </div>
+          </div>
+          <div class="bottom-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:14px;">
+            <div class="mini-list-item"><div class="info"><strong>Días con registro</strong><span id="cp-nut-dias">Cargando...</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Comidas registradas</strong><span id="cp-nut-comidas">Cargando...</span></div></div>
+            <div class="mini-list-item"><div class="info"><strong>Agua (media por día registrado)</strong><span id="cp-nut-agua">Cargando...</span></div></div>
+          </div>
+          <form id="cp-nut-form" style="border:1px solid #E6E8EC;border-radius:12px;padding:12px;margin-bottom:16px;">
+            <strong style="display:block;margin-bottom:8px;color:var(--azul);">Dejar un comentario al cliente</strong>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start;">
+              <label style="font-size:13px;">Día
+                <input type="date" id="cp-nut-fecha" required style="display:block;margin-top:4px;padding:8px;border-radius:10px;border:1px solid #D9D9D9;" />
+              </label>
+              <label style="font-size:13px;flex:1;min-width:220px;">Comentario (lo verá en su diario de FitNova Go)
+                <textarea id="cp-nut-texto" maxlength="1000" rows="2" required placeholder="Ej. Buen desayuno. Intenta añadir algo de proteína en la merienda." style="display:block;width:100%;box-sizing:border-box;margin-top:4px;padding:8px;border-radius:10px;border:1px solid #D9D9D9;font:inherit;"></textarea>
+              </label>
+            </div>
+            <p id="cp-nut-form-error" role="alert" style="color:var(--rojo);margin:8px 0 0;" hidden></p>
+            <button class="btn-primary" type="submit" id="cp-nut-enviar" style="margin-top:10px;">Publicar comentario</button>
+          </form>
+          <div id="cp-nut-lista"><p>Cargando diario...</p></div>
+
+          <div class="empty-state" style="margin-top:24px;">
             <div class="empty-icon">🥗</div>
             <h3>Sin plan nutricional asignado</h3>
             <p>Crea o asigna un plan nutricional para este cliente.</p>
@@ -226,8 +261,9 @@
   <script src="js/supabase-client.js"></script>
   <script src="../js/sesiones.js?v=20261123.2"></script>
   <script src="../js/metricas.js?v=20261124.2"></script>
-  <script src="../js/fotos-progreso.js?v=20261124.4"></script>
-  <script src="../js/actividades.js?v=20261124.4"></script>
-  <script src="js/cliente-perfil.js?v=20261124.4"></script>
+  <script src="../js/fotos-progreso.js?v=20261125.1"></script>
+  <script src="../js/actividades.js?v=20261125.1"></script>
+  <script src="../js/nutricion.js?v=20261125.1"></script>
+  <script src="js/cliente-perfil.js?v=20261125.1"></script>
 </body>
 </html>

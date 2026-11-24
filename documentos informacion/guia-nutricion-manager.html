@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitNova Manager · Diario alimentario de tus clientes</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f6fb; color: #263248; font: 16px/1.65 "Segoe UI", system-ui, sans-serif; }
+    main { max-width: 820px; margin: 24px auto 60px; padding: 0 16px; }
+    header { padding: 26px; border-radius: 14px; background: #0a1a2f; color: #fff; }
+    header p { margin: 0; }
+    h1 { margin: 8px 0; font-size: clamp(25px, 5vw, 34px); line-height: 1.25; }
+    h2 { margin: 0 0 12px; font-size: 21px; }
+    section { margin-top: 18px; padding: 22px; border: 1px solid #dce3ee; border-radius: 12px; background: #fff; }
+    li { margin: 9px 0; }
+    a { color: #1748c7; overflow-wrap: anywhere; }
+    .boton { display: inline-block; padding: 10px 16px; border-radius: 8px; color: #fff; background: #1748c7; text-decoration: none; }
+    .resultado { color: #147a52; font-weight: 600; }
+    .nota { background: #fff6e7; border-left: 5px solid #ac710b; }
+    footer { padding: 24px 0; text-align: center; color: #657189; font-size: 13px; }
+    @media print {
+      body { background: #fff; }
+      main { max-width: none; margin: 0; }
+      header { background: #fff; color: #263248; border-bottom: 2px solid #1748c7; }
+      h2 { break-after: avoid; }
+      .boton { background: none; color: #1748c7; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p>Para el profesional · Nutrición en FitNova Manager</p>
+    <h1>Revisa el diario alimentario de tus clientes y coméntalo</h1>
+    <p>Lo que tu cliente apunta en FitNova Go (comidas, fotos y agua) aparece solo en su ficha. Tus comentarios le llegan a su diario.</p>
+  </header>
+
+  <section>
+    <h2>Qué vamos a comprobar</h2>
+    <ol>
+      <li>Tu cliente registra comidas (una con foto) y vasos de agua en <strong>FitNova Go</strong>.</li>
+      <li>Tú lo ves en <strong>Manager → Clientes → ficha del cliente → Nutrición</strong>.</li>
+      <li>Dejas un comentario sobre un día y el cliente lo lee en su diario.</li>
+      <li>Puedes borrar tus propios comentarios.</li>
+    </ol>
+    <p>Necesitas un cliente <strong>activo</strong> del que seas su <strong>entrenador/a o nutricionista asignado</strong>. Dale la guía <a href="guia-nutricion-go.html">«Tu diario alimentario en FitNova Go»</a>.</p>
+  </section>
+
+  <section>
+    <h2>1. Pide al cliente que registre su día</h2>
+    <p>Por ejemplo: un <em>desayuno</em> con foto del plato y la sensación «bien», 3 vasos de agua y la <em>cena de ayer</em> (desde su diario, con la flecha ←).</p>
+  </section>
+
+  <section>
+    <h2>2. Abre la pestaña Nutrición de su ficha</h2>
+    <p><a class="boton" href="https://alinaresblanco-gif.github.io/FitNova/fitnova-manager/login.html">Abrir FitNova Manager</a></p>
+    <ol>
+      <li>Inicia sesión, pulsa <strong>Clientes</strong> y haz clic en el nombre del cliente.</li>
+      <li>Pulsa la pestaña <strong>Nutrición</strong>.</li>
+      <li>Elige el <strong>Periodo</strong>: últimos 7, 14, 30 o 90 días.</li>
+    </ol>
+    <p>Verás:</p>
+    <ul>
+      <li><strong>Días con registro</strong>, <strong>Comidas registradas</strong> y <strong>Agua</strong> (media de vasos en los días que la ha apuntado).</li>
+      <li>Un bloque por día, del más reciente al más antiguo, con cada comida (tipo, alimentos y cómo se sintió), los vasos de agua y los comentarios de ese día.</li>
+      <li>En las comidas con foto, pulsa <strong>Ver foto</strong>. Si haces clic en la miniatura, se abre a tamaño completo.</li>
+    </ul>
+    <p class="resultado">Resultado esperado: aparecen los dos días del ejemplo con los mismos datos que en Go.</p>
+  </section>
+
+  <section>
+    <h2>3. Deja un comentario</h2>
+    <ol>
+      <li>En el día que quieras comentar, pulsa <strong>Comentar este día</strong>. Se rellena la fecha del formulario <strong>Dejar un comentario al cliente</strong>. También puedes elegir el día a mano.</li>
+      <li>Escribe el comentario (hasta 1000 caracteres). Por ejemplo: <em>Buena cena, ligera. Mañana añade algo de verdura</em>.</li>
+      <li>Pulsa <strong>Publicar comentario</strong>.</li>
+    </ol>
+    <p class="resultado">Resultado esperado: el comentario aparece en ese día con tu nombre y tu rol. El cliente lo ve en su diario de Go, en ese mismo día.</p>
+  </section>
+
+  <section>
+    <h2>4. Borra un comentario</h2>
+    <p>En tus propios comentarios aparece el botón <strong>Borrar</strong>. Confirma y el cliente deja de verlo. Los comentarios no se editan: si quieres cambiar uno, bórralo y escribe otro.</p>
+  </section>
+
+  <section class="nota">
+    <h2>Ten en cuenta</h2>
+    <ul>
+      <li>Las comidas y el agua son del cliente: tú no puedes crearlas, editarlas ni borrarlas.</li>
+      <li>Solo ven el diario y pueden comentarlo el cliente y sus profesionales asignados como <strong>entrenador/a o nutricionista</strong>. Si no estás asignado, verás el aviso «Solo pueden comentar el entrenador/a o el nutricionista asignados a este cliente».</li>
+      <li>Solo puedes borrar tus comentarios, no los de otros profesionales.</li>
+      <li>El aviso <strong>«Sin plan nutricional asignado»</strong> que aparece al final de la pestaña corresponde a la siguiente etapa (planes nutricionales).</li>
+    </ul>
+  </section>
+
+  <footer>FitNova Manager · Guía del diario alimentario · noviembre 2026</footer>
+</main>
+</body>
+</html>

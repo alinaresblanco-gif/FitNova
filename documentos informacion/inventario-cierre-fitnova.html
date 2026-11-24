@@ -86,6 +86,10 @@
             <strong>Actualización 24/11/2026 · Seguimiento corporal completo.</strong>
             Fotos de progreso reales en almacenamiento privado de Supabase (el cliente sube y borra; sus profesionales solo las ven). Filtro por periodo y «Ver más» en Evolución y en Progreso de Manager; edición de una medición sin borrarla (✎). El entrenador o nutricionista asignado puede registrar, corregir y borrar sus propias medidas desde Manager, y el cliente las ve en Go marcadas como «profesional». Perfil avisa cuando falla la carga de métricas. Cerrados G17, G18, G20 y M15.
           </div>
+    <div class="notice good">
+      <strong>Actualización 25/11/2026 · Diario alimentario.</strong>
+      Go tiene la página <em>Mi diario alimentario</em> (<code>nutricion.html</code>): comidas por tipo con alimentos, sensación y foto opcional, vasos de agua por día, navegación entre días, edición y borrado. La tarjeta Nutrición de Inicio muestra el resumen real de hoy. En Manager, la pestaña Nutrición de la ficha lista el diario por periodo (7–90 días), con fotos, y permite al entrenador o nutricionista asignado dejar comentarios por día, que el cliente lee en Go. Tablas nuevas <code>clientes_comidas</code>, <code>clientes_agua</code> y <code>clientes_nutricion_comentarios</code> con privilegios mínimos y RLS. Se han quitado de la Librería los botones «Crear con IA». Cerrado G09; M14 queda parcial (falta el plan).
+    </div>
     <p><strong>Qué se ha revisado:</strong> las 8 páginas HTML de Go y las 9 de Manager, sus scripts propios, el helper de Agenda, el service worker, el manifest y las 8 migraciones versionadas. Este informe es una revisión de implementación; no una nueva prueba completa de cada botón contra la base remota ni una auditoría legal o de seguridad especializada.</p>
     <p><strong>Cómo leer los estados:</strong></p>
     <ul>
@@ -115,7 +119,7 @@
           <li><s>Evolución real en Go y Progreso real en Manager.</s> <strong>Hecho (24/11), con fotos de progreso.</strong></li>
           <li><s>Actividades personales y resumen semanal (G06–G08, G11).</s> <strong>Hecho (24/11):</strong> en Supabase, con foto de ruta y visibles en la ficha de Manager.</li>
           <li>Workouts, programas, vídeos y registro de realización.</li>
-          <li>Nutrición, recetas y diario alimentario.</li>
+          <li>Nutrición, recetas y diario alimentario. <strong>Diario hecho (25/11):</strong> comidas con foto, agua y comentarios del profesional. Faltan el recetario y el plan semanal.</li>
           <li>Chat, notificaciones y tareas.</li>
           <li>Equipo, archivos y formularios de seguimiento.</li>
           <li>Negocio, facturación, pagos y preferencias.</li>
@@ -153,12 +157,12 @@
 
     <article class="card" id="g-inicio">
       <h3>2.3. Inicio</h3>
-      <p><span class="tag partial">PARCIAL</span> El saludo carga el nombre/alias real. Estado de hoy, resumen semanal, registro de actividad e importación desde el reloj son reales (24/11). Queda nutrición.</p>
+      <p><span class="tag partial">PARCIAL</span> El saludo carga el nombre/alias real. Estado de hoy, resumen semanal, registro de actividad e importación desde el reloj son reales (24/11). La tarjeta Nutrición y su registro también son reales (25/11).</p>
       <ul class="tasks">
         <li><strong>G06 · Estado de hoy y resumen semanal — HECHO (24/11):</strong> calculados con las actividades de Supabase. La semana va de lunes a domingo y no cuenta días futuros; las barras miden minutos. Se actualizan al guardar.</li>
         <li><strong>G07 · Registrar actividad — HECHO (24/11):</strong> tabla <code>clientes_actividades</code> (nombre, fecha, duración, distancia, comentario). Inicio y Agenda usan el mismo formulario, con fecha de hoy por defecto, edición y borrado con confirmación.</li>
         <li><strong>G08 · Pasos, calorías y foto de ruta — HECHO (24/11):</strong> pasos y calorías no se guardan; se muestran como estimación (0,63 m por paso y 60 kcal por km) con aviso. La foto de ruta se comprime y se sube al bucket privado <code>progreso-fotos</code> (<code>&lt;cliente&gt;/actividades/</code>); se puede ver, cambiar y quitar.</li>
-        <li><strong>G09 · Registrar nutrición:</strong> guardar fecha, tipo de comida, alimentos y vasos de agua, y permitir consultar/modificar el diario. Hoy «Guardar» solo cierra la ventana; no guarda ni siquiera en local.</li>
+        <li><s><strong>G09 · Registrar nutrición</strong></s> <strong>— HECHO (25/11):</strong> el registro guarda en Supabase la fecha, el tipo de comida, los alimentos, la sensación y una foto opcional. El agua se apunta por día y el diario (<code>nutricion.html</code>) permite consultar, editar y borrar.</li>
         <li><strong>G10 · Conectar dispositivo — HECHO por archivo (24/11):</strong> «Importar actividad del reloj» (Inicio y formulario de actividad) lee archivos GPX, TCX o FIT (también .gz) exportados de Garmin, Polar, Suunto, Coros, Strava, etc. El archivo se procesa en el navegador y no se sube: se guardan nombre, fecha, duración, distancia, hora de inicio, calorías del reloj (<code>origen='archivo'</code>, no editables) y una imagen del recorrido como foto de ruta, que el cliente puede quitar. La misma actividad no se importa dos veces (misma hora de inicio). Descartado de momento: conexión directa con la API de Strava (sus condiciones desde nov. 2024 solo permiten mostrar los datos al propio deportista y guardarlos 7 días), Apple Salud / Health Connect (requieren app nativa) y Garmin/Polar API (aprobación como empresa). Posible ampliación futura.</li>
       </ul>
       <p class="source">Fuentes: <a href="../mockup-fitnova-go/index.html">Inicio Go y sus formularios</a> · <a href="https://github.com/alinaresblanco-gif/FitNova/blob/main/mockup-fitnova-go/js/app.js#L99">Actividades y cálculos locales</a>.</p>
@@ -242,7 +246,7 @@
         <li><strong>G29 · Chat:</strong> lista de profesionales reales, conversación, envío/recepción, estados pendientes/fallidos, lectura, historial y adjuntos si se incluyen. Conectar a las mismas conversaciones de Manager.</li>
         <li><strong>G30 · Notificaciones:</strong> sustituir ejemplos y badges fijos por eventos reales y lectura/no lectura. Separar bandeja interna, correo y push; cada canal requiere implementación y pruebas propias.</li>
         <li><strong>G31 · Entrenamientos asignados:</strong> no existe aún una pantalla funcional para consultar un workout/programa y registrar ejercicios, series, repeticiones, cargas, duración y feedback. Diseñarla con Librería y ficha de Manager; la cita de Agenda no sustituye esta vista.</li>
-        <li><strong>G32 · Plan nutricional, formularios y archivos:</strong> prever las vistas de recepción/consulta y, donde corresponda, respuesta del cliente. El modal del diario alimentario no sustituye un plan, un formulario ni un repositorio de documentos.</li>
+        <li><strong>G32 · Plan nutricional, formularios y archivos:</strong> prever las vistas de recepción/consulta y, donde corresponda, respuesta del cliente. El diario alimentario (ya real) no sustituye un plan, un formulario ni un repositorio de documentos. El plan nutricional semanal se verá en <code>nutricion.html</code> (etapa 3 de nutrición).</li>
       </ul>
     </article>
   </section>
@@ -336,7 +340,7 @@
           <tbody>
             <tr><td>Resumen</td><td>Nombre, email, estado, teléfono, actividad, alta y parte del objetivo reales. <strong>Actividad física real (24/11):</strong> esta semana, últimos 30 días y tabla de actividades con foto de ruta (solo lectura).</td><td><strong>M12:</strong> completar nacimiento, género, peso inicial/actual, observaciones/lesiones y revisión PAR-Q con permisos adecuados. No confundir «sin datos» con errores de consulta.</td></tr>
             <tr><td>Entrenamiento</td><td>Estado vacío fijo y enlace a Librería.</td><td><strong>M13:</strong> asignar workouts/programas al cliente, fechas/versiones, ver ejecución y feedback; conservar el cliente seleccionado al llegar a Librería.</td></tr>
-            <tr><td>Nutrición</td><td>Estado vacío fijo y enlace a Librería.</td><td><strong>M14:</strong> asignar plan, consultar diario real de Go, revisar adherencia/comentarios y cambios.</td></tr>
+            <tr><td>Nutrición</td><td>Estado vacío fijo y enlace a Librería.</td><td><strong>M14 — PARCIAL (25/11):</strong> hecho el diario real de Go por periodo (comidas, fotos, agua y resumen) y los comentarios del profesional por día. Falta asignar el plan semanal.</td></tr>
             <tr><td>Agenda</td><td>Sesiones reales y enlace de alta con cliente preseleccionado.</td><td>Bloque individual hecho. Ampliaciones opcionales de M20 y tratamiento de sesiones al archivar/desasignar.</td></tr>
             <tr><td>Progreso</td><td>Siempre afirma que no hay mediciones; botón sin acción.</td><td><strong>M15 — HECHO (24/11):</strong> resumen de peso, selector de las 15 medidas con gráfico, filtro por periodo, historial con autor («Cliente (Go)», «Profesional (tú)»), «+ Registrar medidas», editar/eliminar solo las propias y galería de fotos del cliente en solo lectura. Escritura limitada por RLS al entrenador o nutricionista asignado.</td></tr>
             <tr><td>Formularios</td><td>Estado vacío fijo y enlace a Librería.</td><td><strong>M16:</strong> enviar, ver pendientes, respuestas y fecha. Separar formularios nuevos del PAR-Q inicial, que ya existe en la base.</td></tr>
@@ -363,7 +367,7 @@
 
     <article class="card" id="m-libreria">
       <h3>4.6. Librería: las seis pestañas</h3>
-      <p><span class="tag demo">MAQUETA</span> Las seis pestañas muestran vacíos fijos y contadores 0. Crear nuevo abre el mismo formulario de nombre/descripción para todas. Guardar solo cierra; buscador, Filtros y Crear con IA no tienen lógica funcional.</p>
+      <p><span class="tag demo">MAQUETA</span> Las seis pestañas muestran vacíos fijos y contadores 0. Crear nuevo abre el mismo formulario de nombre/descripción para todas. Guardar solo cierra; buscador y Filtros no tienen lógica funcional. Los botones «Crear con IA» se han quitado (25/11) para no prometer una función que no existe.</p>
       <ul class="tasks">
         <li><strong>M22 · Contenido y asignación:</strong> crear modelo, permisos y CRUD para cada tipo. Workouts necesitan ejercicios y parámetros; Programas, agrupación y calendario; Nutrición, estructura de plan; Recetas, ingredientes/instrucciones; Vídeos, archivo/URL y metadatos; Formularios, preguntas/tipos y respuestas. Un único título/descripción no resuelve estos seis módulos.</li>
         <li><strong>M23 · Publicación y destinatarios:</strong> borradores/publicados, clientes o grupos autorizados, asignación, retirada, cambios/versiones y copia de plantillas si se incluye. Conectar ficha Manager y vistas Go; probar que el contenido llega al cliente correcto.</li>
@@ -417,7 +421,7 @@
         <tbody>
           <tr><td>Go · Registrar actividad / Editar actividad</td><td>Supabase (24/11), mismo formulario en Inicio y Agenda, con foto de ruta.</td><td>Hecho.</td></tr>
           <tr><td>Go · Detalles del día</td><td>Citas reales + actividades reales; edición/borrado de estas últimas.</td><td>Hecho; «añadir actividad» no es una reserva.</td></tr>
-          <tr><td>Go · Registrar nutrición</td><td>Guardar cierra, sin persistencia.</td><td>G09.</td></tr>
+          <tr><td>Go · Registrar nutrición</td><td><strong>Resuelto (25/11):</strong> guarda en Supabase.</td><td>G09 cerrado.</td></tr>
           <tr><td>Go · Métrica (Perfil)</td><td>Consulta/inserta/borra en Supabase.</td><td>G19–G21; no duplicar backend.</td></tr>
           <tr><td>Go · Definir objetivo</td><td>Perfil y Evolución guardan en Supabase (24/11).</td><td>Hecho.</td></tr>
                     <tr><td>Go · Registrar métricas (Evolución)</td><td>Inserta en <code>clientes_metricas</code> con validación (24/11).</td><td>G17: edición de un valor.</td></tr>
@@ -473,7 +477,7 @@
           <tr><td>Go registra actividad → semana real → profesional revisa</td><td>Hecho (24/11): Supabase, semana real y lectura en la ficha de Manager.</td><td>Comentarios del profesional sobre actividades, si se aprueban.</td></tr>
           <tr><td>Manager crea/asigna workout → Go realiza → Manager revisa</td><td>No implementado.</td><td>M13, M22–M23 y G31; ejecución distinta de estado de cita.</td></tr>
           <tr><td>Manager publica vídeo → Go reproduce y guarda favorito</td><td>Ambos extremos son maqueta.</td><td>M22–M23 y G13–G14.</td></tr>
-          <tr><td>Manager asigna nutrición → Go registra alimentación → revisión</td><td>No implementado.</td><td>M14, M22–M23 y G09/G32.</td></tr>
+          <tr><td>Manager asigna nutrición → Go registra alimentación → revisión</td><td>Parcial (25/11): Go registra el diario y Manager lo revisa y comenta. Falta la asignación del plan.</td><td>M14, M22–M23 y G09/G32.</td></tr>
           <tr><td>Go escribe → Manager responde → lectura/avisos</td><td>No implementado.</td><td>G29–G30 y M25–M27.</td></tr>
           <tr><td>Profesional comparte formulario/archivo → cliente responde/consulta</td><td>No implementado.</td><td>M16–M17, M22–M23 y G32.</td></tr>
           <tr><td>Manager asigna plan → Go paga → estado/factura actualizados</td><td>No implementado.</td><td>M18, M31–M33 y G24/G27.</td></tr>

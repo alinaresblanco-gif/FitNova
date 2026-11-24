@@ -365,6 +365,174 @@ async function cargarActividadesFicha() {
   }
 }
 
+const cpNut = { clienteId: null, profesionalId: null, datos: null, dias: 7 };
+
+function cpNutComidaHtml(c) {
+  const N = FitNovaNutricion;
+  const tipo = N.comida(c.comida);
+  const sens = N.sensacion(c.sensacion);
+  return `<div style="display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-top:1px solid #F0F1F3;">
+      <div style="flex:1;min-width:0;">
+        <strong style="font-size:14px;">${tipo.icono} ${N.escapar(tipo.texto)}</strong>
+        ${sens ? `<small style="color:#55606f;margin-left:6px;">${sens.icono} Se sintió: ${N.escapar(sens.texto.toLowerCase())}</small>` : ''}
+        <p style="margin:4px 0 0;font-size:13px;white-space:pre-line;overflow-wrap:anywhere;">${N.escapar(c.alimentos)}</p>
+      </div>
+      <div>${c.foto_ruta ? `<button class="btn-outline" type="button" data-nut-foto="${N.escapar(c.foto_ruta)}">Ver foto</button>` : ''}</div>
+    </div>`;
+}
+
+function cpNutComentarioHtml(c) {
+  const N = FitNovaNutricion;
+  const propio = c.profesional_id === cpNut.profesionalId;
+  return `<div style="background:#FFF6EF;border-left:3px solid var(--naranja);border-radius:8px;padding:8px 10px;margin-top:8px;display:flex;gap:10px;align-items:flex-start;">
+      <div style="flex:1;min-width:0;">
+        <strong style="font-size:13px;">💬 ${N.escapar(c.autor_nombre || 'Profesional')} · ${N.escapar(N.rol(c.autor_rol))}</strong>
+        <small style="color:#8a93a1;margin-left:6px;">${N.escapar(formatearFechaHora(c.creado_en))}</small>
+        <p style="margin:4px 0 0;font-size:13px;white-space:pre-line;overflow-wrap:anywhere;">${N.escapar(c.texto)}</p>
+      </div>
+      ${propio ? `<button class="btn-outline" type="button" data-nut-borrar="${c.id}" title="Borrar mi comentario">Borrar</button>` : ''}
+    </div>`;
+}
+
+function cpNutRender() {
+  const N = FitNovaNutricion;
+  const dias = N.porDia(cpNut.datos);
+  const conComidas = dias.filter((d) => d.comidas.length).length;
+  const conAgua = dias.filter((d) => d.vasos > 0);
+  document.getElementById('cp-nut-dias').textContent = `${dias.filter((d) => d.comidas.length || d.vasos).length} de ${cpNut.dias}`;
+  document.getElementById('cp-nut-comidas').textContent = cpNut.datos.comidas.length
+    ? `${cpNut.datos.comidas.length} en ${conComidas} ${conComidas === 1 ? 'día' : 'días'}`
+    : 'Ninguna';
+  document.getElementById('cp-nut-agua').textContent = conAgua.length
+    ? `${(conAgua.reduce((s, d) => s + d.vasos, 0) / conAgua.length).toLocaleString('es-ES', { maximumFractionDigits: 1 })} vasos`
+    : 'Sin registrar';
+  const cont = document.getElementById('cp-nut-lista');
+  if (!dias.length) {
+    cont.innerHTML = '<p style="color:#55606f;">El cliente no ha registrado comidas ni agua en este periodo desde FitNova Go.</p>';
+    return;
+  }
+  cont.innerHTML = dias.map((d) => `
+    <section style="border:1px solid #E6E8EC;border-radius:12px;padding:12px;margin-bottom:12px;">
+      <div style="display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap;">
+        <div><strong style="color:var(--azul);">${N.escapar(N.fechaLarga(d.fecha))}</strong>
+          <small style="color:#55606f;margin-left:8px;">${N.escapar(N.resumenDia(d.comidas, d.vasos))}${d.vasos ? ` 💧` : ''}</small></div>
+        <button class="btn-outline" type="button" data-nut-comentar="${d.fecha}">Comentar este día</button>
+      </div>
+      ${d.comidas.map(cpNutComidaHtml).join('') || '<p style="font-size:13px;color:#55606f;margin:8px 0 0;">Sin comidas registradas este día.</p>'}
+      ${d.comentarios.map(cpNutComentarioHtml).join('')}
+    </section>`).join('');
+}
+
+async function cpNutRecargar() {
+  const N = FitNovaNutricion;
+  const hoy = N.hoyIso();
+  try {
+    cpNut.datos = await N.consultar(supabaseClient, cpNut.clienteId, N.sumarDias(hoy, -(cpNut.dias - 1)), hoy);
+    cpNutRender();
+  } catch (error) {
+    ['cp-nut-dias', 'cp-nut-comidas', 'cp-nut-agua'].forEach((id) => { document.getElementById(id).textContent = '—'; });
+    document.getElementById('cp-nut-lista').innerHTML = `<p style="color:var(--rojo);" role="alert">No se pudo cargar el diario alimentario: ${N.escapar(error.message)}</p>`;
+  }
+}
+
+async function cpNutComentar(event) {
+  event.preventDefault();
+  const N = FitNovaNutricion;
+  const aviso = document.getElementById('cp-nut-form-error');
+  const boton = document.getElementById('cp-nut-enviar');
+  const fecha = document.getElementById('cp-nut-fecha').value;
+  aviso.hidden = true;
+  if (!cpNut.profesionalId) {
+    aviso.textContent = 'No se ha podido identificar tu perfil profesional. Recarga la página.';
+    aviso.hidden = false;
+    return;
+  }
+  if (!fecha || fecha > N.hoyIso()) {
+    aviso.textContent = 'Elige un día que no sea futuro.';
+    aviso.hidden = false;
+    return;
+  }
+  boton.disabled = true;
+  boton.textContent = 'Publicando...';
+  try {
+    await N.comentar(supabaseClient, cpNut.clienteId, cpNut.profesionalId, fecha, document.getElementById('cp-nut-texto').value);
+    document.getElementById('cp-nut-texto').value = '';
+    const necesarios = Math.round((Date.parse(`${N.hoyIso()}T12:00:00`) - Date.parse(`${fecha}T12:00:00`)) / 86400000) + 1;
+    const periodo = document.getElementById('cp-nut-periodo');
+    if (necesarios > cpNut.dias) {
+      const opcion = [...periodo.options].find((o) => Number(o.value) >= necesarios);
+      if (opcion) {
+        periodo.value = opcion.value;
+        cpNut.dias = Number(opcion.value);
+      }
+    }
+    await cpNutRecargar();
+  } catch (error) {
+    aviso.textContent = /row-level security/i.test(error.message)
+      ? 'Solo pueden comentar el entrenador/a o el nutricionista asignados a este cliente.'
+      : `No se pudo publicar el comentario: ${error.message}`;
+    aviso.hidden = false;
+  } finally {
+    boton.disabled = false;
+    boton.textContent = 'Publicar comentario';
+  }
+}
+
+async function cargarNutricionFicha() {
+  const N = FitNovaNutricion;
+  cpNut.clienteId = new URLSearchParams(location.search).get('id');
+  const cont = document.getElementById('cp-nut-lista');
+  if (!cpNut.clienteId) {
+    cont.textContent = 'No se puede consultar el diario sin identificar al cliente.';
+    return;
+  }
+  const campoFecha = document.getElementById('cp-nut-fecha');
+  campoFecha.max = N.hoyIso();
+  campoFecha.value = N.hoyIso();
+  document.getElementById('cp-nut-form').addEventListener('submit', cpNutComentar);
+  document.getElementById('cp-nut-periodo').addEventListener('change', (event) => {
+    cpNut.dias = Number(event.target.value);
+    cpNutRecargar();
+  });
+  cont.addEventListener('click', async (event) => {
+    const comentar = event.target.closest('[data-nut-comentar]');
+    if (comentar) {
+      campoFecha.value = comentar.dataset.nutComentar;
+      document.getElementById('cp-nut-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.getElementById('cp-nut-texto').focus();
+      return;
+    }
+    const borrar = event.target.closest('[data-nut-borrar]');
+    if (borrar) {
+      if (!confirm('¿Borrar tu comentario? El cliente dejará de verlo.')) return;
+      borrar.disabled = true;
+      try {
+        await N.borrarComentario(supabaseClient, borrar.dataset.nutBorrar);
+        await cpNutRecargar();
+      } catch (error) {
+        borrar.disabled = false;
+        alert(`No se pudo borrar el comentario: ${error.message}`);
+      }
+      return;
+    }
+    const boton = event.target.closest('[data-nut-foto]');
+    if (!boton) return;
+    boton.disabled = true;
+    boton.textContent = 'Cargando...';
+    try {
+      const url = N.escapar(await N.urlFoto(supabaseClient, boton.dataset.nutFoto));
+      boton.parentElement.innerHTML = `<a href="${url}" target="_blank" rel="noopener" title="Abrir a tamaño completo"><img src="${url}" alt="Foto del plato" style="width:120px;height:90px;object-fit:cover;border-radius:8px;display:block;" /></a>`;
+    } catch (error) {
+      boton.disabled = false;
+      boton.textContent = 'Ver foto';
+      alert(`No se pudo cargar la foto: ${error.message}`);
+    }
+  });
+  const { data } = await supabaseClient.rpc('profesional_actual_id');
+  cpNut.profesionalId = data || null;
+  await cpNutRecargar();
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const session = await requireSession();
   if (!session) return;
@@ -372,4 +540,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   cargarSesionesFicha();
   cargarProgresoFicha();
   cargarActividadesFicha();
+  cargarNutricionFicha();
 });
