@@ -7,6 +7,7 @@
 <link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
 <link rel="stylesheet" href="css/styles.css?v=20260924.2" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<link rel="stylesheet" href="../css/comunicacion.css?v=20261126.1" />
 </head>
 <body data-view="dashboard">
 
@@ -25,7 +26,7 @@
     </nav>
     <div class="topbar-actions">
       <a href="chat.html" class="topbar-icon-btn" title="Chat" style="text-decoration:none;">
-        💬<span class="badge">3</span>
+        💬<span class="badge" hidden></span>
       </a>
       <button class="topbar-icon-btn" title="Ayuda">❓</button>
       <div class="topbar-avatar" title="Mi cuenta">
@@ -129,14 +130,7 @@
         </div>
 
         <div class="bottom-grid">
-          <section class="card">
-            <p class="card-title">✅ Agendar tareas <span class="count-pill">0</span></p>
-            <div class="empty-state" style="padding:20px 4px;">
-              <div class="empty-icon" style="font-size:22px;width:52px;height:52px;">👍</div>
-              <h3 style="font-size:14px;">¡Vas por buen camino!</h3>
-              <p style="font-size:12.5px;">No tienes tareas planificadas pendientes.</p>
-            </div>
-          </section>
+          <section class="card" id="tareas-raiz"><p>Cargando tareas...</p></section>
 
           <section class="card">
             <div class="card-head">
@@ -160,8 +154,11 @@
   </div>
 
   <script src="js/app.js?v=20260924.2"></script>
-  <script src="js/supabase-client.js"></script>
+  <script src="js/supabase-client.js?v=20261126.6"></script>
+  <script src="../js/comunicacion.js?v=20261126.3"></script>
+  <script src="../js/comunicacion-header.js?v=20261126.2"></script>
   <script src="../js/sesiones.js?v=20261123.2"></script>
   <script src="js/dashboard.js?v=20261123.1"></script>
+  <script src="js/tareas.js?v=20261126.1"></script>
 </body>
 </html>

@@ -7,6 +7,7 @@
 <link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
 <link rel="stylesheet" href="css/styles.css?v=20260924.2" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<link rel="stylesheet" href="../css/comunicacion.css?v=20261126.1" />
 </head>
 <body data-view="clientes" data-tab-group="cliente-perfil">
 
@@ -23,7 +24,7 @@
       <a href="negocio.html" class="topbar-link" data-view="negocio"><span class="ico">💼</span>Negocio<span class="chev">▾</span></a>
     </nav>
     <div class="topbar-actions">
-      <a href="chat.html" class="topbar-icon-btn" title="Chat" style="text-decoration:none;">💬<span class="badge">3</span></a>
+      <a href="chat.html" class="topbar-icon-btn" title="Chat" style="text-decoration:none;">💬<span class="badge" hidden></span></a>
       <button class="topbar-icon-btn" title="Ayuda">❓</button>
       <div class="topbar-avatar" title="Mi cuenta">
         <div class="avatar-circle">B</div>
@@ -53,8 +54,8 @@
           </div>
         </div>
         <div class="client-actions">
-          <a href="chat.html" class="btn-outline">💬 Enviar mensaje</a>
-          <button class="btn-secondary" onclick="openModal('modal-nueva-tarea')">➕ Nueva tarea</button>
+          <a href="chat.html" id="cp-chat" class="btn-outline">💬 Enviar mensaje</a>
+          <a href="#tareas-raiz" class="btn-secondary" onclick="switchTab('cliente-perfil','resumen')">✅ Ver tareas</a>
         </div>
       </div>
 
@@ -85,6 +86,7 @@
             <div class="mini-list-item"><div class="info"><strong>Últimos 30 días</strong><span id="cp-act-30">Cargando...</span></div></div>
           </div>
           <div id="cp-act-lista"><p>Cargando actividades...</p></div>
+          <section id="tareas-raiz" style="margin-top:24px;"><p>Cargando tareas...</p></section>
         </div>
 
         <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="entrenamiento">
@@ -248,20 +250,6 @@
     </div>
   </div>
 
-  <div class="modal-overlay" id="modal-nueva-tarea">
-    <div class="modal">
-      <div class="modal-header">
-        <h2>Nueva tarea</h2>
-        <button class="modal-close" onclick="closeModal('modal-nueva-tarea')">✕</button>
-      </div>
-      <label for="tarea-titulo">Título</label>
-      <input type="text" id="tarea-titulo" placeholder="Ej. Revisar progreso semanal" style="width:100%;padding:10px;margin:6px 0 14px;border-radius:10px;border:1px solid #D9D9D9;" />
-      <label for="tarea-fecha">Fecha límite</label>
-      <input type="date" id="tarea-fecha" style="width:100%;padding:10px;margin:6px 0 18px;border-radius:10px;border:1px solid #D9D9D9;" />
-      <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="closeModal('modal-nueva-tarea')">Guardar tarea</button>
-    </div>
-  </div>
-
   <div class="modal-overlay" id="modal-cp-metricas">
     <div class="modal">
       <div class="modal-header">
@@ -279,7 +267,9 @@
   </div>
 
   <script src="js/app.js?v=20260924.2"></script>
-  <script src="js/supabase-client.js"></script>
+  <script src="js/supabase-client.js?v=20261126.6"></script>
+  <script src="../js/comunicacion.js?v=20261126.3"></script>
+  <script src="../js/comunicacion-header.js?v=20261126.2"></script>
   <script src="../js/sesiones.js?v=20261123.2"></script>
   <script src="../js/metricas.js?v=20261124.2"></script>
   <script src="../js/fotos-progreso.js?v=20261125.1"></script>
@@ -293,5 +283,6 @@
   <script src="js/cliente-planes-nutricionales.js?v=20261126.4"></script>
   <script src="js/cliente-entrenos.js?v=20261126.2"></script>
   <script src="js/cliente-perfil.js?v=20261126.1"></script>
+  <script src="js/tareas.js?v=20261126.1"></script>
 </body>
 </html>

@@ -1,0 +1,22 @@
+.com-chat { display:grid; grid-template-columns:minmax(180px, 260px) minmax(0, 1fr); gap:18px; }
+.com-chat aside, .com-chat section, .com-avisos-panel { background:#fff; border-radius:14px; padding:16px; }
+.com-chat label { display:block; font-weight:600; margin:10px 0; }
+.com-chat input, .com-chat textarea { display:block; box-sizing:border-box; width:100%; margin-top:6px; padding:9px; border:1px solid #cbd5e1; border-radius:8px; font:inherit; }
+.com-chat button, .com-avisos-panel button { cursor:pointer; padding:8px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; color:#0a1a2f; font:inherit; }
+.com-chat button:disabled, .com-avisos-panel button:disabled { opacity:.5; cursor:wait; }
+.com-contacto, .com-aviso { display:flex; flex-direction:column; text-align:left; width:100%; gap:4px; margin:8px 0; overflow-wrap:anywhere; }
+.com-contacto span, .com-contacto small, .com-aviso small { color:#526173; font-size:12px; }
+#com-mensajes { min-height:180px; height:45vh; overflow-y:auto; padding:8px; background:#f4f7fa; border-radius:8px; }
+.com-burbuja { width:fit-content; max-width:80%; background:#fff; border-radius:12px; padding:10px; margin:8px 0; overflow-wrap:anywhere; }
+.com-burbuja.propio { margin-left:auto; background:#dbeafe; }
+.com-burbuja p { margin:0 0 6px; white-space:pre-wrap; }
+.com-burbuja small { display:block; color:#526173; font-size:11px; }
+.com-acciones { display:flex; gap:8px; flex-wrap:wrap; }
+#com-error, #com-contactos-error, #com-avisos-error { color:#b42318; }
+.com-overlay { position:fixed; inset:0; z-index:2000; display:flex; justify-content:center; align-items:center; background:#0008; padding:16px; }
+.com-overlay[hidden] { display:none; }
+.com-avisos-panel { width:min(480px, 100%); max-height:80vh; overflow-y:auto; box-sizing:border-box; }
+.com-avisos-panel header { display:flex; justify-content:space-between; align-items:center; }
+.com-aviso.nuevo { border-left:4px solid #2563eb; }
+.badge[hidden] { display:none !important; }
+@media (max-width:640px) { .com-chat { grid-template-columns:1fr; } #com-contactos { max-height:180px; overflow-y:auto; } }

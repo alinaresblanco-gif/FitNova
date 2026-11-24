@@ -11,6 +11,7 @@ async function cargarFichaCliente() {
     document.getElementById('cp-nombre').textContent = 'Cliente no encontrado';
     return;
   }
+  document.getElementById('cp-chat').href = `chat.html?cliente=${encodeURIComponent(id)}`;
 
   const { data: cliente, error } = await supabaseClient
     .from('clientes')

@@ -2,7 +2,9 @@
 const SUPABASE_URL = 'https://rvonyrsfhghlqjlhuubo.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_C_dvWW90caDIlyU3vGjgDQ_0BzdVql1';
 
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: { storageKey: 'fitnova-manager-auth' },
+});
 
 // URL base de FitNova Go para construir los enlaces de invitación.
 // Al desplegar en producción, sustituir por la URL pública de Go,
@@ -20,7 +22,7 @@ async function requireSession() {
 }
 
 async function cerrarSesionManager() {
-  await supabaseClient.auth.signOut();
+  await supabaseClient.auth.signOut({ scope: 'local' });
   window.location.href = 'login.html';
 }
 
