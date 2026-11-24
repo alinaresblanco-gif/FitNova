@@ -2,7 +2,7 @@
   "name": "fitnova-agenda-tests",
   "private": true,
   "scripts": {
-    "test": "node --test agenda.test.cjs programas.test.cjs videos.test.cjs"
+    "test": "node --test agenda.test.cjs programas.test.cjs videos.test.cjs planes-nutricionales.test.cjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.6.0"

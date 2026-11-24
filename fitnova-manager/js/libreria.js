@@ -1,6 +1,6 @@
 // FitNova Manager · Librería de entrenamientos y vídeos (Supabase).
 const E = window.FitNovaEntrenos;
-const lib = { workouts: [], ejercicios: [], programas: [], videos: [], cargado: false };
+const lib = { workouts: [], ejercicios: [], programas: [], videos: [], recetas: [], planes: [], cargado: false };
 
 function libPestanaActiva() {
   const activa = document.querySelector('.tab-btn.active[data-tab-group="lib"]');
@@ -25,6 +25,20 @@ function libPintarContadores() {
   document.getElementById('lib-count-ejercicios').textContent = lib.ejercicios.length;
   document.getElementById('lib-count-programas').textContent = lib.programas.length;
   document.getElementById('lib-count-videos').textContent = lib.videos.length;
+  document.getElementById('lib-count-recetas').textContent = lib.recetas.length;
+  document.getElementById('lib-count-planes').textContent = lib.planes.length;
+}
+
+function libPintarNutricion() {
+  const q = libNormalizar(document.getElementById('lib-buscar').value);
+  const recetas = lib.recetas.filter((r) => libNormalizar(`${r.titulo} ${r.descripcion || ''} ${r.ingredientes}`).includes(q));
+  const planes = lib.planes.filter((p) => libNormalizar(`${p.nombre} ${p.descripcion || ''}`).includes(q));
+  document.getElementById('lib-recetas').innerHTML = !lib.recetas.length
+    ? libVacio('🍳', 'Tu recetario está vacío', 'Crea recetas para incorporarlas a tus planes.', 'Añadir receta', 'nueva-receta')
+    : recetas.length ? `<table class="data-table"><thead><tr><th>Receta</th><th>Datos</th><th>Acciones</th></tr></thead><tbody>${recetas.map((r) => `<tr><td><strong>${E.escapar(r.titulo)}</strong></td><td>${r.kcal ? `${r.kcal} kcal` : ''} ${r.raciones ? `· ${r.raciones} raciones` : ''}</td><td><button class="btn-outline" data-lib-accion="editar-receta" data-id="${r.id}">Editar</button> <button class="btn-outline" data-lib-accion="borrar-receta" data-id="${r.id}">Eliminar</button></td></tr>`).join('')}</tbody></table>` : '<p>Ninguna receta coincide con la búsqueda.</p>';
+  document.getElementById('lib-planes').innerHTML = !lib.planes.length
+    ? libVacio('🥗', 'No hay planes nutricionales', 'Organiza las comidas de cada día y asígnalas a tus clientes.', 'Crear plan', 'nuevo-plan')
+    : planes.length ? `<table class="data-table"><thead><tr><th>Plan</th><th>Acciones</th></tr></thead><tbody>${planes.map((p) => `<tr><td><strong>${E.escapar(p.nombre)}</strong>${p.descripcion ? `<div>${E.escapar(p.descripcion)}</div>` : ''}</td><td><button class="btn-primary" data-lib-accion="asignar-plan" data-id="${p.id}">Asignar</button> <button class="btn-outline" data-lib-accion="editar-plan" data-id="${p.id}">Editar</button> <button class="btn-outline" data-lib-accion="borrar-plan" data-id="${p.id}">Eliminar</button></td></tr>`).join('')}</tbody></table>` : '<p>Ningún plan coincide con la búsqueda.</p>';
 }
 
 function libPintarVideos() {
@@ -128,6 +142,7 @@ function libPintar() {
   libPintarEjercicios();
   libPintarProgramas();
   libPintarVideos();
+  libPintarNutricion();
   document.getElementById('lib-filtro-categoria').style.display = libPestanaActiva() === 'ejercicios' ? '' : 'none';
 }
 
@@ -135,11 +150,13 @@ async function libCargar() {
   const aviso = document.getElementById('lib-error');
   aviso.textContent = '';
   try {
-    const [workouts, ejercicios, programas, videos] = await Promise.all([E.listarWorkouts(supabaseClient), EntMgr.catalogo(true), ProgramasMgr.listar(), VideosMgr.listar()]);
+    const [workouts, ejercicios, programas, videos, recetas, planes] = await Promise.all([E.listarWorkouts(supabaseClient), EntMgr.catalogo(true), ProgramasMgr.listar(), VideosMgr.listar(), NutPlanesMgr.listarRecetas(), NutPlanesMgr.listarPlanes()]);
     lib.workouts = workouts;
     lib.ejercicios = ejercicios;
     lib.programas = programas;
     lib.videos = videos;
+    lib.recetas = recetas;
+    lib.planes = planes;
     lib.cargado = true;
     libPintar();
   } catch (e) {
@@ -148,6 +165,8 @@ async function libCargar() {
     document.getElementById('lib-ejercicios').innerHTML = '';
     document.getElementById('lib-programas').innerHTML = '';
     document.getElementById('lib-videos').innerHTML = '';
+    document.getElementById('lib-recetas').innerHTML = '';
+    document.getElementById('lib-planes').innerHTML = '';
   }
 }
 
@@ -181,12 +200,38 @@ async function libAccion(accion, id) {
   const ejercicio = lib.ejercicios.find((e) => e.id === id);
   const programa = lib.programas.find((p) => p.id === id);
   const video = lib.videos.find((v) => v.id === id);
+  const receta = lib.recetas.find((r) => r.id === id);
+  const plan = lib.planes.find((p) => p.id === id);
   aviso.textContent = '';
   try {
     if (accion === 'nuevo-workout') libEditorWorkout(null);
     if (accion === 'nuevo-ejercicio') libEditorEjercicio(null);
     if (accion === 'nuevo-programa') ProgramasMgr.abrirEditor(null, libCargar);
     if (accion === 'nuevo-video') VideosMgr.abrir(null, libCargar);
+    if (accion === 'nueva-receta') NutPlanesMgr.abrirReceta(null, libCargar);
+    if (accion === 'editar-receta' && receta) NutPlanesMgr.abrirReceta(receta, libCargar);
+    if (accion === 'nuevo-plan') await NutPlanesMgr.abrirPlan(null, libCargar);
+    if (accion === 'editar-plan' && plan) await NutPlanesMgr.abrirPlan(plan, libCargar);
+    if (accion === 'asignar-plan' && plan) {
+      await NutPlanesMgr.abrirAsignar({ plan, onAsignado: () => { aviso.textContent = `Plan «${plan.nombre}» asignado.`; } });
+      return;
+    }
+    if (accion === 'borrar-receta' && receta) {
+      if (lib.planes.some((p) => p.dias.some((d) => d.comidas.some((c) => c.receta_id === receta.id)))) {
+        aviso.textContent = 'Esta receta está incluida en una plantilla. Quítala de los planes antes de eliminarla.';
+        return;
+      }
+      if (!window.confirm(`¿Eliminar «${receta.titulo}»? Las copias ya asignadas no cambian.`)) return;
+      await NutPlanesMgr.eliminar('recetas', receta.id);
+      await libCargar();
+      try { await NutPlanesMgr.limpiarFoto(receta.foto_ruta); }
+      catch (e) { aviso.textContent = `La receta se eliminó, pero no se pudo limpiar su foto: ${e.message}`; }
+    }
+    if (accion === 'borrar-plan' && plan) {
+      if (!window.confirm(`¿Eliminar «${plan.nombre}»? Los planes ya asignados no cambian.`)) return;
+      await NutPlanesMgr.eliminar('planes_nutricionales', plan.id);
+      await libCargar();
+    }
     if (accion === 'editar-video' && video) VideosMgr.abrir(video, libCargar);
     if (accion === 'borrar-video' && video) {
       if (!window.confirm(`¿Eliminar «${video.titulo}»? Los clientes dejarán de verlo en FitNova Go.`)) return;
@@ -248,7 +293,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const filtro = document.getElementById('lib-filtro-categoria');
   filtro.insertAdjacentHTML('beforeend', E.CATEGORIAS.map((c) => `<option value="${c.valor}">${c.texto}</option>`).join(''));
   filtro.addEventListener('change', libPintarEjercicios);
-  document.getElementById('lib-buscar').addEventListener('input', () => { libPintarWorkouts(); libPintarEjercicios(); libPintarProgramas(); libPintarVideos(); });
+  document.getElementById('lib-buscar').addEventListener('input', () => { libPintarWorkouts(); libPintarEjercicios(); libPintarProgramas(); libPintarVideos(); libPintarNutricion(); });
   document.querySelectorAll('.tab-btn[data-tab-group="lib"]').forEach((btn) => btn.addEventListener('click', () => {
     filtro.style.display = btn.dataset.tab === 'ejercicios' ? '' : 'none';
   }));
@@ -258,6 +303,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     else if (pestana === 'ejercicios') libAccion('nuevo-ejercicio');
     else if (pestana === 'programas') libAccion('nuevo-programa');
     else if (pestana === 'videos') libAccion('nuevo-video');
+    else if (pestana === 'recetas') libAccion('nueva-receta');
+    else if (pestana === 'nutricion') libAccion('nuevo-plan');
     else openModal('modal-crear-item');
   });
   document.querySelector('.page-body').addEventListener('click', (event) => {

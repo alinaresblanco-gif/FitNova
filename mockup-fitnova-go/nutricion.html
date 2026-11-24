@@ -6,7 +6,7 @@
 <title>FitNova Go · Mi diario alimentario</title>
 <link rel="manifest" href="manifest.webmanifest" />
 <meta name="theme-color" content="#0A1A2F" />
-<link rel="stylesheet" href="css/styles.css?v=20261126.1" />
+<link rel="stylesheet" href="css/styles.css?v=20261126.4" />
 </head>
 <body data-auth="required">
   <div class="app">
@@ -37,6 +37,12 @@
       </div>
       <p class="nut-resumen" id="nut-resumen"></p>
       <p id="nut-error" role="alert" class="sesion-error"></p>
+
+      <section class="card">
+        <p class="card-title">Mi plan nutricional</p>
+        <p id="go-plan-error" class="sesion-error" role="alert"></p>
+        <div id="go-plan"><p>Cargando tu plan...</p></div>
+      </section>
 
       <section class="card nut-agua" id="nut-agua" hidden>
         <p class="card-title">Agua</p>
@@ -77,7 +83,9 @@
   <script src="js/supabase-client.js?v=20261111.1"></script>
   <script src="../js/fotos-progreso.js?v=20261125.1"></script>
   <script src="../js/nutricion.js?v=20261125.1"></script>
-  <script src="js/app.js?v=20261126.3"></script>
+  <script src="../js/planes-nutricionales.js?v=20261126.4"></script>
+  <script src="js/app.js?v=20261126.4"></script>
   <script src="js/nutricion-go.js?v=20261125.1"></script>
+  <script src="js/planes-nutricionales-go.js?v=20261126.4"></script>
 </body>
 </html>

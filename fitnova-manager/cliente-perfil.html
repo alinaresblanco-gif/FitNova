@@ -151,12 +151,14 @@
           </form>
           <div id="cp-nut-lista"><p>Cargando diario...</p></div>
 
-          <div class="empty-state" style="margin-top:24px;">
-            <div class="empty-icon">🥗</div>
-            <h3>Sin plan nutricional asignado</h3>
-            <p>Crea o asigna un plan nutricional para este cliente.</p>
-            <a href="libreria.html?tab=nutricion" class="btn-primary">Ir a nutrición</a>
-          </div>
+          <section style="margin-top:24px;">
+            <h3>Planes nutricionales</h3>
+            <p>Planes semanales asignados, con sus recetas tal como se copiaron al asignar.</p>
+            <button type="button" class="btn-primary" id="cp-plan-asignar">Asignar plan</button>
+            <a href="libreria.html?tab=nutricion" class="btn-outline">Ir a la librería</a>
+            <p id="cp-plan-aviso" role="alert"></p>
+            <div id="cp-planes"><p>Cargando planes...</p></div>
+          </section>
         </div>
 
         <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="agenda">
@@ -283,9 +285,12 @@
   <script src="../js/fotos-progreso.js?v=20261125.1"></script>
   <script src="../js/actividades.js?v=20261125.1"></script>
   <script src="../js/nutricion.js?v=20261125.1"></script>
+  <script src="../js/planes-nutricionales.js?v=20261126.4"></script>
   <script src="../js/entrenos.js?v=20261126.2"></script>
   <script src="js/entrenos-manager.js?v=20261126.1"></script>
   <script src="js/programas-manager.js?v=20261126.2"></script>
+  <script src="js/planes-nutricionales-manager.js?v=20261126.4"></script>
+  <script src="js/cliente-planes-nutricionales.js?v=20261126.4"></script>
   <script src="js/cliente-entrenos.js?v=20261126.2"></script>
   <script src="js/cliente-perfil.js?v=20261126.1"></script>
 </body>
