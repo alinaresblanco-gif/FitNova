@@ -1,6 +1,6 @@
 // FitNova Manager · Librería: pestañas reales de Workouts y Ejercicios (Supabase).
 const E = window.FitNovaEntrenos;
-const lib = { workouts: [], ejercicios: [], cargado: false };
+const lib = { workouts: [], ejercicios: [], programas: [], cargado: false };
 
 function libPestanaActiva() {
   const activa = document.querySelector('.tab-btn.active[data-tab-group="lib"]');
@@ -23,6 +23,28 @@ function libVacio(icono, titulo, texto, boton, accion) {
 function libPintarContadores() {
   document.getElementById('lib-count-workouts').textContent = lib.workouts.length;
   document.getElementById('lib-count-ejercicios').textContent = lib.ejercicios.length;
+  document.getElementById('lib-count-programas').textContent = lib.programas.length;
+}
+
+function libPintarProgramas() {
+  const caja = document.getElementById('lib-programas');
+  if (!lib.programas.length) {
+    caja.innerHTML = libVacio('📋', 'Aún no tienes programas', 'Organiza tus workouts por semana y día.', 'Crear programa', 'nuevo-programa');
+    return;
+  }
+  const q = libNormalizar(document.getElementById('lib-buscar').value);
+  const lista = lib.programas.filter((p) => libNormalizar(`${p.nombre} ${p.descripcion || ''}`).includes(q));
+  if (!lista.length) { caja.innerHTML = '<p>Ningún programa coincide con la búsqueda.</p>'; return; }
+  caja.innerHTML = `<table class="data-table"><thead><tr><th>Programa</th><th>Duración</th><th>Entrenamientos</th><th>Acciones</th></tr></thead>
+    <tbody>${lista.map((p) => {
+    const semanas = Math.max(...p.programa_workouts.map((x) => x.semana));
+    return `<tr><td><strong>${E.escapar(p.nombre)}</strong>${p.descripcion ? `<div>${E.escapar(p.descripcion)}</div>` : ''}</td>
+    <td>${semanas} ${semanas === 1 ? 'semana' : 'semanas'}</td><td>${p.programa_workouts.length}</td>
+    <td><button class="btn-primary" type="button" data-lib-accion="asignar-programa" data-id="${p.id}">Asignar</button>
+    <button class="btn-outline" type="button" data-lib-accion="editar-programa" data-id="${p.id}">Editar</button>
+    <button class="btn-outline" type="button" data-lib-accion="duplicar-programa" data-id="${p.id}">Duplicar</button>
+    <button class="btn-outline" type="button" data-lib-accion="borrar-programa" data-id="${p.id}">Eliminar</button></td></tr>`;
+  }).join('')}</tbody></table>`;
 }
 
 function libPintarWorkouts() {
@@ -87,6 +109,7 @@ function libPintar() {
   libPintarContadores();
   libPintarWorkouts();
   libPintarEjercicios();
+  libPintarProgramas();
   document.getElementById('lib-filtro-categoria').style.display = libPestanaActiva() === 'ejercicios' ? '' : 'none';
 }
 
@@ -94,15 +117,17 @@ async function libCargar() {
   const aviso = document.getElementById('lib-error');
   aviso.textContent = '';
   try {
-    const [workouts, ejercicios] = await Promise.all([E.listarWorkouts(supabaseClient), EntMgr.catalogo(true)]);
+    const [workouts, ejercicios, programas] = await Promise.all([E.listarWorkouts(supabaseClient), EntMgr.catalogo(true), ProgramasMgr.listar()]);
     lib.workouts = workouts;
     lib.ejercicios = ejercicios;
+    lib.programas = programas;
     lib.cargado = true;
     libPintar();
   } catch (e) {
     aviso.textContent = `No se pudo cargar la librería: ${e.message}`;
     document.getElementById('lib-workouts').innerHTML = '';
     document.getElementById('lib-ejercicios').innerHTML = '';
+    document.getElementById('lib-programas').innerHTML = '';
   }
 }
 
@@ -134,10 +159,26 @@ async function libAccion(accion, id) {
   const aviso = document.getElementById('lib-error');
   const workout = lib.workouts.find((w) => w.id === id);
   const ejercicio = lib.ejercicios.find((e) => e.id === id);
+  const programa = lib.programas.find((p) => p.id === id);
   aviso.textContent = '';
   try {
     if (accion === 'nuevo-workout') libEditorWorkout(null);
     if (accion === 'nuevo-ejercicio') libEditorEjercicio(null);
+    if (accion === 'nuevo-programa') ProgramasMgr.abrirEditor(null, libCargar);
+    if (accion === 'editar-programa' && programa) ProgramasMgr.abrirEditor(programa, libCargar);
+    if (accion === 'duplicar-programa' && programa) ProgramasMgr.abrirEditor(programa, libCargar, true);
+    if (accion === 'asignar-programa' && programa) {
+      ProgramasMgr.abrirAsignar({ programa, onAsignado: (cantidad) => {
+        aviso.style.color = 'var(--verde, #1a7f4b)';
+        aviso.textContent = `✅ Programa «${programa.nombre}» asignado: ${cantidad} entrenamientos.`;
+      } });
+      return;
+    }
+    if (accion === 'borrar-programa' && programa) {
+      if (!window.confirm(`¿Eliminar «${programa.nombre}» de tu librería? Los entrenamientos ya asignados no se borran.`)) return;
+      await ProgramasMgr.eliminar(programa.id);
+      await libCargar();
+    }
     if (accion === 'editar-workout' && workout) libEditorWorkout(workout);
     if (accion === 'duplicar' && workout) libEditorWorkout(workout, true);
     if (accion === 'editar-ejercicio' && ejercicio) libEditorEjercicio(ejercicio);
@@ -152,6 +193,10 @@ async function libAccion(accion, id) {
       return;
     }
     if (accion === 'borrar-workout' && workout) {
+      if (lib.programas.some((p) => p.programa_workouts.some((it) => it.workout_id === workout.id))) {
+        aviso.textContent = 'Este workout está incluido en un programa. Quítalo del programa antes de eliminarlo.';
+        return;
+      }
       if (!window.confirm(`¿Eliminar el workout «${workout.nombre}» de tu librería?\n\nLo que ya asignaste a tus clientes no se borra.`)) return;
       await E.eliminarWorkout(supabaseClient, workout.id);
       await libCargar();
@@ -175,7 +220,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const filtro = document.getElementById('lib-filtro-categoria');
   filtro.insertAdjacentHTML('beforeend', E.CATEGORIAS.map((c) => `<option value="${c.valor}">${c.texto}</option>`).join(''));
   filtro.addEventListener('change', libPintarEjercicios);
-  document.getElementById('lib-buscar').addEventListener('input', () => { libPintarWorkouts(); libPintarEjercicios(); });
+  document.getElementById('lib-buscar').addEventListener('input', () => { libPintarWorkouts(); libPintarEjercicios(); libPintarProgramas(); });
   document.querySelectorAll('.tab-btn[data-tab-group="lib"]').forEach((btn) => btn.addEventListener('click', () => {
     filtro.style.display = btn.dataset.tab === 'ejercicios' ? '' : 'none';
   }));
@@ -183,6 +228,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const pestana = libPestanaActiva();
     if (pestana === 'workouts') libAccion('nuevo-workout');
     else if (pestana === 'ejercicios') libAccion('nuevo-ejercicio');
+    else if (pestana === 'programas') libAccion('nuevo-programa');
     else openModal('modal-crear-item');
   });
   document.querySelector('.page-body').addEventListener('click', (event) => {

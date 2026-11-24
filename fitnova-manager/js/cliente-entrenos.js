@@ -68,6 +68,7 @@ function cpEntTarjeta(w, hoy) {
       <div style="min-width:0;">
         <strong style="color:var(--azul);">${E.escapar(E.etiquetaDia(w.fecha, hoy))}</strong>
         <span style="margin-left:8px;">${E.escapar(w.nombre)}</span>
+        ${w.programa_nombre ? `<small style="color:#55606f;margin-left:8px;">${E.escapar(w.programa_nombre)} · semana ${w.programa_semana}</small>` : ''}
         <small style="color:#55606f;margin-left:8px;">${est.icono} ${est.texto} · ${w.registro ? E.escapar(E.resumenRegistro(w)) : `${w.ejercicios.length} ${w.ejercicios.length === 1 ? 'ejercicio' : 'ejercicios'}`}${w.comentarios.length ? ` · 💬 ${w.comentarios.length}` : ''}</small>
       </div>
       <button class="btn-outline" type="button" data-ent-accion="toggle" data-id="${w.id}">${abierto ? 'Ocultar' : 'Ver detalle'}</button>
@@ -204,6 +205,13 @@ async function cargarEntrenamientoFicha() {
     },
   }));
   document.getElementById('cp-ent-crear').addEventListener('click', () => cpEntEditor(null));
+  document.getElementById('cp-ent-asignar-programa').addEventListener('click', () => ProgramasMgr.abrirAsignar({
+    clienteId: cpEnt.clienteId,
+    onAsignado: (cantidad) => {
+      cpEntAviso(`✅ Programa asignado: ${cantidad} entrenamientos. El cliente ya los ve en FitNova Go.`);
+      cpEntRecargar();
+    },
+  }));
   cont.addEventListener('click', (event) => {
     const boton = event.target.closest('[data-ent-accion]');
     if (boton) cpEntAccion(boton);

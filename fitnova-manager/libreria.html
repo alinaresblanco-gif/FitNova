@@ -44,7 +44,7 @@
         <div class="tabs">
           <button class="tab-btn active" data-tab-group="lib" data-tab="workouts" onclick="switchTab('lib','workouts')">💪 Workouts <span class="count-pill" id="lib-count-workouts">0</span></button>
           <button class="tab-btn" data-tab-group="lib" data-tab="ejercicios" onclick="switchTab('lib','ejercicios')">🏋️ Ejercicios <span class="count-pill" id="lib-count-ejercicios">0</span></button>
-          <button class="tab-btn" data-tab-group="lib" data-tab="programas" onclick="switchTab('lib','programas')">📋 Programas <span class="count-pill">0</span></button>
+          <button class="tab-btn" data-tab-group="lib" data-tab="programas" onclick="switchTab('lib','programas')">📋 Programas <span class="count-pill" id="lib-count-programas">0</span></button>
           <button class="tab-btn" data-tab-group="lib" data-tab="nutricion" onclick="switchTab('lib','nutricion')">🥗 Nutrición <span class="count-pill">0</span></button>
           <button class="tab-btn" data-tab-group="lib" data-tab="recetas" onclick="switchTab('lib','recetas')">🍳 Recetas <span class="count-pill">0</span></button>
           <button class="tab-btn" data-tab-group="lib" data-tab="videos" onclick="switchTab('lib','videos')">🎬 Vídeos <span class="count-pill">0</span></button>
@@ -76,12 +76,7 @@
         </div>
 
         <div class="tab-panel" data-tab-panel-group="lib" data-tab-panel="programas">
-          <div class="empty-state">
-            <div class="empty-icon">📋</div>
-            <h3>Aún no tienes programas</h3>
-            <p>Agrupa workouts en programas de varias semanas y multiplica tu tiempo x4.</p>
-            <button class="btn-primary" onclick="openModal('modal-crear-item')">Crear programa</button>
-          </div>
+          <div id="lib-programas"><p>Cargando programas...</p></div>
         </div>
 
         <div class="tab-panel" data-tab-panel-group="lib" data-tab-panel="nutricion">
@@ -139,8 +134,9 @@
 
   <script src="js/app.js?v=20260924.2"></script>
   <script src="js/supabase-client.js"></script>
-  <script src="../js/entrenos.js?v=20261126.1"></script>
+  <script src="../js/entrenos.js?v=20261126.2"></script>
   <script src="js/entrenos-manager.js?v=20261126.1"></script>
-  <script src="js/libreria.js?v=20261126.1"></script>
+  <script src="js/programas-manager.js?v=20261126.2"></script>
+  <script src="js/libreria.js?v=20261126.2"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
 window.FitNovaEntrenos = (() => {
   const CAMPOS_EJERCICIO = 'id, nombre, categoria, instrucciones, video_url, actualizado_en';
   const CAMPOS_WORKOUT = 'id, nombre, descripcion, ejercicios, actualizado_en';
-  const CAMPOS_ASIGNADO = 'id, cliente_id, profesional_id, workout_origen_id, fecha, nombre, descripcion, ejercicios, creado_en, actualizado_en';
+  const CAMPOS_ASIGNADO = 'id, cliente_id, profesional_id, workout_origen_id, fecha, nombre, descripcion, ejercicios, programa_nombre, programa_semana, creado_en, actualizado_en';
   const CAMPOS_REGISTRO = 'id, workout_id, cliente_id, fecha, duracion_min, esfuerzo, comentario, resultados, creado_en, actualizado_en';
   const CAMPOS_COMENTARIO = 'id, workout_id, cliente_id, profesional_id, autor_nombre, autor_rol, texto, creado_en';
   const MAX_EJERCICIOS = 40;

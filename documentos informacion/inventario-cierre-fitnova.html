@@ -94,6 +94,10 @@
       <strong>Actualización 26/11/2026 · Workouts y registro de realización (etapa 1 de 3).</strong>
       La Librería de Manager tiene catálogo real de <strong>Ejercicios</strong> (categoría, explicación y vídeo de YouTube o Vimeo) y <strong>Workouts</strong> con series, repeticiones, kg, tiempo, descanso y notas por ejercicio; se pueden editar, duplicar, eliminar y asignar a un cliente con fecha, una vez o cada semana (copia por cliente). La pestaña Entrenamiento de la ficha muestra próximos y anteriores, prescrito frente a realizado, esfuerzo medio, edición o borrado mientras no haya registro y comentarios del profesional. En Go hay página <em>Mis entrenamientos</em> (<code>entrenamiento.html</code>) con vídeo incrustado y registro de series reales, duración, esfuerzo 1–10 y comentario; tarjeta en Inicio y 💪 en la Agenda. Tablas <code>ejercicios</code>, <code>workouts</code>, <code>clientes_workouts</code>, <code>clientes_workout_registros</code> y <code>clientes_workout_comentarios</code> con privilegios mínimos y RLS. Cerrado G31 y M13 en lo relativo a workouts; faltan programas de varias semanas (etapa 2) y vídeos de la Librería (etapa 3).
     </div>
+    <div class="notice good">
+      <strong>Actualización posterior · Programas de varias semanas (etapa 2 de 3).</strong>
+      Manager permite crear, editar, duplicar y asignar programas con workouts por semana y día. Una asignación crea las copias fechadas en una transacción; Go y la ficha muestran el nombre y la semana del programa en cada entrenamiento. Las copias ya asignadas no cambian al editar la plantilla y se gestionan individualmente. Falta la biblioteca general de vídeos (etapa 3).
+    </div>
     <p><strong>Qué se ha revisado:</strong> las 8 páginas HTML de Go y las 9 de Manager, sus scripts propios, el helper de Agenda, el service worker, el manifest y las 8 migraciones versionadas. Este informe es una revisión de implementación; no una nueva prueba completa de cada botón contra la base remota ni una auditoría legal o de seguridad especializada.</p>
     <p><strong>Cómo leer los estados:</strong></p>
     <ul>
@@ -122,7 +126,7 @@
         <ul>
           <li><s>Evolución real en Go y Progreso real en Manager.</s> <strong>Hecho (24/11), con fotos de progreso.</strong></li>
           <li><s>Actividades personales y resumen semanal (G06–G08, G11).</s> <strong>Hecho (24/11):</strong> en Supabase, con foto de ruta y visibles en la ficha de Manager.</li>
-          <li>Workouts, programas, vídeos y registro de realización. <strong>Workouts y registro hechos (26/11):</strong> catálogo de ejercicios con vídeo, workouts, asignación por fecha, registro en Go y revisión y comentarios en Manager. Faltan programas y vídeos de la Librería.</li>
+          <li>Workouts, programas, vídeos y registro de realización. <strong>Workouts, programas y registro hechos:</strong> catálogo de ejercicios, asignación por fecha o programa, registro en Go y revisión en Manager. Falta la biblioteca general de vídeos.</li>
           <li>Nutrición, recetas y diario alimentario. <strong>Diario hecho (25/11):</strong> comidas con foto, agua y comentarios del profesional. Faltan el recetario y el plan semanal.</li>
           <li>Chat, notificaciones y tareas.</li>
           <li>Equipo, archivos y formularios de seguimiento.</li>
@@ -343,7 +347,7 @@
           <thead><tr><th>Pestaña</th><th>Estado actual</th><th>Cierre pendiente</th></tr></thead>
           <tbody>
             <tr><td>Resumen</td><td>Nombre, email, estado, teléfono, actividad, alta y parte del objetivo reales. <strong>Actividad física real (24/11):</strong> esta semana, últimos 30 días y tabla de actividades con foto de ruta (solo lectura).</td><td><strong>M12:</strong> completar nacimiento, género, peso inicial/actual, observaciones/lesiones y revisión PAR-Q con permisos adecuados. No confundir «sin datos» con errores de consulta.</td></tr>
-            <tr><td>Entrenamiento</td><td>Estado vacío fijo y enlace a Librería.</td><td><strong>M13:</strong> <s>asignar workouts al cliente con fecha, ver ejecución y feedback</s> <strong>hecho (26/11)</strong>, con edición por cliente y comentarios. Falta asignar programas (etapa 2).</td></tr>
+            <tr><td>Entrenamiento</td><td>Estado vacío fijo y enlace a Librería.</td><td><strong>M13:</strong> asignación de workouts y programas, ejecución y feedback implementados, con edición por cliente y comentarios.</td></tr>
             <tr><td>Nutrición</td><td>Estado vacío fijo y enlace a Librería.</td><td><strong>M14 — PARCIAL (25/11):</strong> hecho el diario real de Go por periodo (comidas, fotos, agua y resumen) y los comentarios del profesional por día. Falta asignar el plan semanal.</td></tr>
             <tr><td>Agenda</td><td>Sesiones reales y enlace de alta con cliente preseleccionado.</td><td>Bloque individual hecho. Ampliaciones opcionales de M20 y tratamiento de sesiones al archivar/desasignar.</td></tr>
             <tr><td>Progreso</td><td>Siempre afirma que no hay mediciones; botón sin acción.</td><td><strong>M15 — HECHO (24/11):</strong> resumen de peso, selector de las 15 medidas con gráfico, filtro por periodo, historial con autor («Cliente (Go)», «Profesional (tú)»), «+ Registrar medidas», editar/eliminar solo las propias y galería de fotos del cliente en solo lectura. Escritura limitada por RLS al entrenador o nutricionista asignado.</td></tr>
@@ -373,7 +377,7 @@
       <h3>4.6. Librería: las seis pestañas</h3>
       <p><span class="tag demo">MAQUETA</span> Las seis pestañas muestran vacíos fijos y contadores 0. Crear nuevo abre el mismo formulario de nombre/descripción para todas. Guardar solo cierra; buscador y Filtros no tienen lógica funcional. Los botones «Crear con IA» se han quitado (25/11) para no prometer una función que no existe.</p>
       <ul class="tasks">
-        <li><strong>M22 · Contenido y asignación:</strong> <em>Workouts y Ejercicios hechos (26/11).</em> Crear modelo, permisos y CRUD para cada tipo. Workouts necesitan ejercicios y parámetros; Programas, agrupación y calendario; Nutrición, estructura de plan; Recetas, ingredientes/instrucciones; Vídeos, archivo/URL y metadatos; Formularios, preguntas/tipos y respuestas. Un único título/descripción no resuelve estos seis módulos.</li>
+        <li><strong>M22 · Contenido y asignación:</strong> <em>Workouts, Ejercicios y Programas hechos.</em> Siguen pendientes los modelos y CRUD de Nutrición, Recetas, Vídeos y Formularios. Un único título/descripción no resuelve estos módulos.</li>
         <li><strong>M23 · Publicación y destinatarios:</strong> <em>Workouts: asignación por cliente y fecha hecha (26/11).</em> Borradores/publicados, clientes o grupos autorizados, asignación, retirada, cambios/versiones y copia de plantillas si se incluye. Conectar ficha Manager y vistas Go; probar que el contenido llega al cliente correcto.</li>
         <li><strong>M24 · Búsqueda, filtros e IA:</strong> hacer búsquedas y contadores reales. La IA es ampliación: decidir proveedor, coste, revisión profesional y tratamiento de datos antes de implementarla. No bloquea la creación manual.</li>
       </ul>
@@ -520,7 +524,7 @@
           <tr><td><strong>P1 · Seguimiento corporal</strong></td><td>G15–G21 y M15; error/identidad T01–T03 en el recorrido.</td><td>Tablas actuales, definición de fechas y borrado.</td><td>Una medida de Go aparece igual en Perfil, Evolución y Manager.</td></tr>
           <tr><td><strong>P1 · Actividad real — HECHO (24/11)</strong></td><td>G06–G08, G11 y revisión del profesional.</td><td>Modelo de actividad y política de importación local.</td><td>Registro persistente, semana real y lectura del profesional.</td></tr>
           <tr><td><strong>P1 · Cuentas recuperables</strong></td><td>G01–G05, M01 y T01–T02/T07.</td><td>Configuración de correo/retorno y reanudación.</td><td>Recuperar contraseña y retomar alta sin crear otra cuenta.</td></tr>
-          <tr><td><strong>P2 · Workouts y programas</strong> · <em>workouts hechos (26/11); faltan programas</em></td><td>M13, M22–M23 y G31.</td><td>Modelo de ejercicios, asignación y ejecución.</td><td>Profesional prescribe, cliente realiza y profesional revisa.</td></tr>
+          <tr><td><strong>P2 · Workouts y programas</strong> · <em>implementados</em></td><td>M13, M22–M23 y G31.</td><td>Modelo de ejercicios, asignación y ejecución.</td><td>Profesional prescribe, cliente realiza y profesional revisa.</td></tr>
           <tr><td><strong>P2 · Vídeos y fotos</strong></td><td>G13–G14, G18/G22, M15/M17 y parte de Librería.</td><td>Storage/proveedor, permisos y catálogo.</td><td>Reproducción real y fotos conservadas con acceso autorizado.</td></tr>
           <tr><td><strong>P2 · Nutrición y recetas</strong></td><td>G09/G32, M14 y pestañas específicas de M22–M23.</td><td>Modelo de plan/receta/diario.</td><td>Plan asignado y alimentación revisable.</td></tr>
           <tr><td><strong>P2 · Chat, tareas y formularios</strong></td><td>G29–G30/G32, M16/M19/M25–M28.</td><td>Participantes, eventos, modelos y permisos.</td><td>Comunicación y seguimiento reales, sin mensajes ficticios.</td></tr>

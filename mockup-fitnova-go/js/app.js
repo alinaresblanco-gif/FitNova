@@ -1,7 +1,7 @@
 // Utilidades genéricas para el mockup de FitNova Go (sin backend, solo simulación visual)
 
 // Incrementar en cada cambio visible del mockup para que se muestre el aviso de actualización.
-const APP_VERSION = '2026.11.26.1';
+const APP_VERSION = '2026.11.26.2';
 const ACTIVITIES_KEY = 'fitnova_activities';
 let selectedAgendaDay = '';
 let agendaFechaBase = new Date();

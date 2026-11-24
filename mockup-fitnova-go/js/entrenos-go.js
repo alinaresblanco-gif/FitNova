@@ -34,7 +34,7 @@
   function item(w, hoy = E.hoyIso()) {
     const est = E.ESTADOS[E.estado(w, hoy)];
     return `<a class="activity-item ent-item" href="${url(w)}">
-      <span><strong>${E.escapar(w.nombre)}</strong><span>${E.escapar(E.etiquetaDia(w.fecha, hoy))} · ${est.icono} ${est.texto}${w.registro ? ` · ${E.escapar(E.resumenRegistro(w))}` : ` · ${w.ejercicios.length} ${w.ejercicios.length === 1 ? 'ejercicio' : 'ejercicios'}`}${w.comentarios.length ? ` · 💬 ${w.comentarios.length}` : ''}</span></span><span>›</span>
+      <span><strong>${E.escapar(w.nombre)}</strong><span>${E.escapar(E.etiquetaDia(w.fecha, hoy))} · ${est.icono} ${est.texto}${w.registro ? ` · ${E.escapar(E.resumenRegistro(w))}` : ` · ${w.ejercicios.length} ${w.ejercicios.length === 1 ? 'ejercicio' : 'ejercicios'}`}${w.comentarios.length ? ` · 💬 ${w.comentarios.length}` : ''}</span>${w.programa_nombre ? `<span>${E.escapar(w.programa_nombre)} · semana ${w.programa_semana}</span>` : ''}</span><span>›</span>
     </a>`;
   }
 
@@ -248,6 +248,7 @@
     document.getElementById('ent-titulo').textContent = w.nombre;
     cont.innerHTML = `
       <p class="ent-cabecera">${E.escapar(E.etiquetaDia(w.fecha, hoy))}${E.etiquetaDia(w.fecha, hoy) !== E.fechaLarga(w.fecha) ? ` · ${E.escapar(E.fechaLarga(w.fecha))}` : ''} · ${est.icono} ${est.texto}</p>
+      ${w.programa_nombre ? `<p class="ent-cabecera">${E.escapar(w.programa_nombre)} · semana ${w.programa_semana}</p>` : ''}
       ${w.descripcion ? `<section class="card"><p class="ent-notas">${E.escapar(w.descripcion)}</p></section>` : ''}
       ${st.registrando ? formRegistroHtml(w) : `
         <section class="card"><p class="card-title">Ejercicios (${w.ejercicios.length})</p>${w.ejercicios.map(ejercicioHtml).join('')}</section>
