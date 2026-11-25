@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FitNova Go · Manual operativo paso a paso</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f2f5fa;color:#233249;font:16px/1.65 "Segoe UI",system-ui,sans-serif}main{max-width:920px;margin:24px auto 60px;padding:0 16px}header{background:#0a1a2f;color:#fff;padding:28px;border-radius:14px}header p{margin:0}h1{font-size:clamp(26px,5vw,36px);line-height:1.2;margin:8px 0}h2{font-size:22px;margin:0 0 12px}h3{margin:22px 0 6px}section,nav{background:#fff;border:1px solid #dce3ee;border-radius:12px;padding:22px;margin-top:18px}li{margin:8px 0}a{color:#1748c7;overflow-wrap:anywhere}.aviso{background:#fff6e7;border-left:5px solid #ac710b}.resultado{background:#edf5ff;border-left:4px solid #3478d4;padding:12px}.boton{display:inline-block;background:#1748c7;color:white;padding:10px 16px;border-radius:8px;text-decoration:none}footer{color:#657189;font-size:13px;margin:24px 0}@media print{body{background:#fff}main{max-width:none;margin:0}header{background:#fff;color:#233249;border-bottom:2px solid #ff6a00}h2,h3{break-after:avoid}}
+</style>
+</head>
+<body><main>
+<header><p>Manual operativo · Cliente</p><h1>Cómo trabajar en FitNova Go</h1><p>Desde la invitación hasta el seguimiento diario y la comunicación con tu profesional.</p></header>
+<section class="aviso"><h2>Situación actual: solo pruebas</h2><p>Este manual describe la operativa prevista en la versión consultada el 25/11/2026. La app guarda información en una base compartida y algunos registros no se pueden borrar desde la interfaz. Usa solo cuentas autorizadas, datos ficticios y archivos sin información personal. <strong>No introduzcas datos reales ni de salud.</strong></p><p>El alta se ha comprobado con una cuenta ficticia tras aplicar la migración necesaria. Los textos no están revisados legalmente ni identifican definitivamente al responsable; no constituyen una base preparada para usar la aplicación con clientes reales.</p><p>La recuperación de contraseña por correo aún necesita configuración y pruebas. Si pierdes el acceso durante las pruebas, contacta con el responsable de la aplicación; no compartas tu contraseña.</p></section>
+<section><h2>Cómo se relacionan Go y Manager</h2><p>Tu profesional trabaja desde <strong>FitNova Manager</strong>; tú utilizas <strong>FitNova Go</strong>. Manager prepara citas y contenidos para tu cuenta. En Go los consultas, registras tu actividad y compartes información. El profesional puede revisar lo que corresponde y responderte desde Manager.</p><p>Necesitas conexión a internet y una invitación individual. Algunas pantallas aparecerán vacías hasta que el profesional prepare o asigne contenido. Los apartados 3 a 10 se repiten según tus necesidades; no es obligatorio completarlos cada día.</p><p><a class="boton" href="https://alinaresblanco-gif.github.io/FitNova/mockup-fitnova-go/login.html">Abrir acceso a FitNova Go</a> · <a href="manual-operativo-manager.html">Manual operativo de Manager</a> · <a href="fitnova-go-paso-a-paso.html">Prueba coordinada de Go</a>. La guía de pruebas es anterior y su aviso sobre el estado de los textos legales está desactualizado.</p></section>
+<nav><strong>Índice:</strong> <a href="#alta">1 Alta</a> · <a href="#acceso">2 Acceso y perfil</a> · <a href="#actividad">3 Actividad</a> · <a href="#agenda">4 Agenda</a> · <a href="#entrenamiento">5 Entrenamiento</a> · <a href="#nutricion">6 Nutrición</a> · <a href="#videos">7 Vídeos</a> · <a href="#evolucion">8 Evolución</a> · <a href="#seguimiento">9 Seguimiento</a> · <a href="#chat">10 Chat</a> · <a href="#ajustes">11 Ajustes</a> · <a href="#rutina">12 Rutina</a></nav>
+
+<section id="alta"><h2>1. Recibir la invitación y darse de alta</h2><ol>
+<li>El profesional crea una invitación para tu correo y te entrega su enlace por un canal privado. No publiques ni compartas ese enlace.</li>
+<li>Abre el enlace y comprueba el correo mostrado. Completa los apellidos y crea tu contraseña. Lee los textos enlazados y las casillas antes de continuar; son borradores y solo sirven para pruebas.</li>
+<li>Completa las pantallas de datos iniciales, objetivo y cuestionario con valores y respuestas ficticios; no es una evaluación de salud. Pulsa <strong>Finalizar</strong>.</li>
+<li>Si el proceso termina correctamente, entrarás en Inicio. Avisa al profesional para que compruebe que tu cuenta aparece activa en Manager.</li>
+</ol><p>El enlace caduca a los siete días y puede ser cancelado o sustituido. Si interrumpes el alta, vuelve al mismo enlace vigente y usa tu sesión o «Ya tengo una cuenta»; tendrás que repetir el cuestionario incompleto. Si ya no es válido, solicita otro al profesional.</p></section>
+
+<section id="acceso"><h2>2. Entrar y comprobar tu perfil</h2><ol>
+<li>Después del alta, abre el acceso de Go e inicia sesión con el correo y la contraseña de esa cuenta. No necesitas usar una cuenta profesional de Manager.</li>
+<li>En <strong>Inicio</strong>, pulsa tu imagen de usuario para abrir <strong>Perfil</strong>. Revisa el nombre, la gráfica de peso y los profesionales relacionados.</li>
+<li>Para cambiar la imagen de perfil, selecciona una imagen de prueba JPG, PNG o WebP; también puedes eliminarla.</li>
+<li>Abre <strong>Ajustes → Mi perfil</strong> para cambiar el alias y pulsa <strong>Guardar cambios</strong>. El correo se muestra de solo lectura.</li>
+<li>En <strong>Sobre mí</strong>, consulta la altura y guarda una nota ficticia si lo necesitas.</li>
+</ol><p class="resultado">Los cambios guardados deben mantenerse al volver a abrir la pantalla. Si algo no aparece, comprueba la conexión y actualiza.</p></section>
+
+<section id="actividad"><h2>3. Registrar tu actividad en Inicio</h2><ol>
+<li>En <strong>Inicio</strong>, pulsa <strong>Registrar Actividad de Hoy</strong>.</li>
+<li>Escribe el nombre, duración y distancia; puedes añadir un comentario o una imagen. En esta fase utiliza únicamente información ficticia.</li>
+<li>Guarda y revisa el <strong>Resumen semanal</strong>. Los pasos y calorías derivados de la distancia son una estimación, no una medición directa.</li>
+<li>Si dispones de un archivo de actividad adecuado, puedes usar <strong>Importar actividad del reloj</strong>, revisar los datos y guardar. No existe conexión automática con el reloj.</li>
+<li>La actividad también aparece en Agenda; el profesional puede consultarla en el resumen de tu ficha.</li>
+</ol><p>Una actividad personal no crea una cita ni sustituye el registro de un workout asignado. Se guarda en la base compartida, no solo en el navegador.</p></section>
+
+<section id="agenda"><h2>4. Consultar tu Agenda</h2><ol>
+<li>Abre <strong>Agenda</strong> desde la barra inferior. Pulsa <strong>Actualizar citas</strong> para consultar los últimos cambios del profesional.</li>
+<li>Busca la fecha y toca el día. Allí puedes distinguir las citas programadas, los entrenamientos asignados y tus actividades personales.</li>
+<li>Abre tu actividad personal si necesitas editarla o eliminarla.</li>
+<li>Si una cita no te viene bien o necesitas cambiarla, contacta con el profesional. Él debe modificarla o cancelarla desde Manager; después actualiza las citas en Go.</li>
+</ol><p>Una cita cancelada o completada queda en el historial. Las horas se muestran según la zona horaria del dispositivo.</p></section>
+
+<section id="entrenamiento"><h2>5. Consultar y registrar entrenamientos</h2><ol>
+<li>En Inicio pulsa <strong>Ver mis entrenamientos</strong>, o entra desde Agenda. Abre el entrenamiento asignado a la fecha que corresponda.</li>
+<li>Revisa ejercicios, instrucciones, series, repeticiones y demás indicaciones. Si aparece <strong>Ver vídeo</strong>, puedes abrir la demostración enlazada.</li>
+<li>Pulsa <strong>Registrar entrenamiento</strong>. Introduce los resultados que correspondan a cada ejercicio, duración, esfuerzo de 1 a 10 y un comentario si lo deseas. Para probar, utiliza datos ficticios sin realizar actividad real.</li>
+<li>Guarda el registro y comprueba que aparece como <strong>Realizado</strong>. Si necesitas corregirlo, abre el entrenamiento y pulsa <strong>Editar registro</strong>.</li>
+<li>Vuelve más tarde al detalle para leer el comentario del profesional, si lo ha publicado.</li>
+</ol><p class="resultado">El profesional ve en Manager el entrenamiento prescrito y lo que hayas registrado. Si no encuentras ninguno, confirma que te haya asignado uno para la fecha adecuada.</p></section>
+
+<section id="nutricion"><h2>6. Consultar el plan y llevar el diario</h2><h3>6.1 Ver lo preparado por el profesional</h3><ol>
+<li>En Inicio abre <strong>Ver mi diario</strong> y busca <strong>Mi plan nutricional</strong>.</li>
+<li>Abre el plan vigente, el día de la semana y la receta o indicaciones que te interesen.</li>
+</ol><h3>6.2 Registrar comidas y agua</h3><ol>
+<li>En Inicio pulsa <strong>Registrar comida</strong>. Elige el tipo, escribe la comida y añade una sensación o imagen si lo deseas; guarda.</li>
+<li>En el diario cambia de fecha con las flechas y abre una comida para corregirla o eliminarla.</li>
+<li>En <strong>Agua</strong>, utiliza «+» para añadir y «−» para corregir. Consulta el día correspondiente para revisar lo guardado.</li>
+<li>Cuando el profesional responda, abre ese día y busca <strong>Comentarios de tu profesional</strong>.</li>
+</ol><p>El plan es independiente del diario: abrir una receta no registra una comida. La aplicación no calcula calorías ni nutrientes automáticamente. El plan solo aparece si está asignado y vigente para la fecha consultada.</p></section>
+
+<section id="videos"><h2>7. Ver vídeos y guardar favoritos</h2><ol>
+<li>Abre <strong>Vídeos</strong> desde la barra inferior y busca el contenido que el profesional haya publicado para ti.</li>
+<li>Abre el vídeo para reproducirlo. La reproducción depende de YouTube o Vimeo y de que el propietario permita mostrarlo.</li>
+<li>Pulsa la estrella para guardarlo; entra en <strong>Mis favoritos</strong> para encontrarlo después. Vuelve a pulsar la estrella si quieres quitarlo.</li>
+</ol><p>Si falta un vídeo, consulta si el profesional lo ha publicado para tu cuenta. FitNova no aloja estos vídeos ni controla los enlaces externos.</p></section>
+
+<section id="evolucion"><h2>8. Registrar tu evolución</h2><h3>Medidas y objetivo</h3><ol>
+<li>Abre <strong>Evolución → Métricas</strong> y pulsa «+».</li>
+<li>Selecciona la fecha, introduce las medidas que quieras registrar y guarda. Para las pruebas deben ser valores ficticios.</li>
+<li>Elige una métrica y un periodo para revisar el gráfico y el historial. Puedes corregir tus propios valores con el lápiz.</li>
+<li>Para cambiar el objetivo de peso, abre la balanza de <strong>Objetivo de peso</strong>, escribe el valor y pulsa <strong>Actualizar</strong>.</li>
+</ol><h3>Fotos</h3><ol>
+<li>Abre <strong>Fotos</strong> y añade una imagen ficticia durante las pruebas.</li>
+<li>Comprueba que aparece en tu evolución. Puedes eliminar tu foto si ya no la necesitas.</li>
+</ol><p>El profesional autorizado puede consultar estos datos y registrar medidas propias. Estas aparecen identificadas como profesionales y no se editan desde Go.</p></section>
+
+<section id="seguimiento"><h2>9. Responder formularios y compartir archivos</h2><h3>Formularios</h3><ol>
+<li>Desde Inicio pulsa <strong>Ver seguimiento → Formularios</strong>.</li>
+<li>Abre el formulario enviado por el profesional, completa las preguntas y pulsa <strong>Enviar respuesta</strong>.</li>
+<li>Comprueba que figura como respondido. La respuesta enviada no se puede editar; si necesitas corregirla, pide otro formulario.</li>
+</ol><h3>Archivos</h3><ol>
+<li>En <strong>Seguimiento → Archivos compartidos</strong>, selecciona el documento y pulsa <strong>Subir archivo</strong>.</li>
+<li>En esa pantalla también puedes abrir o descargar los documentos compartidos por el profesional y eliminar los tuyos cuando corresponda.</li>
+</ol><p>Se admiten PDF, imágenes y archivos Word/Excel de hasta 20 MB, no vídeos. Si una subida se interrumpe, usa «Revisar archivos pendientes» con la misma cuenta y navegador antes de borrar los datos del navegador.</p></section>
+
+<section id="chat"><h2>10. Escribir al profesional y revisar avisos</h2><ol>
+<li>Pulsa el icono de <strong>chat</strong> de la cabecera y elige al profesional asignado.</li>
+<li>Escribe y envía el mensaje. Si hace falta, adjunta una imagen JPG, PNG o WebP, o un PDF de hasta 5 MB.</li>
+<li>Si falla el envío, lee el aviso y usa la opción de reintentar o descartar el pendiente. Comprueba antes si ya se envió para no duplicarlo.</li>
+<li>Abre la <strong>campana</strong> para revisar avisos internos. Pulsa un aviso para marcarlo leído y abrir su destino.</li>
+</ol><p>La campana y el chat tienen lecturas independientes. Estos avisos no son notificaciones push ni correos. Si termina la relación profesional, la conversación anterior puede quedar en solo lectura.</p></section>
+
+<section id="ajustes"><h2>11. Ajustes, contraseña y salida</h2><ol>
+<li>Abre <strong>Ajustes → Mi perfil</strong> para modificar el alias o cambiar la contraseña mientras tienes la sesión abierta. Confirma los cambios guardados.</li>
+<li>Consulta los enlaces de privacidad, términos y aviso legal desde Perfil, teniendo presente que actualmente son borradores de prueba.</li>
+<li>Cuando termines en un dispositivo compartido, utiliza <strong>Cerrar sesión</strong>. Esto no borra la cuenta ni los registros.</li>
+</ol><p>El correo no se cambia desde el perfil. Datos fiscales, pagos y algunas preferencias siguen pendientes. La recuperación de contraseña por correo no debe darse por operativa hasta configurar el servicio y comprobarlo.</p></section>
+
+<section id="rutina"><h2>12. Rutina sencilla y resolución de problemas</h2><ol>
+<li><strong>Al entrar:</strong> revisa Inicio, Agenda, mensajes y avisos.</li>
+<li><strong>Según corresponda:</strong> consulta el entrenamiento y el plan; registra tus actividades, entrenamiento, comidas, agua o medidas.</li>
+<li><strong>Cuando el profesional lo solicite:</strong> responde los formularios o comparte archivos; revisa después sus comentarios.</li>
+<li><strong>Si falta algo:</strong> actualiza o vuelve a abrir la pantalla; confirma que estás en la cuenta y fecha correctas y que el profesional te asignó el contenido.</li>
+<li><strong>Si aparece un error:</strong> revisa la conexión, anota la pantalla y el mensaje y comunícalos al responsable sin enviar contraseñas, enlaces privados ni datos personales.</li>
+</ol><p>Los registros, mensajes y archivos de prueba pueden persistir; coordina su limpieza con el responsable y no supongas que cerrar sesión los elimina. Las guías de prueba antiguas pueden describir un estado anterior, especialmente en lo relativo al alta y los textos legales.</p></section>
+<footer>FitNova Go · Manual operativo · 25/11/2026</footer>
+</main></body></html>

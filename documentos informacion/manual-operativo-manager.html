@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FitNova Manager · Manual operativo paso a paso</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f2f5fa;color:#233249;font:16px/1.65 "Segoe UI",system-ui,sans-serif}main{max-width:920px;margin:24px auto 60px;padding:0 16px}header{background:#0a1a2f;color:#fff;padding:28px;border-radius:14px}header p{margin:0}h1{font-size:clamp(26px,5vw,36px);line-height:1.2;margin:8px 0}h2{font-size:22px;margin:0 0 12px}h3{margin:22px 0 6px}section,nav{background:#fff;border:1px solid #dce3ee;border-radius:12px;padding:22px;margin-top:18px}li{margin:8px 0}a{color:#1748c7;overflow-wrap:anywhere}.aviso{background:#fff6e7;border-left:5px solid #ac710b}.resultado{background:#edf5ff;border-left:4px solid #3478d4;padding:12px}.boton{display:inline-block;background:#1748c7;color:white;padding:10px 16px;border-radius:8px;text-decoration:none}footer{color:#657189;font-size:13px;margin:24px 0}@media print{body{background:#fff}main{max-width:none;margin:0}header{background:#fff;color:#233249;border-bottom:2px solid #1748c7}h2,h3{break-after:avoid}}
+</style>
+</head>
+<body><main>
+<header><p>Manual operativo · Profesional</p><h1>Cómo trabajar en FitNova Manager</h1><p>De la cuenta profesional al seguimiento del cliente, explicado paso a paso.</p></header>
+<section class="aviso"><h2>Situación actual: solo pruebas</h2><p>Este manual describe la operativa prevista en la versión consultada el 25/11/2026. <strong>Usa únicamente cuentas, respuestas, imágenes y archivos ficticios</strong>: las pruebas se guardan en la base compartida y algunos registros no se pueden borrar desde la interfaz.</p><p>El alta de Go se ha comprobado con un cliente ficticio tras aplicar la migración necesaria. No introducir datos reales ni de salud: faltan la revisión legal y la identificación y contacto definitivos del responsable.</p><p>El envío automático de invitaciones y la recuperación por correo están pendientes de proveedor y pruebas reales. Las invitaciones se comparten manualmente. No hay cobros ni facturas reales.</p></section>
+<section><h2>Cómo usar este manual</h2><p>Primero crea tu cuenta y la invitación. Cuando el cliente de prueba complete el alta de Go y esté activo, prepara su agenda y contenidos. Después revisa sus registros y comunícate con él. Los apartados 4 a 12 se usan según lo que necesites: no tienes que repetirlos todos para cada cliente.</p><p><a class="boton" href="https://alinaresblanco-gif.github.io/FitNova/fitnova-manager/login.html">Abrir FitNova Manager</a> · <a href="manual-operativo-go.html">Manual operativo de Go</a> · <a href="fitnova-manager-paso-a-paso.html">Prueba coordinada de Manager</a>. La guía de pruebas es anterior y su aviso sobre el estado de los textos legales está desactualizado.</p></section>
+<nav><strong>Índice:</strong> <a href="#cuenta">1 Cuenta</a> · <a href="#cliente">2 Cliente</a> · <a href="#ficha">3 Ficha</a> · <a href="#agenda">4 Agenda</a> · <a href="#workout">5 Workouts</a> · <a href="#programa">6 Programas</a> · <a href="#nutricion">7 Nutrición</a> · <a href="#videos">8 Vídeos</a> · <a href="#progreso">9 Progreso</a> · <a href="#formularios">10 Formularios y archivos</a> · <a href="#chat">11 Chat y tareas</a> · <a href="#equipo">12 Equipo</a> · <a href="#negocio">13 Negocio</a> · <a href="#cierre">14 Cierre</a></nav>
+
+<section id="cuenta"><h2>1. Crear la cuenta profesional y acceder</h2><ol>
+<li>Abre Manager. Si no tienes cuenta, pulsa <strong>Crear cuenta</strong> y completa el registro y perfil profesional con un correo controlado. Si ya la tienes, utiliza <strong>Iniciar sesión</strong>.</li>
+<li>Tras acceder, abre el avatar y entra en <strong>Mi cuenta</strong>. Revisa nombre, apellidos, correo y rol.</li>
+<li>Para modificar el nombre o los apellidos, cambia los campos y pulsa <strong>Guardar perfil</strong>. La foto se puede seleccionar y eliminar desde esta misma página.</li>
+<li>Para cambiar la contraseña con la sesión abierta, escribe y repite la nueva contraseña y pulsa <strong>Cambiar contraseña</strong>. No compartas la contraseña con el cliente.</li>
+<li>Vuelve a <strong>Inicio</strong>: allí se muestran contadores, clientes recientes, próximos eventos y tareas.</li>
+</ol><p>El correo y el rol de cuenta son de solo lectura aquí. La recuperación de contraseña sin sesión no está lista para destinatarios generales. La última actividad indica acceso a Go, no que se haya realizado un entrenamiento.</p></section>
+
+<section id="cliente"><h2>2. Invitar al cliente y abrir su ficha</h2><ol>
+<li>En <strong>Clientes</strong>, pulsa <strong>Añadir cliente</strong>.</li>
+<li>Introduce el nombre y un correo de prueba controlado distinto al del profesional y pulsa <strong>Enviar invitación</strong>.</li>
+<li>En «Invitación creada», pulsa <strong>Copiar enlace</strong> y compártelo de forma privada. Aunque aparezca una opción de correo, actualmente el envío automático no está configurado.</li>
+<li>El enlace caduca a los siete días. En <strong>Invitaciones enviadas</strong>, «Reenviar» genera uno nuevo e invalida el anterior; «Cancelar» invalida el enlace.</li>
+<li>La persona invitada abre el enlace y completa el alta en Go. Luego actualiza <strong>Clientes → Activos</strong> y pulsa su nombre.</li>
+</ol><p class="resultado">Al completarse el alta correctamente, la ficha activa reúne los datos disponibles para ese profesional y las pestañas de seguimiento. Si el cuestionario se interrumpe, el cliente puede volver al enlace vigente y repetirlo.</p><p>También puedes buscar por nombre o correo y organizar la cartera con etiquetas. Las acciones de archivar/reactivar clientes y la gestión propia de leads aún no están completas.</p></section>
+
+<section id="ficha"><h2>3. Orientarse en la ficha del cliente</h2><ol>
+<li>Abre <strong>Clientes → Activos → nombre del cliente</strong>.</li>
+<li>En <strong>Resumen</strong>, revisa datos básicos, objetivo, altura y actividad física registrada en Go. Desde la cabecera puedes abrir su chat o sus tareas.</li>
+<li>Usa las pestañas <strong>Entrenamiento, Nutrición, Agenda, Progreso, Formularios y Archivos</strong> para trabajar cada apartado como se explica a continuación.</li>
+<li>Si falta un dato, comprueba que el cliente esté activo, que tengas la asignación y rol adecuados y actualiza la pantalla. La revisión completa del cuestionario inicial de salud no está disponible en esta ficha.</li>
+</ol><p><strong>Pagos</strong> indica que el servicio no está disponible. <strong>Historial</strong> contiene eventos y fechas de ejemplo: no lo uses como historial real.</p></section>
+
+<section id="agenda"><h2>4. Programar y gestionar una cita</h2><ol>
+<li>Abre <strong>Agenda → Agendar sesión</strong>, o la pestaña <strong>Agenda</strong> de la ficha y pulsa <strong>Agendar sesión</strong>.</li>
+<li>Selecciona al cliente activo. Escribe el nombre, tipo de servicio, fecha, hora, duración y lugar que correspondan; pulsa <strong>Guardar sesión</strong>.</li>
+<li>Consulta la sesión en la lista, el calendario mensual y la ficha. Si hay un solapamiento del cliente o profesional, elige otro horario.</li>
+<li>Si necesitas modificarla, pulsa <strong>Editar</strong> y guarda. Pide al cliente que pulse <strong>Actualizar citas</strong> en Go.</li>
+<li>Si no va a celebrarse, utiliza <strong>Cancelar sesión</strong> y confirma. Si ya ha terminado y se ha realizado, utiliza <strong>Marcar completada</strong>.</li>
+</ol><p>Las sesiones canceladas o completadas quedan en el historial y no se reabren. Go las consulta pero no las reserva ni modifica. Una cita no es el registro de ejercicios de un entrenamiento.</p></section>
+
+<section id="workout"><h2>5. Crear ejercicios y asignar un workout</h2><h3>5.1 Crear ejercicios</h3><ol>
+<li>Abre <strong>Librería → Ejercicios → Crear nuevo</strong>.</li>
+<li>Escribe el nombre; añade categoría, explicación y enlace de YouTube o Vimeo si los necesitas. Guarda el ejercicio.</li>
+<li>Repite con los ejercicios que quieras utilizar. Desde la lista puedes buscarlos, editarlos o eliminarlos cuando proceda.</li>
+</ol><h3>5.2 Preparar y asignar</h3><ol>
+<li>En <strong>Librería → Workouts → Crear nuevo</strong>, escribe el nombre y las indicaciones generales.</li>
+<li>Elige ejercicios del catálogo y pulsa <strong>Añadir</strong>. Rellena series, repeticiones, carga, tiempo, descanso y notas que correspondan; ordena las filas y guarda.</li>
+<li>En la lista pulsa <strong>Asignar</strong>, selecciona el cliente activo y la fecha. Puedes elegir una sola fecha o una repetición semanal de las opciones disponibles.</li>
+<li>Comprueba el resultado en <strong>Clientes → ficha → Entrenamiento</strong>. También puedes asignar desde esa pestaña o crear uno solo para ese cliente.</li>
+</ol><p>La asignación crea copias: editar la plantilla de Librería después no modifica las ya asignadas. Mientras no haya registro del cliente puedes ajustar o eliminar la copia desde su ficha.</p></section>
+
+<section id="programa"><h2>6. Crear un programa de varias semanas</h2><ol>
+<li>Crea primero los workouts que vaya a utilizar el programa.</li>
+<li>Abre <strong>Librería → Programas → Crear nuevo</strong>. Escribe el nombre.</li>
+<li>Pulsa <strong>+ Añadir workout</strong> para cada fila y elige su semana, día y workout; guarda el programa.</li>
+<li>Pulsa <strong>Asignar</strong>, selecciona el cliente y la fecha de inicio. El día 1 es esa fecha, no necesariamente lunes; semana 2/día 3 corresponde nueve días después del inicio.</li>
+<li>Comprueba en la ficha y en Go las sesiones creadas. No vuelvas a asignar el programa sin comprobar primero: se crearían nuevas copias.</li>
+</ol><p>Si necesitas cambiar una copia pendiente, edítala individualmente en la ficha. Las copias ya registradas no se eliminan desde Manager; modificar o borrar la plantilla no cambia las asignaciones existentes.</p></section>
+
+<section id="nutricion"><h2>7. Crear recetas y un plan nutricional</h2><h3>7.1 Receta</h3><ol>
+<li>En <strong>Librería → Recetas → Crear nuevo</strong>, escribe título, ingredientes y preparación.</li>
+<li>Si lo necesitas añade descripción, raciones, kcal introducidas por ti y una foto; pulsa <strong>Guardar receta</strong>.</li>
+</ol><h3>7.2 Plan y asignación</h3><ol>
+<li>En <strong>Librería → Nutrición → Crear nuevo</strong>, escribe el nombre y elige un día de la semana.</li>
+<li>Usa <strong>+ Añadir comida</strong>, selecciona tipo y receta o escribe indicaciones. Repite por día. Los objetivos de agua y kcal son opcionales; guarda el plan.</li>
+<li>Pulsa <strong>Asignar</strong>, elige un cliente activo asignado, fecha de inicio y fecha de fin; confirma. Ambas fechas están incluidas.</li>
+<li>Abre <strong>ficha → Nutrición → Planes nutricionales</strong> para revisarlo. El cliente lo consulta en su diario de Go.</li>
+</ol><p>No se admiten planes solapados para un mismo cliente. Al asignar se guarda una copia del plan y las recetas; editar la plantilla no cambia esa copia. El plan no calcula nutrientes ni registra comidas automáticamente.</p></section>
+
+<section id="videos"><h2>8. Compartir un vídeo</h2><ol>
+<li>Abre <strong>Librería → Vídeos → Crear nuevo</strong>.</li>
+<li>Escribe el título, pega un enlace de YouTube o Vimeo que permita inserción y pulsa <strong>Ver vista previa</strong>. Completa los demás datos si los necesitas.</li>
+<li>Marca los clientes activos asignados que podrán verlo. Selecciona <strong>Publicar para los clientes seleccionados</strong> y guarda; sin publicar queda como borrador.</li>
+<li>Para cambiar destinatarios o retirar la publicación, pulsa <strong>Editar y destinatarios</strong> y guarda los cambios.</li>
+</ol><p>FitNova comparte enlaces: no aloja el vídeo. La reproducción depende del proveedor; retirar el acceso en FitNova no invalida un enlace externo ya copiado.</p></section>
+
+<section id="progreso"><h2>9. Revisar resultados y responder</h2><h3>Entrenamientos</h3><ol>
+<li>Abre <strong>ficha → Entrenamiento</strong> y entra en <strong>Ver detalle</strong> del workout.</li>
+<li>Compara lo prescrito con las series, carga, duración, esfuerzo y comentario guardados por el cliente en Go.</li>
+<li>Escribe en <strong>Comentario para el cliente</strong> y pulsa <strong>Comentar</strong>. Para corregirlo, borra tu comentario y escribe otro.</li>
+</ol><h3>Nutrición y medidas</h3><ol>
+<li>En <strong>Nutrición</strong> elige el periodo y revisa comidas, agua, fotos y sensaciones. Pulsa <strong>Comentar este día</strong>, escribe el comentario y publícalo.</li>
+<li>En <strong>Progreso</strong>, elige periodo y medida; consulta el historial, gráfico y fotos del cliente.</li>
+<li>Para registrar medidas propias, pulsa <strong>+ Registrar medidas</strong>, indica fecha y valores y guarda. Puedes editar o eliminar tus propios registros; los del cliente son de solo lectura.</li>
+</ol><p class="resultado">El cliente puede leer los comentarios y ver las medidas introducidas por el profesional en Go. Para ver los cambios recientes, recarga o vuelve a abrir la pantalla.</p></section>
+
+<section id="formularios"><h2>10. Formularios y archivos</h2><h3>Enviar formulario</h3><ol>
+<li>En <strong>Librería → Formularios → Crear nuevo</strong>, escribe el título y añade hasta 20 preguntas de texto, número u opción única. Guarda.</li>
+<li>Abre <strong>ficha → Formularios</strong>, selecciona la plantilla y pulsa <strong>Enviar al cliente</strong>.</li>
+<li>Consulta el envío pendiente y, cuando el cliente responda desde Go → Seguimiento, abre su respuesta. El autor puede cancelar un envío pendiente.</li>
+</ol><p>Las preguntas enviadas son una copia. Una respuesta enviada no se puede editar: para corregirla, envía otro formulario.</p>
+<h3>Compartir archivos</h3><ol>
+<li>En <strong>ficha → Archivos</strong>, selecciona el documento y pulsa <strong>Subir archivo</strong>.</li>
+<li>El cliente lo consulta en Go → Seguimiento → Archivos compartidos; tú puedes consultar y descargar los que él comparta.</li>
+<li>Solo el autor o el cliente pueden eliminar el archivo. Se admiten PDF, imágenes y Word/Excel de hasta 20 MB, no vídeos.</li>
+</ol><p>Si se interrumpe una subida, utiliza «Revisar archivos pendientes» con la misma cuenta y navegador antes de borrar los datos del navegador.</p></section>
+
+<section id="chat"><h2>11. Chat, avisos y tareas</h2><ol>
+<li>Pulsa el icono de chat o <strong>Enviar mensaje</strong> desde la ficha. Selecciona el cliente y escribe el mensaje.</li>
+<li>Si lo necesitas, adjunta JPG, PNG, WebP o PDF de hasta 5 MB y envía. Si falla, usa la opción de reintentar o descartar el envío pendiente.</li>
+<li>Consulta la <strong>campana</strong> para ver avisos internos; pulsa uno para marcarlo leído y abrir su destino. Leer el chat no marca automáticamente el aviso.</li>
+<li>En <strong>Inicio → Tareas → Nueva tarea</strong>, escribe el título y, opcionalmente, descripción, fecha y cliente. Guarda; después puedes completar, reabrir, editar o eliminar.</li>
+</ol><p>Las tareas son privadas del profesional, aunque se vinculen a un cliente. Los avisos son internos: no hay push ni envío de correo automático. Si termina la relación, el historial del chat queda en solo lectura para los participantes originales.</p></section>
+
+<section id="equipo"><h2>12. Invitar colaboradores y asignar clientes</h2><ol>
+<li>Abre <strong>Equipo → Invitar colaborador</strong>, introduce su correo y selecciona entrenador, nutricionista o recepción.</li>
+<li>Crea y copia el enlace; compártelo en privado. El colaborador debe abrirlo con una cuenta profesional del mismo correo y aceptarlo.</li>
+<li>En Equipo, pulsa <strong>Clientes</strong> junto al colaborador y marca los clientes propios que quieras asignarle.</li>
+<li>Puedes renovar o cancelar una invitación. Para cambiar el rol de un miembro ya incorporado hay que retirarlo y volver a invitarlo.</li>
+</ol><p>Entrenador y nutricionista acceden al seguimiento del cliente asignado; recepción accede a datos básicos y sus propias citas, no al seguimiento clínico ni al chat. Si se retira el último acceso al cliente, pueden cancelarse las citas futuras programadas de ese profesional. Comprueba el efecto antes de retirar una asignación.</p></section>
+
+<section id="negocio"><h2>13. Preparar borradores comerciales</h2><ol>
+<li>En <strong>Negocio → Nuevo plan</strong>, escribe nombre, modalidad e importe orientativo; guarda.</li>
+<li>Pulsa <strong>Preparar propuesta</strong>, selecciona plan y cliente activo asignado y guarda la propuesta.</li>
+<li>Revisa los borradores; puedes retirar una propuesta o archivar un plan según las opciones de la pantalla.</li>
+</ol><p><strong>No se cobra, no se envía la propuesta y no se crea una suscripción.</strong> Stripe, facturación, fiscalidad y gestión de impagos siguen pendientes.</p></section>
+
+<section id="cierre"><h2>14. Rutina de trabajo y problemas frecuentes</h2><ol>
+<li>Al comenzar, revisa en Inicio las próximas citas y tareas; utiliza la campana y el chat para los avisos y mensajes.</li>
+<li>Abre la ficha del cliente, revisa sus registros, responde y actualiza las asignaciones pendientes según necesites.</li>
+<li>Ante «sin datos», confirma cuenta, cliente, rol, asignación, fecha y conexión. Recarga antes de concluir que falta información.</li>
+<li>Si falla una asignación o subida, lee el error y comprueba si se creó antes de reintentar; evita duplicar. No incluyas contraseñas ni datos sensibles al comunicar una incidencia.</li>
+<li>Para cerrar, abre <strong>Mi cuenta → Cerrar sesión</strong>. Cerrar sesión no elimina la cuenta ni los registros.</li>
+</ol><p>Las guías de módulos anteriores pueden contener estados antiguos. Este manual recoge las limitaciones conocidas a su fecha; consulta también la <a href="fitnova-manager-paso-a-paso.html">guía de pruebas coordinadas</a>.</p></section>
+<footer>FitNova Manager · Manual operativo · 25/11/2026</footer>
+</main></body></html>
