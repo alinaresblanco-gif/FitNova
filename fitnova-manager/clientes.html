@@ -66,11 +66,13 @@
         </div>
         <div class="list-toolbar" style="padding-top:0;">
           <div class="list-toolbar-left">
-            <input type="text" id="nueva-etiqueta" placeholder="Nueva etiqueta" maxlength="50" style="padding:9px;border:1px solid var(--gris-borde);border-radius:8px;" />
-            <button class="btn-outline" onclick="crearEtiqueta()">➕ Crear etiqueta</button>
-            <span id="etiqueta-error" style="font-size:12px;color:var(--rojo);"></span>
+            <input type="text" id="nueva-etiqueta" aria-label="Nombre de la nueva etiqueta" placeholder="Ej. Nutrición" maxlength="50" style="padding:9px;border:1px solid var(--gris-borde);border-radius:8px;" />
+            <button type="button" id="crear-etiqueta" class="btn-outline" onclick="crearEtiqueta()">➕ Crear etiqueta</button>
+            <span id="etiqueta-error" role="alert" style="font-size:12px;color:var(--rojo);"></span>
+            <span id="etiqueta-estado" role="status" style="font-size:12px;color:#20804d;"></span>
           </div>
         </div>
+        <p style="padding:0 20px;font-size:12px;color:var(--gris-texto-suave);">Crea una etiqueta para organizar tus clientes; después pulsa su nombre en la fila de cada cliente para asignarla o quitarla.</p>
 
         <!-- Tab: Activos -->
         <div class="tab-panel active" data-tab-panel-group="clientes" data-tab-panel="activos">
@@ -149,6 +151,6 @@
   <script src="../js/comunicacion.js?v=20261126.3"></script>
   <script src="../js/comunicacion-header.js?v=20261127.1"></script>
   <script src="js/correo-invitacion.js?v=20261201.1"></script>
-  <script src="js/clientes.js?v=20261201.4"></script>
+  <script src="js/clientes.js?v=20261201.5"></script>
 </body>
 </html>

@@ -50,6 +50,7 @@ function htmlEtiquetasCliente(cliente) {
   return `<div class="cliente-etiquetas">${etiquetasDisponibles.map((etiqueta) => {
     const asignada = cliente.etiquetas.some((actual) => actual.id === etiqueta.id);
     return `<button type="button" class="cliente-etiqueta${asignada ? ' asignada' : ''}"
+      aria-pressed="${asignada}"
       onclick="alternarEtiqueta('${cliente.id}', '${etiqueta.id}', ${asignada})"
       title="${asignada ? 'Quitar etiqueta' : 'Asignar etiqueta'}">${escaparHTML(etiqueta.nombre)}</button>`;
   }).join('')}</div>`;
@@ -132,7 +133,7 @@ async function cargarEtiquetas() {
     .order('nombre', { ascending: true });
   if (error) {
     document.getElementById('etiqueta-error').textContent = error.message;
-    return;
+    return false;
   }
 
   etiquetasDisponibles = (data || []).filter((etiqueta) => etiqueta.profesional_id);
@@ -140,26 +141,44 @@ async function cargarEtiquetas() {
   selector.innerHTML = '<option value="">Todas las etiquetas</option>'
     + etiquetasDisponibles.map((etiqueta) =>
       `<option value="${etiqueta.id}">${escaparHTML(etiqueta.nombre)}</option>`).join('');
+  selector.value = filtroEtiqueta;
+  return true;
 }
 
 async function crearEtiqueta() {
   const input = document.getElementById('nueva-etiqueta');
   const errorEl = document.getElementById('etiqueta-error');
+  const estadoEl = document.getElementById('etiqueta-estado');
+  const boton = document.getElementById('crear-etiqueta');
   const nombre = input.value.trim();
   errorEl.textContent = '';
+  estadoEl.textContent = '';
   if (!nombre) {
     errorEl.textContent = 'Escribe el nombre de la etiqueta.';
     return;
   }
 
-  const { error } = await supabaseClient.rpc('crear_etiqueta', { p_nombre: nombre });
-  if (error) {
-    errorEl.textContent = error.message;
-    return;
+  boton.disabled = true;
+  let guardada = false;
+  try {
+    const { error } = await supabaseClient.rpc('crear_etiqueta', { p_nombre: nombre });
+    if (error) throw error;
+    guardada = true;
+    input.value = '';
+    const cargadas = await cargarEtiquetas();
+    if (!cargadas) {
+      errorEl.textContent = `Etiqueta guardada, pero no se pudo actualizar la lista: ${errorEl.textContent}`;
+      return;
+    }
+    renderClientes();
+    estadoEl.textContent = `Etiqueta «${nombre}» lista. Pulsa su nombre junto a un cliente para asignarla.`;
+  } catch (error) {
+    errorEl.textContent = guardada
+      ? `Etiqueta guardada, pero no se pudo actualizar la lista: ${error.message}`
+      : `No se pudo crear la etiqueta: ${error.message}`;
+  } finally {
+    boton.disabled = false;
   }
-  input.value = '';
-  await cargarEtiquetas();
-  renderClientes();
 }
 
 async function alternarEtiqueta(clienteId, etiquetaId, asignada) {

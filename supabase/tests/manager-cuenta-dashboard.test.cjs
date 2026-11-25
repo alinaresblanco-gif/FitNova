@@ -138,3 +138,37 @@ test('Clientes conserva errores de carga y comunica si no puede copiar el enlace
   await context.copiarEnlaceInvitacion();
   assert.match(elemento('nc-copia-estado').textContent, /manualmente/);
 });
+
+test('crear etiqueta confirma el resultado y comunica errores de creación o actualización', async () => {
+  const elementos = {};
+  const elemento = (id) => elementos[id] ||= { value: '', textContent: '', innerHTML: '', disabled: false };
+  const estado = { errorRpc: null, errorCarga: null };
+  const context = {
+    document: { getElementById: elemento, addEventListener() {} },
+    supabaseClient: {
+      rpc: async () => ({ error: estado.errorRpc }),
+      from: () => ({ select: () => ({ order: async () => ({
+        data: [{ id: 'etiqueta', nombre: 'Nutrición', profesional_id: 'profesional' }],
+        error: estado.errorCarga,
+      }) }) }),
+    },
+  };
+  vm.runInNewContext(leer('fitnova-manager', 'js', 'clientes.js'), context);
+  await context.crearEtiqueta();
+  assert.match(elemento('etiqueta-error').textContent, /Escribe el nombre/);
+  elemento('nueva-etiqueta').value = 'Nutrición';
+  await context.crearEtiqueta();
+  assert.match(elemento('etiqueta-estado').textContent, /Nutrición.*asignarla/);
+  assert.match(elemento('filtro-etiqueta').innerHTML, /Nutrición/);
+  assert.equal(elemento('nueva-etiqueta').value, '');
+  estado.errorRpc = { message: 'sin conexión' };
+  elemento('nueva-etiqueta').value = 'Otra';
+  await context.crearEtiqueta();
+  assert.match(elemento('etiqueta-error').textContent, /No se pudo crear.*sin conexión/);
+  assert.equal(elemento('nueva-etiqueta').value, 'Otra');
+  estado.errorRpc = null;
+  estado.errorCarga = { message: 'fallo al cargar' };
+  await context.crearEtiqueta();
+  assert.match(elemento('etiqueta-error').textContent, /guardada.*fallo al cargar/);
+  assert.equal(elemento('crear-etiqueta').disabled, false);
+});

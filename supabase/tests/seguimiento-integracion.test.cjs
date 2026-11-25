@@ -46,6 +46,14 @@ test('Equipo, archivos y formularios con todas las migraciones y RLS reales', as
         values ('${uid(21)}',false,false,false,false,false,false,false);
       insert into public.profesional_cliente (cliente_id,profesional_id,rol) values ('${uid(21)}','${uid(11)}','entrenador');
     `);
+    await como(1);
+    const etiquetaDueno = (await db.query("select public.crear_etiqueta('Nutrición') as id")).rows[0].id;
+    assert.equal((await db.query("select public.crear_etiqueta(' nutrición ') as id")).rows[0].id, etiquetaDueno);
+    await como(2);
+    const etiquetaColaborador = (await db.query("select public.crear_etiqueta('Nutrición') as id")).rows[0].id;
+    assert.notEqual(etiquetaColaborador, etiquetaDueno);
+    assert.deepEqual((await db.query('select id from public.etiquetas')).rows.map((row) => row.id), [etiquetaColaborador]);
+    await db.exec('reset role');
     await db.query('insert into auth.users values ($1,$2)', [uid(6), 'alta-prueba@example.com']);
     await como(1);
     const altaPrueba = (await db.query("select * from public.crear_invitacion('Prueba','alta-prueba@example.com')")).rows[0];
