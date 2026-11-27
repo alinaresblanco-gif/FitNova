@@ -6,6 +6,7 @@
 <title>FitNova Manager · Perfil de cliente</title>
 <link rel="icon" href="../imagenes/LOGO FITNOVA MANAGER.png" />
 <link rel="stylesheet" href="css/styles.css?v=20261201.3" />
+<link rel="stylesheet" href="css/planificacion-cliente.css?v=20261127.1" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <link rel="stylesheet" href="../css/comunicacion.css?v=20261126.1" />
 </head>
@@ -63,6 +64,7 @@
 
       <section class="card">
         <div class="tabs">
+          <button class="tab-btn" data-tab-group="cliente-perfil" data-tab="planificacion" onclick="switchTab('cliente-perfil','planificacion')">Planificación</button>
           <button class="tab-btn active" data-tab-group="cliente-perfil" data-tab="resumen" onclick="switchTab('cliente-perfil','resumen')">Resumen</button>
           <button class="tab-btn" data-tab-group="cliente-perfil" data-tab="entrenamiento" onclick="switchTab('cliente-perfil','entrenamiento')">Entrenamiento</button>
           <button class="tab-btn" data-tab-group="cliente-perfil" data-tab="nutricion" onclick="switchTab('cliente-perfil','nutricion')">Nutrición</button>
@@ -72,6 +74,47 @@
           <button class="tab-btn" data-tab-group="cliente-perfil" data-tab="archivos" onclick="switchTab('cliente-perfil','archivos')">Archivos</button>
           <button class="tab-btn" data-tab-group="cliente-perfil" data-tab="pagos" onclick="switchTab('cliente-perfil','pagos')">Pagos</button>
           <button class="tab-btn" data-tab-group="cliente-perfil" data-tab="historial" onclick="switchTab('cliente-perfil','historial')">Historial</button>
+        </div>
+
+        <div class="tab-panel" data-tab-panel-group="cliente-perfil" data-tab-panel="planificacion">
+          <div class="planificacion" id="planificacion-cliente">
+            <div class="planificacion-cabecera">
+              <div><p class="planificacion-kicker">TU ESPACIO DE TRABAJO</p><h2>Planificación del cliente</h2><p>Selecciona un día para planificar y consultar su actividad.</p></div>
+              <button type="button" class="btn-outline" id="plan-cal-actualizar">Actualizar calendario</button>
+            </div>
+            <div class="planificacion-leyenda" id="plan-cal-leyenda"></div>
+            <p id="plan-cal-error" role="alert" class="planificacion-error"></p>
+            <div class="planificacion-layout">
+              <section class="planificacion-mes" aria-label="Calendario mensual">
+                <div class="planificacion-navegacion">
+                  <button type="button" id="plan-cal-anterior" aria-label="Mes anterior">‹</button>
+                  <h3 id="plan-cal-mes"></h3>
+                  <button type="button" id="plan-cal-siguiente" aria-label="Mes siguiente">›</button>
+                  <button type="button" id="plan-cal-hoy">Hoy</button>
+                </div>
+                <div class="planificacion-cuadricula" id="plan-cal-cuadricula"></div>
+              </section>
+              <aside class="planificacion-dia">
+                <p class="planificacion-kicker">DÍA SELECCIONADO</p>
+                <h3 id="plan-cal-dia"></h3>
+                <p id="plan-cal-estado" role="status">Cargando calendario...</p>
+                <div id="plan-cal-eventos"></div>
+                <h4>Preparar para este cliente</h4>
+                <div class="planificacion-acciones">
+                  <button type="button" data-plan-accion="cita">📅 Agendar cita</button>
+                  <button type="button" data-plan-accion="workout">💪 Asignar workout o cardio</button>
+                  <button type="button" data-plan-accion="crear">✨ Crear entrenamiento</button>
+                  <button type="button" data-plan-accion="programa">📋 Asignar programa</button>
+                  <button type="button" data-plan-accion="nutricion">🥗 Asignar plan nutricional</button>
+                  <button type="button" data-plan-accion="video">▶ Publicar vídeo</button>
+                  <button type="button" data-plan-accion="formulario">📝 Enviar formulario</button>
+                  <button type="button" data-plan-accion="archivo">📎 Compartir archivo</button>
+                </div>
+                <p class="planificacion-nota">Los vídeos, formularios y archivos se comparten al guardarlos, no se programan para el día seleccionado. El cardio se prepara como workout. Solo se muestran registros disponibles según tus permisos y tus propios vídeos; al eliminarlos o retirarlos desaparecen del calendario.</p>
+                <div id="plan-cal-videos-sin-fecha"></div>
+              </aside>
+            </div>
+          </div>
         </div>
 
         <div class="tab-panel active" data-tab-panel-group="cliente-perfil" data-tab-panel="resumen">
@@ -259,13 +302,15 @@
   <script src="../js/entrenos.js?v=20261126.2"></script>
   <script src="../js/archivos-seguimiento.js?v=20261127.1"></script>
   <script src="../js/formularios-seguimiento.js?v=20261127.1"></script>
-  <script src="js/entrenos-manager.js?v=20261126.1"></script>
-  <script src="js/programas-manager.js?v=20261126.2"></script>
-  <script src="js/planes-nutricionales-manager.js?v=20261126.4"></script>
+  <script src="js/entrenos-manager.js?v=20261127.3"></script>
+  <script src="js/programas-manager.js?v=20261127.3"></script>
+  <script src="js/planes-nutricionales-manager.js?v=20261127.3"></script>
+  <script src="js/videos-manager.js?v=20261127.3"></script>
   <script src="js/cliente-planes-nutricionales.js?v=20261126.4"></script>
-  <script src="js/cliente-entrenos.js?v=20261126.2"></script>
+  <script src="js/cliente-entrenos.js?v=20261127.3"></script>
   <script src="js/cliente-perfil.js?v=20261201.3"></script>
   <script src="js/tareas.js?v=20261126.1"></script>
+  <script src="js/planificacion-cliente.js?v=20261127.1"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       const session = await requireSession();

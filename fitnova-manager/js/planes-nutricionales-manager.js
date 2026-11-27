@@ -248,8 +248,8 @@ const NutPlanesMgr = (() => {
     asignacion = { ...opciones, planes: [] };
     document.getElementById('plan-selector-campo').style.display = opciones.plan ? 'none' : 'block';
     document.getElementById('plan-cliente-campo').style.display = opciones.clienteId ? 'none' : 'block';
-    document.getElementById('plan-inicio').value = N.hoyIso();
-    document.getElementById('plan-fin').value = N.sumarDias(N.hoyIso(), 6);
+    document.getElementById('plan-inicio').value = opciones.fecha || N.hoyIso();
+    document.getElementById('plan-fin').value = N.sumarDias(opciones.fecha || N.hoyIso(), 6);
     if (!opciones.plan) document.getElementById('plan-selector').innerHTML = '<option value="">Cargando planes...</option>';
     if (!opciones.clienteId) document.getElementById('plan-cliente').innerHTML = '<option value="">Cargando clientes...</option>';
     const aviso = document.getElementById('plan-asignar-error');

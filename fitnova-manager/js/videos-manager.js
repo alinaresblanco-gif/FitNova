@@ -50,7 +50,7 @@ const VideosMgr = (() => {
     });
   }
 
-  async function abrir(video, onGuardado) {
+  async function abrir(video, onGuardado, clienteId = null) {
     instalar();
     actual = video;
     alGuardar = onGuardado;
@@ -71,10 +71,13 @@ const VideosMgr = (() => {
       const { data, error } = await supabaseClient.rpc('clientes_para_videos');
       if (error) throw new Error(error.message);
       const ids = new Set((video?.video_destinatarios || []).map((d) => d.cliente_id));
+      if (clienteId && data.some((c) => c.id === clienteId)) ids.add(clienteId);
       document.getElementById('video-editor-clientes').innerHTML = data.length ? data.map((c) => `
         <label style="display:block;margin:6px 0;"><input type="checkbox" data-video-cliente value="${c.id}" ${ids.has(c.id) ? 'checked' : ''}>
         ${E.escapar(`${c.nombre} ${c.apellidos || ''}`.trim())}</label>`).join('') : '<p>No tienes clientes activos asignados.</p>';
-      if ([...ids].some((id) => !data.some((c) => c.id === id))) {
+      if (clienteId && !data.some((c) => c.id === clienteId)) {
+        document.getElementById('video-editor-error').textContent = 'Este cliente no está disponible como destinatario. Comprueba que esté activo y asignado a ti.';
+      } else if ([...ids].some((id) => !data.some((c) => c.id === id))) {
         document.getElementById('video-editor-error').textContent = 'Algunos destinatarios ya no están activos o asignados; se retirarán al guardar.';
       }
       boton.disabled = false;

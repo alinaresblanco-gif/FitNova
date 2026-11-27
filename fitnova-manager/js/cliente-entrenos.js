@@ -117,12 +117,12 @@ async function cpEntRecargar() {
   }
 }
 
-function cpEntEditor(w) {
+function cpEntEditor(w, fechaInicial = null, alGuardar = null) {
   const E = FitNovaEntrenos;
   EntMgr.abrirEditor({
     titulo: w ? 'Editar entrenamiento del cliente' : 'Nuevo entrenamiento solo para este cliente',
     datos: w ? { nombre: w.nombre, descripcion: w.descripcion, ejercicios: w.ejercicios } : null,
-    fecha: w ? w.fecha : E.hoyIso(),
+    fecha: w ? w.fecha : fechaInicial || E.hoyIso(),
     textoBoton: w ? 'Guardar cambios' : 'Asignar al cliente',
     onGuardar: async (fila, fecha) => {
       if (w) {
@@ -134,6 +134,7 @@ function cpEntEditor(w) {
         cpEntAviso('✅ Entrenamiento asignado. El cliente ya lo ve en FitNova Go.');
       }
       await cpEntRecargar();
+      if (alGuardar) await alGuardar();
     },
   });
 }

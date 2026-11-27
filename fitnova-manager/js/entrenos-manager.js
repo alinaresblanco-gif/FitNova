@@ -300,7 +300,7 @@ const EntMgr = (() => {
     const selCliente = document.getElementById('ent-asig-cliente');
     const selWorkout = document.getElementById('ent-asig-workout');
     aviso.textContent = '';
-    document.getElementById('ent-asig-fecha').value = E.hoyIso();
+    document.getElementById('ent-asig-fecha').value = opciones.fecha || E.hoyIso();
     document.getElementById('ent-asig-semanas').value = '1';
     document.getElementById('ent-asig-cliente-campo').hidden = Boolean(opciones.clienteId);
     document.getElementById('ent-asig-workout-campo').hidden = Boolean(opciones.workout);

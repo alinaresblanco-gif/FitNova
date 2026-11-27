@@ -79,7 +79,7 @@ async function cargarAgendaManager() {
   renderAgendaManager();
 }
 
-function abrirSesion(sesionId) {
+function abrirSesion(sesionId, fechaInicial = null) {
   if (operacionSesion) return;
   if (!clientesAgenda.some((c) => c.estado === 'activo')) {
     document.getElementById('agenda-error').textContent = 'Para agendar una sesión necesitas un cliente activo y la agenda cargada.';
@@ -93,7 +93,9 @@ function abrirSesion(sesionId) {
   document.getElementById('ses-modal-titulo').textContent = sesion ? 'Editar sesión' : 'Agendar sesión';
   document.getElementById('ses-cliente').value = sesion ? sesion.cliente_id
     : document.getElementById('agenda-cliente').value;
-  document.getElementById('ses-fecha').value = sesionesUI.fechaLocal(sesion ? sesion.inicio : new Date());
+  document.getElementById('ses-fecha').value = sesion
+    ? sesionesUI.fechaLocal(sesion.inicio)
+    : fechaInicial || sesionesUI.fechaLocal(new Date());
   document.getElementById('ses-hora').value = sesion ? sesionesUI.horaLocal(sesion.inicio) : '09:00';
   if (sesion) {
     document.getElementById('ses-nombre').value = sesion.titulo;
@@ -220,5 +222,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       renderAgendaManager();
     } else errorEl.textContent = 'El cliente solicitado no está disponible en tu cartera.';
   }
-  if (new URLSearchParams(location.search).has('open') && clientesAgenda.length) abrirSesion();
+  const params = new URLSearchParams(location.search);
+  if (params.get('open') === 'modal-nueva-sesion' && clientesAgenda.length) {
+    if (clienteId && !clientesAgenda.some((c) => c.id === clienteId && c.estado === 'activo')) {
+      errorEl.textContent = 'El cliente solicitado no está activo o no está disponible en tu cartera.';
+      return;
+    }
+    const fecha = params.get('fecha');
+    if (fecha) {
+      try { sesionesUI.intervalo(fecha, '09:00', 60); }
+      catch (error) { errorEl.textContent = `La fecha solicitada no es válida: ${error.message}`; return; }
+    }
+    abrirSesion(null, fecha);
+  }
 });

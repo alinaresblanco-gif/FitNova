@@ -134,7 +134,7 @@ const ProgramasMgr = (() => {
     const aviso = document.getElementById('programa-asignar-error');
     aviso.textContent = '';
     boton.disabled = true;
-    document.getElementById('programa-inicio').value = E.hoyIso();
+    document.getElementById('programa-inicio').value = opciones.fecha || E.hoyIso();
     document.getElementById('programa-selector-campo').style.display = opciones.programa ? 'none' : 'block';
     document.getElementById('programa-cliente-campo').style.display = opciones.clienteId ? 'none' : 'block';
     document.getElementById('programa-asignar-info').textContent = 'Cargando...';

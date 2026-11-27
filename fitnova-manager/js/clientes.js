@@ -65,7 +65,7 @@ function htmlFilaCliente(cliente) {
     <td><span class="status-dot ${cliente.estado === 'archivado' ? 'off' : ''}">${escaparHTML(obtenerEstadoNombre(cliente.estado))}</span></td>
     <td>${formatearFecha(cliente.ultima_actividad)}</td>
     <td>${htmlEtiquetasCliente(cliente)}</td>
-    <td><a href="cliente-perfil.html?id=${encodeURIComponent(cliente.id)}" class="btn-ghost">Abrir →</a></td>
+    <td><a href="cliente-perfil.html?id=${encodeURIComponent(cliente.id)}${cliente.estado === 'activo' ? '&tab=planificacion' : ''}" class="btn-ghost">Abrir →</a></td>
   </tr>`;
 }
 
