@@ -2,6 +2,7 @@
 (() => {
   const E = window.FitNovaEntrenos;
   const st = { clienteId: null, filas: [], cargados: false, error: '', actual: null, registrando: false };
+  const miniaturasVimeo = new Map();
 
   async function clienteId() {
     if (st.clienteId) return st.clienteId;
@@ -121,13 +122,49 @@
   // ----------------------------------------------------- Página: detalle
   function ejercicioHtml(it, i) {
     const pres = E.textoPrescripcion(it);
+    const video = E.videoEmbed(it.video_url);
     return `<article class="ent-ejercicio">
       <div class="ent-ejercicio-cab"><span class="ent-num">${i + 1}</span><div><strong>${E.escapar(it.nombre)}</strong>${pres ? `<span>${E.escapar(pres)}</span>` : ''}</div></div>
       ${E.etiquetasHtml(it)}
       ${it.notas ? `<p class="ent-notas">📝 ${E.escapar(it.notas)}</p>` : ''}
       ${it.instrucciones ? `<details class="ent-instrucciones"><summary>Cómo se hace</summary><p>${E.escapar(it.instrucciones)}</p></details>` : ''}
-      ${E.videoEmbed(it.video_url) ? `<button class="btn-secondary ent-video-btn" type="button" data-video="${i}">▶ Ver vídeo</button><div class="ent-video" id="ent-video-${i}" hidden></div>` : ''}
+      ${video ? `<button class="ent-video-miniatura" id="ent-miniatura-${i}" type="button" data-video="${i}" aria-label="Reproducir vídeo de ${E.escapar(it.nombre)}" aria-controls="ent-video-${i}" aria-expanded="false">
+        <img id="ent-miniatura-img-${i}" alt="" hidden><span class="ent-video-play" aria-hidden="true">▶</span><span class="ent-miniatura-estado" id="ent-miniatura-estado-${i}">Cargando miniatura…</span>
+      </button><div class="ent-video" id="ent-video-${i}" hidden><div id="ent-reproductor-${i}"></div><button class="btn-secondary ent-video-cerrar" type="button" data-video="${i}">Cerrar vídeo</button></div>` : ''}
     </article>`;
+  }
+
+  async function cargarMiniatura(it, i) {
+    const embed = E.videoEmbed(it.video_url);
+    if (!embed) return;
+    const imagen = document.getElementById(`ent-miniatura-img-${i}`);
+    const estado = document.getElementById(`ent-miniatura-estado-${i}`);
+    const u = new URL(embed);
+    try {
+      let miniatura;
+      if (u.hostname === 'www.youtube-nocookie.com') {
+        miniatura = `https://i.ytimg.com/vi/${encodeURIComponent(u.pathname.split('/').pop())}/hqdefault.jpg`;
+      } else {
+        if (!miniaturasVimeo.has(it.video_url)) {
+          const peticion = fetch(`https://vimeo.com/api/oembed.json?url=${encodeURIComponent(it.video_url)}`, { referrerPolicy: 'no-referrer' })
+            .then((respuesta) => {
+              if (!respuesta.ok) throw new Error(`Vimeo respondió ${respuesta.status}`);
+              return respuesta.json();
+            }).then((datos) => {
+              const url = new URL(datos.thumbnail_url);
+              if (url.protocol !== 'https:' || !(url.hostname === 'vimeocdn.com' || url.hostname.endsWith('.vimeocdn.com'))) throw new Error('Miniatura de Vimeo no válida');
+              return url.href;
+            });
+          miniaturasVimeo.set(it.video_url, peticion);
+        }
+        miniatura = await miniaturasVimeo.get(it.video_url);
+      }
+      imagen.onload = () => { imagen.hidden = false; estado.hidden = true; };
+      imagen.onerror = () => { imagen.hidden = true; estado.textContent = 'Miniatura no disponible'; };
+      imagen.src = miniatura;
+    } catch (error) {
+      estado.textContent = 'Miniatura no disponible';
+    }
   }
 
   function registroHtml(w) {
@@ -255,6 +292,7 @@
         ${registroHtml(w)}`}
       ${comentariosHtml(w)}
       <p class="sesion-error" id="ent-error" role="alert"></p>`;
+    if (!st.registrando) w.ejercicios.forEach(cargarMiniatura);
   }
 
   async function recargarDetalle() {
@@ -290,9 +328,13 @@
       if (video) {
         const i = Number(video.dataset.video);
         const caja = document.getElementById(`ent-video-${i}`);
+        const miniatura = document.getElementById(`ent-miniatura-${i}`);
+        const reproductor = document.getElementById(`ent-reproductor-${i}`);
         caja.hidden = !caja.hidden;
-        if (!caja.hidden && !caja.innerHTML) caja.innerHTML = E.videoHtml(st.actual.ejercicios[i].video_url, st.actual.ejercicios[i].nombre);
-        video.textContent = caja.hidden ? '▶ Ver vídeo' : 'Ocultar vídeo';
+        miniatura.hidden = !caja.hidden;
+        miniatura.setAttribute('aria-expanded', String(!caja.hidden));
+        reproductor.innerHTML = caja.hidden ? '' : E.videoHtml(st.actual.ejercicios[i].video_url, st.actual.ejercicios[i].nombre);
+        (caja.hidden ? miniatura : caja.querySelector('.ent-video-cerrar')).focus();
         return;
       }
       if (t.closest('#ent-registrar')) { st.registrando = true; pintarDetalle(); return; }

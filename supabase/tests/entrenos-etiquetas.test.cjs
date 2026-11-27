@@ -125,3 +125,70 @@ test('Go permite registrar y editar las series disponibles sin añadir nuevas', 
   assert.match(html, /value="7"/);
   assert.doesNotMatch(html, /Añadir serie|data-anadir-serie/);
 });
+
+test('Go muestra miniaturas de YouTube y Vimeo y permite abrir y cerrar el vídeo', async () => {
+  const elementos = new Map();
+  const elemento = (id) => {
+    if (!elementos.has(id)) elementos.set(id, {
+      innerHTML: '', textContent: '', hidden: false, listeners: {}, attributes: {},
+      addEventListener(tipo, fn) { this.listeners[tipo] = fn; },
+      setAttribute(nombre, valor) { this.attributes[nombre] = valor; },
+      focus() {},
+      querySelector() { return { focus() {} }; },
+    });
+    return elementos.get(id);
+  };
+  let iniciar;
+  const llamadas = [];
+  const document = {
+    getElementById: elemento,
+    addEventListener(tipo, fn) { if (tipo === 'DOMContentLoaded') iniciar = fn; },
+  };
+  const contextoGo = vm.createContext({
+    window: { location: { search: '?id=w' } }, document, URL, URLSearchParams, Date, Number, String, Error,
+    requireSessionGo: async () => true,
+    supabaseClient: { rpc: async () => ({ data: 'c', error: null }) },
+    fetch: async (url) => {
+      llamadas.push(url);
+      return { ok: true, json: async () => ({ thumbnail_url: url.includes('654321') ? 'https://example.com/image.jpg' : 'https://i.vimeocdn.com/video/123.jpg' }) };
+    },
+  });
+  vm.runInContext(fs.readFileSync(path.join(raiz, 'js', 'entrenos.js'), 'utf8'), contextoGo);
+  const ejercicios = [
+    { nombre: 'YouTube', video_url: 'https://youtu.be/abcdefghijk' },
+    { nombre: 'Vimeo', video_url: 'https://vimeo.com/123456' },
+    { nombre: 'Vimeo repetido', video_url: 'https://vimeo.com/123456' },
+    { nombre: 'Vimeo sin miniatura', video_url: 'https://vimeo.com/654321' },
+    { nombre: 'Sin vídeo' },
+  ];
+  contextoGo.window.FitNovaEntrenos.obtener = async () => ({
+    id: 'w', nombre: 'Rutina', fecha: '2026-11-27', ejercicios, registro: null, comentarios: [],
+  });
+  vm.runInContext(fs.readFileSync(path.join(raiz, 'mockup-fitnova-go', 'js', 'entrenos-go.js'), 'utf8'), contextoGo);
+  iniciar();
+  await new Promise(setImmediate);
+  const html = elemento('ent-contenido').innerHTML;
+  assert.equal((html.match(/class="ent-video-miniatura"/g) || []).length, 4);
+  assert.doesNotMatch(html, /▶ Ver vídeo/);
+  assert.equal(elemento('ent-miniatura-img-0').src, 'https://i.ytimg.com/vi/abcdefghijk/hqdefault.jpg');
+  assert.equal(elemento('ent-miniatura-img-1').src, 'https://i.vimeocdn.com/video/123.jpg');
+  assert.equal(elemento('ent-miniatura-img-2').src, 'https://i.vimeocdn.com/video/123.jpg');
+  assert.equal(llamadas.length, 2);
+  assert.equal(elemento('ent-miniatura-estado-3').textContent, 'Miniatura no disponible');
+  elemento('ent-miniatura-img-0').onerror();
+  assert.equal(elemento('ent-miniatura-estado-0').textContent, 'Miniatura no disponible');
+
+  const caja = elemento('ent-video-0');
+  caja.hidden = true;
+  const click = elemento('ent-contenido').listeners.click;
+  const boton = { dataset: { video: '0' } };
+  const evento = { target: { closest: (selector) => selector === '[data-video]' ? boton : null } };
+  await click(evento);
+  assert.equal(caja.hidden, false);
+  assert.equal(elemento('ent-miniatura-0').hidden, true);
+  assert.match(elemento('ent-reproductor-0').innerHTML, /youtube-nocookie\.com\/embed\/abcdefghijk/);
+  await click(evento);
+  assert.equal(caja.hidden, true);
+  assert.equal(elemento('ent-miniatura-0').hidden, false);
+  assert.equal(elemento('ent-reproductor-0').innerHTML, '');
+});

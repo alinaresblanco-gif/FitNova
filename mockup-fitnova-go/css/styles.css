@@ -663,10 +663,16 @@ textarea { resize: vertical; min-height: 60px; }
 .ent-instrucciones { font-size: 13px; margin-top: 8px; }
 .ent-instrucciones summary { color: var(--naranja); cursor: pointer; font-weight: 600; }
 .ent-instrucciones p { margin: 6px 0 0; white-space: pre-line; }
-.ent-video-btn { margin-top: 8px; padding: 8px 12px; width: auto; }
+.ent-video-miniatura { align-items: center; aspect-ratio: 16 / 9; background: linear-gradient(135deg, #0a1a2f, #287cae); border: 0; border-radius: 10px; color: white; cursor: pointer; display: flex; justify-content: center; margin-top: 10px; max-width: 320px; overflow: hidden; position: relative; width: 100%; }
+.ent-video-miniatura[hidden] { display: none; }
+.ent-video-miniatura:focus-visible { outline: 3px solid var(--naranja); outline-offset: 3px; }
+.ent-video-miniatura img { height: 100%; left: 0; object-fit: cover; position: absolute; top: 0; width: 100%; }
+.ent-video-play { align-items: center; background: rgba(10, 26, 47, .75); border: 2px solid white; border-radius: 50%; display: flex; font-size: 20px; height: 50px; justify-content: center; padding-left: 3px; position: relative; width: 50px; }
+.ent-miniatura-estado { background: rgba(10, 26, 47, .8); bottom: 8px; border-radius: 4px; font-size: 11px; padding: 3px 6px; position: absolute; }
 .ent-video { margin-top: 8px; }
 .ent-video[hidden] { display: none; }
 .ent-video iframe { border: 0; border-radius: 10px; }
+.ent-video-cerrar { margin-top: 8px; padding: 8px 12px; width: auto; }
 .ent-resultados { font-size: 13px; list-style: none; margin: 0 0 10px; padding: 0; }
 .ent-resultados li { border-bottom: 1px solid var(--gris); padding: 8px 0; }
 .ent-resultados li span { color: #55606f; display: block; margin-top: 2px; }
