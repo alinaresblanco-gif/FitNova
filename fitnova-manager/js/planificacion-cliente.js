@@ -134,8 +134,8 @@
   async function accion(tipo) {
     if (tipo === 'cita') {
       location.href = `agenda.html?cliente=${encodeURIComponent(clienteId)}&open=modal-nueva-sesion&fecha=${estado.fecha}`;
-    } else if (tipo === 'workout') {
-      await EntMgr.abrirAsignar({ clienteId, fecha: estado.fecha, onAsignado: () => { cpEntRecargar(); cargar(); } });
+    } else if (tipo === 'workout' || tipo === 'cardio') {
+      await EntMgr.abrirAsignar({ clienteId, fecha: estado.fecha, cardio: tipo === 'cardio', onAsignado: () => { cpEntRecargar(); cargar(); } });
     } else if (tipo === 'crear') {
       cpEntEditor(null, estado.fecha, cargar);
     } else if (tipo === 'programa') {

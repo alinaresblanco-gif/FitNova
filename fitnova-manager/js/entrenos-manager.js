@@ -292,7 +292,7 @@ const EntMgr = (() => {
   }
 
   // -------------------------------------------------------------- asignar
-  // opciones: { workout (plantilla fija) | clienteId (cliente fijo), onAsignado(asignados) }
+  // opciones: { workout (plantilla fija) | clienteId (cliente fijo), fecha, cardio, onAsignado(asignados) }
   async function abrirAsignar(opciones) {
     insertarModales();
     estado.asignar = opciones;
@@ -304,9 +304,12 @@ const EntMgr = (() => {
     document.getElementById('ent-asig-semanas').value = '1';
     document.getElementById('ent-asig-cliente-campo').hidden = Boolean(opciones.clienteId);
     document.getElementById('ent-asig-workout-campo').hidden = Boolean(opciones.workout);
+    document.getElementById('ent-asig-titulo').textContent = opciones.cardio ? 'Asignar cardio' : 'Asignar workout';
     document.getElementById('ent-asig-info').textContent = opciones.workout
       ? `Workout: ${opciones.workout.nombre} (${opciones.workout.ejercicios.length} ejercicios)`
-      : 'Elige uno de tus workouts y el día en que debe hacerlo.';
+      : opciones.cardio
+        ? 'Elige un workout de cardio de tu librería y el día en que debe hacerlo. Se muestran todos tus workouts.'
+        : 'Elige uno de tus workouts y el día en que debe hacerlo.';
     document.getElementById('ent-asig-guardar').disabled = true;
     openModal('modal-ent-asignar');
     try {

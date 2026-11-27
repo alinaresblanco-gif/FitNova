@@ -89,10 +89,45 @@ test('Calendario muestra fechas reales, planes que cruzan meses y acciones con e
   await new Promise(setImmediate);
   assert.equal(app.getAsignacion().fecha, '2026-03-14');
   assert.equal(app.getAsignacion().clienteId, 'c');
+  assert.equal(app.getAsignacion().cardio, false);
+  clic({ target: { closest: (s) => s === '[data-plan-accion]' ? { dataset: { planAccion: 'cardio' } } : null } });
+  await new Promise(setImmediate);
+  assert.equal(app.getAsignacion().fecha, '2026-03-14');
+  assert.equal(app.getAsignacion().clienteId, 'c');
+  assert.equal(app.getAsignacion().cardio, true);
   app.elemento('plan-cal-siguiente').listeners.click();
   await new Promise(setImmediate);
   assert.match(app.elemento('plan-cal-mes').textContent, /abril/);
   assert.doesNotMatch(app.elemento('plan-cal-cuadricula').innerHTML, /Cita nocturna/);
+});
+
+test('La asignación de cardio explica la librería y la de workout conserva su diálogo', async () => {
+  const elementos = new Map();
+  const elemento = (id) => {
+    if (!elementos.has(id)) elementos.set(id, { textContent: '', innerHTML: '', value: '', hidden: false, disabled: false });
+    return elementos.get(id);
+  };
+  const contexto = vm.createContext({
+    window: { FitNovaEntrenos: {
+      hoyIso: () => '2026-03-15',
+      listarWorkouts: async () => [{ id: 'w1', nombre: 'Carrera', ejercicios: [] }],
+      listarEjercicios: async () => [],
+      escapar: (texto) => texto,
+    } },
+    document: { getElementById: elemento },
+    supabaseClient: {}, openModal() {},
+  });
+  const archivo = path.join(__dirname, '..', '..', 'fitnova-manager', 'js', 'entrenos-manager.js');
+  vm.runInContext(fs.readFileSync(archivo, 'utf8'), contexto);
+  const manager = vm.runInContext('EntMgr', contexto);
+  await manager.abrirAsignar({ clienteId: 'c', fecha: '2026-03-14', cardio: true });
+  assert.equal(elemento('ent-asig-titulo').textContent, 'Asignar cardio');
+  assert.match(elemento('ent-asig-info').textContent, /Se muestran todos tus workouts/);
+  assert.match(elemento('ent-asig-workout').innerHTML, /Carrera/);
+  assert.equal(elemento('ent-asig-fecha').value, '2026-03-14');
+  await manager.abrirAsignar({ clienteId: 'c', fecha: '2026-03-15' });
+  assert.equal(elemento('ent-asig-titulo').textContent, 'Asignar workout');
+  assert.doesNotMatch(elemento('ent-asig-info').textContent, /cardio/);
 });
 
 test('Calendario advierte cuando una fuente falla en lugar de afirmar que está vacía', async () => {
