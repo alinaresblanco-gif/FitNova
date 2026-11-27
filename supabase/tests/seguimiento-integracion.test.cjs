@@ -49,12 +49,13 @@ test('Equipo, archivos y formularios con todas las migraciones y RLS reales', as
     await como(1);
     await db.query(`insert into public.ejercicios (id,profesional_id,nombre,especialidades,articulaciones)
       values ($1,$2,'Ejercicio de prueba',array['equilibrio','activacion'],array['rodilla','pie'])`, [uid(30), uid(11)]);
-    await db.query("update public.ejercicios set especialidades=array['cardio','rehabilitacion'] where id=$1", [uid(30)]);
-    const etiquetasEjercicio = (await db.query('select especialidades,articulaciones from public.ejercicios where id=$1', [uid(30)])).rows[0];
+    await db.query("update public.ejercicios set especialidades=array['cardio','rehabilitacion'], musculos_principales=array['biceps','cuadriceps'] where id=$1", [uid(30)]);
+    const etiquetasEjercicio = (await db.query('select especialidades,articulaciones,musculos_principales from public.ejercicios where id=$1', [uid(30)])).rows[0];
     assert.deepEqual(etiquetasEjercicio.especialidades, ['cardio', 'rehabilitacion']);
     assert.deepEqual(etiquetasEjercicio.articulaciones, ['rodilla', 'pie']);
+    assert.deepEqual(etiquetasEjercicio.musculos_principales, ['biceps', 'cuadriceps']);
     await assert.rejects(db.query("update public.ejercicios set articulaciones=array['invalida'] where id=$1", [uid(30)]), /check constraint/);
-    const copiaEjercicios = [{ nombre: 'Ejercicio de prueba', especialidades: ['cardio', 'rehabilitacion'], articulaciones: ['rodilla', 'pie'] }];
+    const copiaEjercicios = [{ nombre: 'Ejercicio de prueba', especialidades: ['cardio', 'rehabilitacion'], articulaciones: ['rodilla', 'pie'], musculos_principales: ['biceps', 'cuadriceps'] }];
     await db.query(`insert into public.clientes_workouts (id,cliente_id,profesional_id,fecha,nombre,ejercicios)
       values ($1,$2,$3,'2030-01-01','Prueba',$4::jsonb)`, [uid(31), uid(21), uid(11), JSON.stringify(copiaEjercicios)]);
     await como(3);

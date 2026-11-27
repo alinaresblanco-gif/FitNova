@@ -123,7 +123,7 @@ function libPintarEjercicios() {
     return;
   }
   caja.innerHTML = `<table class="data-table">
-    <thead><tr><th>Ejercicio</th><th>Especialidades y articulaciones</th><th>Vídeo</th><th style="text-align:right;">Acciones</th></tr></thead>
+    <thead><tr><th>Ejercicio</th><th>Especialidades, articulaciones y músculos</th><th>Vídeo</th><th style="text-align:right;">Acciones</th></tr></thead>
     <tbody>${lista.map((e) => `<tr>
       <td><strong>${E.escapar(e.nombre)}</strong>${e.instrucciones ? `<div style="font-size:12px;color:var(--gris-texto);max-width:480px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${E.escapar(e.instrucciones)}</div>` : ''}</td>
       <td style="font-size:13px;">${E.etiquetasHtml(e) || '—'}</td>

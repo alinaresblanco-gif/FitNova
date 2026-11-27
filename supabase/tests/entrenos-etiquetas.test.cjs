@@ -14,23 +14,35 @@ test('Ejercicios admiten selecciones múltiples opcionales y conservan sus etiqu
   const vacio = E.validarEjercicio({ nombre: 'Ejercicio' });
   assert.deepEqual(Array.from(vacio.fila.especialidades), []);
   assert.deepEqual(Array.from(vacio.fila.articulaciones), []);
+  assert.deepEqual(Array.from(vacio.fila.musculos_principales), []);
   const r = E.validarEjercicio({
     nombre: 'Prueba', especialidades: ['cardio', 'equilibrio', 'activacion'],
-    articulaciones: ['rodilla', 'muneca'], video_url: 'https://youtu.be/abcdefghijk',
+    articulaciones: ['rodilla', 'muneca'], musculos_principales: ['biceps', 'cuadriceps', 'pecho', 'pectoral'],
+    video_url: 'https://youtu.be/abcdefghijk',
   });
   assert.equal(r.fila.categoria, 'cardio');
   assert.match(E.etiquetasHtml(r.fila), /Equilibrio/);
   assert.match(E.etiquetasHtml(r.fila), /Activación/);
   assert.match(E.etiquetasHtml(r.fila), /Muñeca/);
+  assert.match(E.etiquetasHtml(r.fila), /Bíceps/);
+  assert.match(E.etiquetasHtml(r.fila), /Cuádriceps/);
   const item = E.itemDesdeCatalogo({ ...r.fila, id: '1' });
   const copia = E.validarWorkout({ nombre: 'Rutina', ejercicios: [item] }).fila.ejercicios[0];
   assert.deepEqual(Array.from(copia.especialidades), ['cardio', 'equilibrio', 'activacion']);
   assert.deepEqual(Array.from(copia.articulaciones), ['rodilla', 'muneca']);
-  const actualizado = E.refrescar([copia], [{ ...r.fila, id: '1', articulaciones: ['cadera'] }])[0];
+  assert.deepEqual(Array.from(copia.musculos_principales), ['biceps', 'cuadriceps', 'pecho', 'pectoral']);
+  const actualizado = E.refrescar([copia], [{ ...r.fila, id: '1', articulaciones: ['cadera'], musculos_principales: ['gluteo'] }])[0];
   assert.deepEqual(Array.from(actualizado.articulaciones), ['cadera']);
+  assert.deepEqual(Array.from(actualizado.musculos_principales), ['gluteo']);
+  assert.deepEqual(Array.from(copia.musculos_principales), ['biceps', 'cuadriceps', 'pecho', 'pectoral']);
   assert.deepEqual(Array.from(copia.articulaciones), ['rodilla', 'muneca']);
   assert.ok(E.validarEjercicio({ nombre: 'X', especialidades: ['cardio', 'cardio'] }).error);
   assert.ok(E.validarEjercicio({ nombre: 'X', articulaciones: ['invalida'] }).error);
+  assert.ok(E.validarEjercicio({ nombre: 'X', musculos_principales: ['biceps', 'biceps'] }).error);
+  assert.ok(E.validarEjercicio({ nombre: 'X', musculos_principales: ['invalido'] }).error);
+  const todos = ['abdominales', 'abductores', 'aductores', 'antebrazo', 'biceps', 'cuello', 'cuadriceps', 'dorsal', 'espalda', 'gemelo', 'trapecio', 'gluteo', 'hombro', 'isquiotibiales', 'lumbar', 'oblicuos', 'pecho', 'pectoral', 'tibial', 'triceps'];
+  assert.deepEqual(Array.from(E.MUSCULOS_PRINCIPALES, (x) => x.valor), todos);
+  assert.equal(E.validarEjercicio({ nombre: 'X', musculos_principales: todos }).fila.musculos_principales.length, 20);
 });
 
 test('Migración conserva categorías antiguas y valida las etiquetas en ejercicios y copias', async () => {
@@ -54,10 +66,18 @@ test('Migración conserva categorías antiguas y valida las etiquetas en ejercic
     assert.deepEqual((await db.query('select especialidades from public.ejercicios where id=1')).rows[0].especialidades, ['equilibrio', 'fuerza']);
     await assert.rejects(db.exec("update public.ejercicios set especialidades=array['cardio','cardio'] where id=1"), /check constraint/);
     await assert.rejects(db.exec("update public.ejercicios set articulaciones=array['invalida'] where id=1"), /check constraint/);
+    await db.exec(fs.readFileSync(path.join(raiz, 'supabase', 'migrations', '20261127193000_musculos_ejercicios.sql'), 'utf8'));
+    assert.deepEqual((await db.query('select musculos_principales from public.ejercicios where id=1')).rows[0].musculos_principales, []);
+    await db.exec("update public.ejercicios set musculos_principales=array['biceps','gluteo','pecho','pectoral'] where id=1");
+    await assert.rejects(db.exec("update public.ejercicios set musculos_principales=array['biceps','biceps'] where id=1"), /check constraint/);
+    await assert.rejects(db.exec("update public.ejercicios set musculos_principales=array['invalido'] where id=1"), /check constraint/);
     const validar = async (items) => (await db.query('select public.entreno_ejercicios_validos($1::jsonb) as valido', [JSON.stringify(items)])).rows[0].valido;
     assert.equal(await validar([{ nombre: 'Antiguo' }]), true);
     assert.equal(await validar([{ nombre: 'Nuevo', especialidades: ['cardio', 'equilibrio'], articulaciones: ['rodilla', 'pie'] }]), true);
     assert.equal(await validar([{ nombre: 'Nuevo', especialidades: ['cardio', 'cardio'] }]), false);
     assert.equal(await validar([{ nombre: 'Nuevo', articulaciones: ['invalida'] }]), false);
+    assert.equal(await validar([{ nombre: 'Nuevo', musculos_principales: ['biceps', 'gluteo'] }]), true);
+    assert.equal(await validar([{ nombre: 'Nuevo', musculos_principales: ['biceps', 'biceps'] }]), false);
+    assert.equal(await validar([{ nombre: 'Nuevo', musculos_principales: ['invalido'] }]), false);
   } finally { await db.close(); }
 });

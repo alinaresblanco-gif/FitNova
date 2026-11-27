@@ -3,7 +3,7 @@
 // asignados al cliente (clientes_workouts), lo que el cliente realiza
 // (clientes_workout_registros) y comentarios del profesional.
 window.FitNovaEntrenos = (() => {
-  const CAMPOS_EJERCICIO = 'id, nombre, categoria, especialidades, articulaciones, instrucciones, video_url, actualizado_en';
+  const CAMPOS_EJERCICIO = 'id, nombre, categoria, especialidades, articulaciones, musculos_principales, instrucciones, video_url, actualizado_en';
   const CAMPOS_WORKOUT = 'id, nombre, descripcion, ejercicios, actualizado_en';
   const CAMPOS_ASIGNADO = 'id, cliente_id, profesional_id, workout_origen_id, fecha, nombre, descripcion, ejercicios, programa_nombre, programa_semana, creado_en, actualizado_en';
   const CAMPOS_REGISTRO = 'id, workout_id, cliente_id, fecha, duracion_min, esfuerzo, comentario, resultados, creado_en, actualizado_en';
@@ -33,6 +33,18 @@ window.FitNovaEntrenos = (() => {
     { valor: 'pie', texto: 'Pie' }, { valor: 'pierna', texto: 'Pierna' },
     { valor: 'raquis', texto: 'Raquis' }, { valor: 'rodilla', texto: 'Rodilla' },
     { valor: 'rotula', texto: 'Rótula' }, { valor: 'tobillo', texto: 'Tobillo' },
+  ];
+  const MUSCULOS_PRINCIPALES = [
+    { valor: 'abdominales', texto: 'Abdominales' }, { valor: 'abductores', texto: 'Abductores' },
+    { valor: 'aductores', texto: 'Aductores' }, { valor: 'antebrazo', texto: 'Antebrazo' },
+    { valor: 'biceps', texto: 'Bíceps' }, { valor: 'cuello', texto: 'Cuello' },
+    { valor: 'cuadriceps', texto: 'Cuádriceps' }, { valor: 'dorsal', texto: 'Dorsal' },
+    { valor: 'espalda', texto: 'Espalda' }, { valor: 'gemelo', texto: 'Gemelo' },
+    { valor: 'trapecio', texto: 'Trapecio' }, { valor: 'gluteo', texto: 'Glúteo' },
+    { valor: 'hombro', texto: 'Hombro' }, { valor: 'isquiotibiales', texto: 'Isquiotibiales' },
+    { valor: 'lumbar', texto: 'Lumbar' }, { valor: 'oblicuos', texto: 'Oblicuos' },
+    { valor: 'pecho', texto: 'Pecho' }, { valor: 'pectoral', texto: 'Pectoral' },
+    { valor: 'tibial', texto: 'Tibial' }, { valor: 'triceps', texto: 'Tríceps' },
   ];
   const CATEGORIAS_ANTIGUAS = ['fuerza', 'cardio', 'core', 'movilidad', 'estiramiento', 'otro'];
   const ESTADOS = {
@@ -88,6 +100,7 @@ window.FitNovaEntrenos = (() => {
     const grupos = [
       ['Especialidad', especialidades(e), CATEGORIAS],
       ['Articulación', e.articulaciones || [], ARTICULACIONES],
+      ['Músculo principal', e.musculos_principales || [], MUSCULOS_PRINCIPALES],
     ];
     return grupos.map(([nombre, valores, opciones]) => {
       const etiquetas = valores.map((v) => opciones.find((o) => o.valor === v)).filter(Boolean);
@@ -169,16 +182,19 @@ window.FitNovaEntrenos = (() => {
     return Number.isFinite(n) ? n : NaN;
   }
 
-  function validarEjercicio({ nombre, categoria: cat, especialidades: especialidadesElegidas, articulaciones, instrucciones, video_url: video }) {
+  function validarEjercicio({ nombre, categoria: cat, especialidades: especialidadesElegidas, articulaciones, musculos_principales: musculos, instrucciones, video_url: video }) {
     const esp = especialidadesElegidas === undefined ? (cat ? [cat] : []) : especialidadesElegidas;
     const art = articulaciones === undefined ? [] : articulaciones;
+    const mus = musculos === undefined ? [] : musculos;
     if (!etiquetasValidas(esp, CATEGORIAS)) return { error: 'Selecciona especialidades válidas.' };
     if (!etiquetasValidas(art, ARTICULACIONES)) return { error: 'Selecciona articulaciones válidas.' };
+    if (!etiquetasValidas(mus, MUSCULOS_PRINCIPALES)) return { error: 'Selecciona músculos principales válidos.' };
     const fila = {
       nombre: texto(nombre),
       categoria: esp.find((v) => CATEGORIAS_ANTIGUAS.includes(v)) || null,
       especialidades: esp,
       articulaciones: art,
+      musculos_principales: mus,
       instrucciones: texto(instrucciones) || null,
       video_url: texto(video) || null,
     };
@@ -202,6 +218,7 @@ window.FitNovaEntrenos = (() => {
       video_url: texto(item.video_url) || null,
       especialidades: especialidades(item),
       articulaciones: item.articulaciones || [],
+      musculos_principales: item.musculos_principales || [],
       series: decimal(item.series),
       repeticiones: texto(item.repeticiones) || null,
       carga_kg: decimal(item.carga_kg),
@@ -210,7 +227,8 @@ window.FitNovaEntrenos = (() => {
       notas: texto(item.notas) || null,
     };
     if (!nombre) return { error: `${donde}: falta el nombre.` };
-    if (!etiquetasValidas(limpio.especialidades, CATEGORIAS) || !etiquetasValidas(limpio.articulaciones, ARTICULACIONES)) return { error: `${donde}: las etiquetas no son válidas.` };
+    if (!etiquetasValidas(limpio.especialidades, CATEGORIAS) || !etiquetasValidas(limpio.articulaciones, ARTICULACIONES)
+      || !etiquetasValidas(limpio.musculos_principales, MUSCULOS_PRINCIPALES)) return { error: `${donde}: las etiquetas no son válidas.` };
     if (nombre.length > 120) return { error: `${donde}: el nombre es demasiado largo.` };
     if (limpio.series !== null && !(Number.isInteger(limpio.series) && limpio.series >= 1 && limpio.series <= MAX_SERIES)) {
       return { error: `${donde}: las series deben ser un número entero entre 1 y ${MAX_SERIES}.` };
@@ -249,14 +267,14 @@ window.FitNovaEntrenos = (() => {
     const porId = new Map((catalogo || []).map((e) => [e.id, e]));
     return ejercicios.map((item) => {
       const base = item.ejercicio_id && porId.get(item.ejercicio_id);
-      return base ? { ...item, nombre: base.nombre, instrucciones: base.instrucciones || null, video_url: base.video_url || null, especialidades: especialidades(base), articulaciones: base.articulaciones || [] } : item;
+      return base ? { ...item, nombre: base.nombre, instrucciones: base.instrucciones || null, video_url: base.video_url || null, especialidades: especialidades(base), articulaciones: base.articulaciones || [], musculos_principales: base.musculos_principales || [] } : item;
     });
   }
 
   function itemDesdeCatalogo(e) {
     return {
       ejercicio_id: e.id, nombre: e.nombre, instrucciones: e.instrucciones || null, video_url: e.video_url || null,
-      especialidades: especialidades(e), articulaciones: e.articulaciones || [],
+      especialidades: especialidades(e), articulaciones: e.articulaciones || [], musculos_principales: e.musculos_principales || [],
       series: null, repeticiones: null, carga_kg: null, duracion_seg: null, descanso_seg: null, notas: null,
     };
   }
@@ -476,7 +494,7 @@ window.FitNovaEntrenos = (() => {
   }
 
   return {
-    CATEGORIAS, ARTICULACIONES, ESTADOS, MAX_EJERCICIOS, MAX_SERIES,
+    CATEGORIAS, ARTICULACIONES, MUSCULOS_PRINCIPALES, ESTADOS, MAX_EJERCICIOS, MAX_SERIES,
     escapar, hoyIso, sumarDias, fechaLarga, etiquetaDia, categoria, especialidades, etiquetasHtml, rol, segundos, numero,
     videoValido, videoEmbed, videoHtml,
     validarEjercicio, validarItem, validarWorkout, refrescar, itemDesdeCatalogo, textoPrescripcion, validarRegistro,

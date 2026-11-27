@@ -90,6 +90,9 @@ const EntMgr = (() => {
         <fieldset style="border:0;padding:0;margin:0;"><legend style="font-size:13px;font-weight:600;">Articulación (opcional, puedes elegir varias)</legend>
           <div class="ent-etiquetas-opciones" id="ent-ej-articulaciones">${opciones('articulacion', E.ARTICULACIONES)}</div>
         </fieldset>
+        <fieldset style="border:0;padding:0;margin:0;"><legend style="font-size:13px;font-weight:600;">Músculo principal (opcional, puedes elegir varios)</legend>
+          <div class="ent-etiquetas-opciones" id="ent-ej-musculos">${opciones('musculo', E.MUSCULOS_PRINCIPALES)}</div>
+        </fieldset>
         <label style="display:block;font-size:13px;font-weight:600;">Instrucciones / técnica (opcional)
           <textarea id="ent-ej-instrucciones" maxlength="2000" rows="4" placeholder="Cómo se hace, puntos clave, errores comunes..." style="${CAMPO}margin:4px 0 10px;"></textarea>
         </label>
@@ -160,6 +163,7 @@ const EntMgr = (() => {
     document.getElementById('ent-ej-video').addEventListener('input', pintarVistaEjercicio);
     document.getElementById('ent-ej-especialidades').addEventListener('change', pintarVistaEjercicio);
     document.getElementById('ent-ej-articulaciones').addEventListener('change', pintarVistaEjercicio);
+    document.getElementById('ent-ej-musculos').addEventListener('change', pintarVistaEjercicio);
     document.getElementById('ent-asig-form').addEventListener('submit', guardarAsignar);
   }
 
@@ -169,7 +173,7 @@ const EntMgr = (() => {
   }
 
   function pintarVistaEjercicio() {
-    const etiquetas = { especialidades: valoresElegidos('ent-ej-especialidades'), articulaciones: valoresElegidos('ent-ej-articulaciones') };
+    const etiquetas = { especialidades: valoresElegidos('ent-ej-especialidades'), articulaciones: valoresElegidos('ent-ej-articulaciones'), musculos_principales: valoresElegidos('ent-ej-musculos') };
     const video = document.getElementById('ent-ej-video').value.trim();
     document.getElementById('ent-ej-preview').innerHTML = E.etiquetasHtml(etiquetas) + E.videoHtml(video, 'Vista previa del vídeo');
   }
@@ -182,6 +186,7 @@ const EntMgr = (() => {
     for (const [id, valores] of [
       ['ent-ej-especialidades', ej ? E.especialidades(ej) : []],
       ['ent-ej-articulaciones', ej?.articulaciones || []],
+      ['ent-ej-musculos', ej?.musculos_principales || []],
     ]) {
       document.getElementById(id).querySelectorAll('input').forEach((input) => { input.checked = valores.includes(input.value); });
     }
@@ -201,6 +206,7 @@ const EntMgr = (() => {
       nombre: document.getElementById('ent-ej-nombre').value,
       especialidades: valoresElegidos('ent-ej-especialidades'),
       articulaciones: valoresElegidos('ent-ej-articulaciones'),
+      musculos_principales: valoresElegidos('ent-ej-musculos'),
       instrucciones: document.getElementById('ent-ej-instrucciones').value,
       video_url: document.getElementById('ent-ej-video').value,
     });
