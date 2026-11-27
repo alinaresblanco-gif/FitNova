@@ -16,11 +16,12 @@ function tarjetaSesion(sesion) {
       <p>${e(sesion.lugar || 'Sin lugar indicado')}</p>
       <span class="status-dot ${sesion.estado === 'cancelada' ? 'off' : ''}">${e(sesionesUI.estados[sesion.estado])}</span>
     </div>
-    ${editable ? `<div class="sesion-acciones">
-      <button class="btn-outline" data-sesion="${sesion.id}" data-accion="editar">Editar</button>
-      <button class="btn-outline" data-sesion="${sesion.id}" data-accion="cancelada">Cancelar sesión</button>
-      ${new Date(sesion.fin) <= new Date() ? `<button class="btn-primary" data-sesion="${sesion.id}" data-accion="completada">Marcar completada</button>` : ''}
-    </div>` : ''}
+    <div class="sesion-acciones">
+      ${editable ? `<button type="button" class="btn-outline" data-sesion="${sesion.id}" data-accion="editar">Editar</button>
+      <button type="button" class="btn-outline" data-sesion="${sesion.id}" data-accion="cancelada">Cancelar sesión</button>
+      ${new Date(sesion.fin) <= new Date() ? `<button type="button" class="btn-primary" data-sesion="${sesion.id}" data-accion="completada">Marcar completada</button>` : ''}` : ''}
+      <button type="button" class="btn-outline" data-sesion="${sesion.id}" data-accion="eliminar">Eliminar sesión</button>
+    </div>
   </article>`;
 }
 
@@ -150,22 +151,30 @@ async function accionSesion(event) {
     abrirSesion(boton.dataset.sesion);
     return;
   }
-  if (!confirm(boton.dataset.accion === 'cancelada' ? '¿Cancelar esta sesión? El cliente verá la cancelación en Go.' : '¿Marcar esta sesión como completada?')) return;
+  const accion = boton.dataset.accion;
+  if (!['cancelada', 'completada', 'eliminar'].includes(accion)) return;
+  const mensaje = accion === 'eliminar'
+    ? '¿Eliminar definitivamente esta sesión? Desaparecerá del historial y de la agenda del cliente en Go. Esta acción no se puede deshacer.'
+    : accion === 'cancelada' ? '¿Cancelar esta sesión? El cliente verá la cancelación en Go.' : '¿Marcar esta sesión como completada?';
+  if (!confirm(mensaje)) return;
   operacionSesion = true;
   boton.disabled = true;
   const errorEl = document.getElementById('agenda-error');
   errorEl.textContent = '';
+  document.getElementById('agenda-info').textContent = '';
   let guardada = false;
   try {
-    const { error } = await supabaseClient.rpc('cambiar_estado_sesion', {
-      p_sesion_id: boton.dataset.sesion, p_estado: boton.dataset.accion,
-    });
+    const { error } = accion === 'eliminar'
+      ? await supabaseClient.rpc('eliminar_sesion', { p_sesion_id: boton.dataset.sesion })
+      : await supabaseClient.rpc('cambiar_estado_sesion', { p_sesion_id: boton.dataset.sesion, p_estado: accion });
     if (error) throw new Error(sesionesUI.mensajeError(error));
     guardada = true;
-    document.getElementById('agenda-info').textContent = 'Estado guardado en Supabase.';
+    document.getElementById('agenda-info').textContent = accion === 'eliminar'
+      ? 'Sesión eliminada. El cliente dejará de verla al actualizar Go.'
+      : 'Estado guardado en Supabase.';
     await cargarAgendaManager();
   } catch (error) {
-    errorEl.textContent = `${guardada ? 'Estado guardado, pero no se pudo actualizar la lista: ' : ''}${error.message}`;
+    errorEl.textContent = `${guardada ? (accion === 'eliminar' ? 'Sesión eliminada, pero no se pudo actualizar la lista: ' : 'Estado guardado, pero no se pudo actualizar la lista: ') : ''}${error.message}`;
   } finally {
     operacionSesion = false;
     boton.disabled = false;

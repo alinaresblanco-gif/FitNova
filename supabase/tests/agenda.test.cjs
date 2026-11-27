@@ -21,6 +21,9 @@ test('Agenda: permisos, persistencia, estados y solapamientos en PostgreSQL', as
   async function estado(id, nuevo) {
     return db.query('select public.cambiar_estado_sesion($1, $2)', [id, nuevo]);
   }
+  async function eliminar(id) {
+    return db.query('select public.eliminar_sesion($1)', [id]);
+  }
   try {
     await db.exec(`
       create role anon;
@@ -132,6 +135,40 @@ test('Agenda: permisos, persistencia, estados y solapamientos en PostgreSQL', as
       await assert.rejects(estado(pasada, 'cancelada'), /no disponible/);
       await assert.rejects(guardar(21, '2030-01-13T11:00Z', '2030-01-13T12:00Z', pasada), /no disponible/);
     });
+    await t.test('el profesional elimina sus sesiones en cualquier estado y Go recibe aviso', async () => {
+      await como(1);
+      const programada = await guardar(21, '2030-02-01T11:00Z', '2030-02-01T12:00Z');
+      const cancelada = await guardar(21, '2030-02-02T11:00Z', '2030-02-02T12:00Z');
+      const completada = await guardar(21, '2020-02-03T11:00Z', '2020-02-03T12:00Z');
+      await estado(cancelada, 'cancelada');
+      await estado(completada, 'completada');
+      for (const id of [programada, cancelada, completada]) await eliminar(id);
+      await assert.rejects(eliminar(programada), /no disponible/);
+      await como(3);
+      assert.equal((await db.query('select id from public.sesiones where id = any($1::uuid[])', [[programada, cancelada, completada]])).rows.length, 0);
+      const avisos = await db.query("select titulo,referencia_id from public.notificaciones where tipo='agenda' and titulo='Se ha eliminado una cita de tu agenda.'");
+      assert.equal(avisos.rows.length, 3);
+      assert.ok(avisos.rows.every((aviso) => aviso.referencia_id === null));
+      await como(1);
+      await guardar(21, '2030-02-01T11:00Z', '2030-02-01T12:00Z');
+    });
+    await t.test('solo el profesional propietario con asignación puede eliminar', async () => {
+      await como(1);
+      const id = await guardar(21, '2030-02-04T11:00Z', '2030-02-04T12:00Z');
+      await assert.rejects(db.query('delete from public.sesiones where id=$1', [id]), /permission denied/);
+      await como(2);
+      await assert.rejects(eliminar(id), /no disponible/);
+      await como(3);
+      await assert.rejects(eliminar(id), /No autorizado/);
+      await como(3, 'anon');
+      await assert.rejects(eliminar(id), /permission denied/);
+      await db.exec('reset role');
+      await db.query('delete from public.profesional_cliente where profesional_id=$1 and cliente_id=$2', [uid(11), uid(21)]);
+      await como(1);
+      await assert.rejects(eliminar(id), /no disponible/);
+      await db.exec('reset role');
+      assert.equal((await db.query('select id from public.sesiones where id=$1', [id])).rows.length, 1);
+    });
   } finally { await db.close(); }
 });
 
@@ -150,4 +187,52 @@ test('Agenda: conversión de horario, cambios de hora y medianoche', () => {
   const noche = { inicio: '2026-11-23T22:00Z', fin: '2026-11-23T23:00Z' };
   assert.equal(ui.enDia(noche, '2026-11-23'), true);
   assert.equal(ui.enDia(noche, '2026-11-24'), false);
+});
+
+test('Agenda ofrece eliminación con confirmación y comunica errores o refrescos fallidos', async () => {
+  const elementos = new Map();
+  const elemento = (id) => {
+    if (!elementos.has(id)) elementos.set(id, { textContent: '' });
+    return elementos.get(id);
+  };
+  const llamadas = [];
+  let confirmar = false, falloRpc = false, falloRecarga = false;
+  const contexto = vm.createContext({
+    window: {}, Date, Number, String, Error,
+    document: { addEventListener() {}, getElementById: elemento },
+    confirm: () => confirmar,
+    supabaseClient: { rpc: async (nombre, parametros) => {
+      llamadas.push({ nombre, parametros });
+      return { error: falloRpc ? { message: 'Error de prueba' } : null };
+    } },
+    recargar: async () => { if (falloRecarga) throw new Error('Error al recargar'); },
+  });
+  const raiz = path.join(__dirname, '..', '..');
+  for (const archivo of ['js/sesiones.js', 'fitnova-manager/js/agenda.js']) {
+    vm.runInContext(fs.readFileSync(path.join(raiz, ...archivo.split('/')), 'utf8'), contexto);
+  }
+  vm.runInContext('cargarAgendaManager = recargar', contexto);
+  const tarjeta = vm.runInContext('tarjetaSesion', contexto);
+  const accion = vm.runInContext('accionSesion', contexto);
+  const sesion = { id: 's1', titulo: 'Cita', tipo: 'seguimiento', inicio: '2020-01-01T10:00:00Z', fin: '2020-01-01T11:00:00Z' };
+  for (const estado of ['programada', 'cancelada', 'completada']) {
+    assert.match(tarjeta({ ...sesion, estado }), /Eliminar sesión/);
+  }
+  const boton = { dataset: { sesion: 's1', accion: 'eliminar' }, disabled: false };
+  const evento = { target: { closest: () => boton } };
+  await accion(evento);
+  assert.equal(llamadas.length, 0);
+  confirmar = true;
+  falloRpc = true;
+  await accion(evento);
+  assert.equal(llamadas[0].nombre, 'eliminar_sesion');
+  assert.equal(llamadas[0].parametros.p_sesion_id, 's1');
+  assert.match(elemento('agenda-error').textContent, /Error de prueba/);
+  assert.equal(elemento('agenda-info').textContent, '');
+  falloRpc = false;
+  falloRecarga = true;
+  await accion(evento);
+  assert.match(elemento('agenda-error').textContent, /Sesión eliminada, pero no se pudo actualizar/);
+  assert.match(elemento('agenda-info').textContent, /Sesión eliminada/);
+  assert.equal(boton.disabled, false);
 });
