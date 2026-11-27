@@ -81,3 +81,47 @@ test('Migración conserva categorías antiguas y valida las etiquetas en ejercic
     assert.equal(await validar([{ nombre: 'Nuevo', musculos_principales: ['invalido'] }]), false);
   } finally { await db.close(); }
 });
+
+test('Go permite registrar y editar las series disponibles sin añadir nuevas', async () => {
+  const elementos = new Map();
+  const elemento = (id) => {
+    if (!elementos.has(id)) elementos.set(id, {
+      innerHTML: '', textContent: '', hidden: false, listeners: {},
+      addEventListener(tipo, fn) { this.listeners[tipo] = fn; },
+    });
+    return elementos.get(id);
+  };
+  let iniciar;
+  const document = {
+    getElementById: elemento,
+    addEventListener(tipo, fn) { if (tipo === 'DOMContentLoaded') iniciar = fn; },
+  };
+  const contextoGo = vm.createContext({
+    window: { location: { search: '?id=w' } }, document, URLSearchParams, Date, Number, String, Error,
+    requireSessionGo: async () => true,
+    supabaseClient: { rpc: async () => ({ data: 'c', error: null }) },
+  });
+  vm.runInContext(fs.readFileSync(path.join(raiz, 'js', 'entrenos.js'), 'utf8'), contextoGo);
+  const ejercicio = { nombre: 'Ejercicio', series: 2, repeticiones: '10' };
+  const workout = { id: 'w', nombre: 'Rutina', fecha: '2026-11-27', ejercicios: [ejercicio], registro: null, comentarios: [] };
+  contextoGo.window.FitNovaEntrenos.obtener = async () => workout;
+  vm.runInContext(fs.readFileSync(path.join(raiz, 'mockup-fitnova-go', 'js', 'entrenos-go.js'), 'utf8'), contextoGo);
+  iniciar();
+  await new Promise(setImmediate);
+  const click = elemento('ent-contenido').listeners.click;
+  const registrar = { target: { closest: (selector) => selector === '#ent-registrar' ? {} : null } };
+  await click(registrar);
+  let html = elemento('ent-contenido').innerHTML;
+  assert.equal((html.match(/data-serie>/g) || []).length, 2);
+  assert.doesNotMatch(html, /Añadir serie|data-anadir-serie/);
+  assert.match(html, /data-quitar-serie/);
+
+  workout.registro = { fecha: '2026-11-27', resultados: [{ indice: 0, hecho: true, series: [
+    { reps: 8, kg: 5 }, { reps: 9, kg: 6 }, { reps: 10, kg: 7 },
+  ] }] };
+  await click(registrar);
+  html = elemento('ent-contenido').innerHTML;
+  assert.equal((html.match(/data-serie>/g) || []).length, 3);
+  assert.match(html, /value="7"/);
+  assert.doesNotMatch(html, /Añadir serie|data-anadir-serie/);
+});

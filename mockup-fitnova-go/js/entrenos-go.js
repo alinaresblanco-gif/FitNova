@@ -189,13 +189,12 @@
         <label class="ent-hecho"><input type="checkbox" data-hecho ${!r || (res && res.hecho) ? 'checked' : ''} /> <strong>${E.escapar(it.nombre)}</strong></label>
         ${E.textoPrescripcion(it) ? `<span class="ent-pres">Prescrito: ${E.escapar(E.textoPrescripcion(it))}</span>` : ''}
         <div data-series>${seriesIniciales(it, res).map((s, n) => serieFila(i, n, s, conSeg, it.repeticiones)).join('')}</div>
-        <button type="button" class="btn-link" data-anadir-serie="${i}">+ Añadir serie</button>
       </article>`;
     }).join('');
     const chips = Array.from({ length: 10 }, (_, n) => `<button type="button" data-value="${n + 1}" class="${r && r.esfuerzo === n + 1 ? 'active' : ''}">${n + 1}</button>`).join('');
     return `<form class="card" id="ent-form" novalidate>
       <p class="card-title">${r ? 'Editar registro' : 'Registrar entrenamiento'}</p>
-      <p class="ent-inicio-texto">Ajusta las series a lo que hiciste de verdad. Deja vacío lo que no aplique.</p>
+      <p class="ent-inicio-texto">Completa las series disponibles con lo que hiciste de verdad. Deja vacío lo que no aplique.</p>
       ${ejercicios}
       <div class="field-row">
         <div><label for="ent-fecha">Día que lo hiciste</label><input type="date" id="ent-fecha" value="${fecha}" max="${E.sumarDias(hoy, 1)}" /></div>
@@ -313,22 +312,6 @@
         const estaba = chip.classList.contains('active');
         chip.parentElement.querySelectorAll('button').forEach((b) => b.classList.remove('active'));
         if (!estaba) chip.classList.add('active');
-        return;
-      }
-      const anadir = t.closest('[data-anadir-serie]');
-      if (anadir) {
-        const art = anadir.closest('[data-ejercicio]');
-        const series = art.querySelector('[data-series]');
-        const n = series.querySelectorAll('[data-serie]').length;
-        if (n >= E.MAX_SERIES) return;
-        const w0 = st.actual;
-        const previa = series.querySelector('[data-serie]:last-child');
-        const s = previa ? {
-          reps: previa.querySelector('[data-k="reps"]').value,
-          kg: previa.querySelector('[data-k="kg"]').value,
-          seg: previa.querySelector('[data-k="seg"]')?.value ?? '',
-        } : {};
-        series.insertAdjacentHTML('beforeend', serieFila(Number(art.dataset.ejercicio), n, s, Boolean(art.dataset.seg), w0.ejercicios[Number(art.dataset.ejercicio)].repeticiones));
         return;
       }
       const quitar = t.closest('[data-quitar-serie]');
