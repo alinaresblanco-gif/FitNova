@@ -28,9 +28,16 @@ const EntMgr = (() => {
 
   function insertarModales() {
     if (document.getElementById('modal-ent-editor')) return;
-    const cats = E.CATEGORIAS.map((c) => `<option value="${c.valor}">${c.texto}</option>`).join('');
+    const opciones = (grupo, lista) => lista.map((o) => `<label class="ent-etiqueta-opcion"><input type="checkbox" name="${grupo}" value="${o.valor}"><span>${E.escapar(o.texto)}</span></label>`).join('');
     document.body.insertAdjacentHTML('beforeend', `
-  <style>#modal-ent-editor [hidden], #modal-ent-asignar [hidden] { display: none !important; }</style>
+  <style>
+    #modal-ent-editor [hidden], #modal-ent-asignar [hidden] { display: none !important; }
+    .ent-etiquetas-opciones { display:flex; flex-wrap:wrap; gap:7px; margin:7px 0 12px; }
+    .ent-etiqueta-opcion input { position:absolute; opacity:0; }
+    .ent-etiqueta-opcion span { display:block; padding:7px 11px; border:1px solid #cbd6e3; border-radius:20px; background:#fff; color:#344963; font-size:12px; cursor:pointer; }
+    .ent-etiqueta-opcion input:checked + span { background:#174c89; border-color:#174c89; color:#fff; }
+    .ent-etiqueta-opcion input:focus-visible + span { outline:3px solid #f27922; outline-offset:2px; }
+  </style>
   <div class="modal-overlay" id="modal-ent-editor">
     <div class="modal" style="max-width:1040px;">
       <div class="modal-header">
@@ -77,9 +84,12 @@ const EntMgr = (() => {
         <label style="display:block;font-size:13px;font-weight:600;">Nombre
           <input id="ent-ej-nombre" maxlength="120" placeholder="Ej. Sentadilla goblet" style="${CAMPO}margin:4px 0 10px;" />
         </label>
-        <label style="display:block;font-size:13px;font-weight:600;">Categoría (opcional)
-          <select id="ent-ej-categoria" style="${CAMPO}margin:4px 0 10px;"><option value="">Sin categoría</option>${cats}</select>
-        </label>
+        <fieldset style="border:0;padding:0;margin:0;"><legend style="font-size:13px;font-weight:600;">Especialidad (opcional, puedes elegir varias)</legend>
+          <div class="ent-etiquetas-opciones" id="ent-ej-especialidades">${opciones('especialidad', E.CATEGORIAS)}</div>
+        </fieldset>
+        <fieldset style="border:0;padding:0;margin:0;"><legend style="font-size:13px;font-weight:600;">Articulación (opcional, puedes elegir varias)</legend>
+          <div class="ent-etiquetas-opciones" id="ent-ej-articulaciones">${opciones('articulacion', E.ARTICULACIONES)}</div>
+        </fieldset>
         <label style="display:block;font-size:13px;font-weight:600;">Instrucciones / técnica (opcional)
           <textarea id="ent-ej-instrucciones" maxlength="2000" rows="4" placeholder="Cómo se hace, puntos clave, errores comunes..." style="${CAMPO}margin:4px 0 10px;"></textarea>
         </label>
@@ -147,22 +157,37 @@ const EntMgr = (() => {
       pintarFilas();
     });
     document.getElementById('ent-ej-form').addEventListener('submit', guardarEjercicioForm);
-    document.getElementById('ent-ej-video').addEventListener('input', (event) => {
-      document.getElementById('ent-ej-preview').innerHTML = E.videoHtml(event.target.value.trim(), 'Vista previa');
-    });
+    document.getElementById('ent-ej-video').addEventListener('input', pintarVistaEjercicio);
+    document.getElementById('ent-ej-especialidades').addEventListener('change', pintarVistaEjercicio);
+    document.getElementById('ent-ej-articulaciones').addEventListener('change', pintarVistaEjercicio);
     document.getElementById('ent-asig-form').addEventListener('submit', guardarAsignar);
   }
 
   // ----------------------------------------------------------- ejercicios
+  function valoresElegidos(id) {
+    return [...document.getElementById(id).querySelectorAll('input:checked')].map((input) => input.value);
+  }
+
+  function pintarVistaEjercicio() {
+    const etiquetas = { especialidades: valoresElegidos('ent-ej-especialidades'), articulaciones: valoresElegidos('ent-ej-articulaciones') };
+    const video = document.getElementById('ent-ej-video').value.trim();
+    document.getElementById('ent-ej-preview').innerHTML = E.etiquetasHtml(etiquetas) + E.videoHtml(video, 'Vista previa del vídeo');
+  }
+
   function abrirEjercicio(ej, onGuardado) {
     insertarModales();
     estado.ejercicio = { id: ej ? ej.id : null, onGuardado };
     document.getElementById('ent-ej-titulo').textContent = ej ? 'Editar ejercicio' : 'Nuevo ejercicio';
     document.getElementById('ent-ej-nombre').value = ej ? ej.nombre : '';
-    document.getElementById('ent-ej-categoria').value = ej ? (ej.categoria || '') : '';
+    for (const [id, valores] of [
+      ['ent-ej-especialidades', ej ? E.especialidades(ej) : []],
+      ['ent-ej-articulaciones', ej?.articulaciones || []],
+    ]) {
+      document.getElementById(id).querySelectorAll('input').forEach((input) => { input.checked = valores.includes(input.value); });
+    }
     document.getElementById('ent-ej-instrucciones').value = ej ? (ej.instrucciones || '') : '';
     document.getElementById('ent-ej-video').value = ej ? (ej.video_url || '') : '';
-    document.getElementById('ent-ej-preview').innerHTML = ej ? E.videoHtml(ej.video_url, ej.nombre) : '';
+    pintarVistaEjercicio();
     document.getElementById('ent-ej-error').textContent = '';
     openModal('modal-ent-ejercicio');
     document.getElementById('ent-ej-nombre').focus();
@@ -174,7 +199,8 @@ const EntMgr = (() => {
     const boton = document.getElementById('ent-ej-guardar');
     const { fila, error } = E.validarEjercicio({
       nombre: document.getElementById('ent-ej-nombre').value,
-      categoria: document.getElementById('ent-ej-categoria').value,
+      especialidades: valoresElegidos('ent-ej-especialidades'),
+      articulaciones: valoresElegidos('ent-ej-articulaciones'),
       instrucciones: document.getElementById('ent-ej-instrucciones').value,
       video_url: document.getElementById('ent-ej-video').value,
     });
@@ -200,7 +226,7 @@ const EntMgr = (() => {
     const select = document.getElementById('ent-editor-catalogo');
     select.innerHTML = estado.catalogo.length
       ? `<option value="">Elige un ejercicio de tu catálogo...</option>${estado.catalogo.map((e) => (
-        `<option value="${e.id}">${E.escapar(e.nombre)}${e.categoria ? ` · ${E.escapar(E.categoria(e.categoria).texto)}` : ''}${e.video_url ? ' ▶' : ''}</option>`)).join('')}`
+        `<option value="${e.id}">${E.escapar(e.nombre)}${E.especialidades(e).length ? ` · ${E.escapar(E.especialidades(e).map((v) => E.categoria(v)?.texto || v).join(', '))}` : ''}${e.video_url ? ' ▶' : ''}</option>`)).join('')}`
       : '<option value="">Tu catálogo está vacío: crea un ejercicio nuevo</option>';
   }
 

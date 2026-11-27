@@ -47,6 +47,21 @@ test('Equipo, archivos y formularios con todas las migraciones y RLS reales', as
       insert into public.profesional_cliente (cliente_id,profesional_id,rol) values ('${uid(21)}','${uid(11)}','entrenador');
     `);
     await como(1);
+    await db.query(`insert into public.ejercicios (id,profesional_id,nombre,especialidades,articulaciones)
+      values ($1,$2,'Ejercicio de prueba',array['equilibrio','activacion'],array['rodilla','pie'])`, [uid(30), uid(11)]);
+    await db.query("update public.ejercicios set especialidades=array['cardio','rehabilitacion'] where id=$1", [uid(30)]);
+    const etiquetasEjercicio = (await db.query('select especialidades,articulaciones from public.ejercicios where id=$1', [uid(30)])).rows[0];
+    assert.deepEqual(etiquetasEjercicio.especialidades, ['cardio', 'rehabilitacion']);
+    assert.deepEqual(etiquetasEjercicio.articulaciones, ['rodilla', 'pie']);
+    await assert.rejects(db.query("update public.ejercicios set articulaciones=array['invalida'] where id=$1", [uid(30)]), /check constraint/);
+    const copiaEjercicios = [{ nombre: 'Ejercicio de prueba', especialidades: ['cardio', 'rehabilitacion'], articulaciones: ['rodilla', 'pie'] }];
+    await db.query(`insert into public.clientes_workouts (id,cliente_id,profesional_id,fecha,nombre,ejercicios)
+      values ($1,$2,$3,'2030-01-01','Prueba',$4::jsonb)`, [uid(31), uid(21), uid(11), JSON.stringify(copiaEjercicios)]);
+    await como(3);
+    assert.deepEqual((await db.query('select ejercicios from public.clientes_workouts where id=$1', [uid(31)])).rows[0].ejercicios, copiaEjercicios);
+    await como(4);
+    assert.equal((await db.query('select id from public.ejercicios where id=$1', [uid(30)])).rows.length, 0);
+    await como(1);
     const etiquetaDueno = (await db.query("select public.crear_etiqueta('Nutrición') as id")).rows[0].id;
     assert.equal((await db.query("select public.crear_etiqueta(' nutrición ') as id")).rows[0].id, etiquetaDueno);
     await como(2);

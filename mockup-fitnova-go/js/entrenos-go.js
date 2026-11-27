@@ -123,6 +123,7 @@
     const pres = E.textoPrescripcion(it);
     return `<article class="ent-ejercicio">
       <div class="ent-ejercicio-cab"><span class="ent-num">${i + 1}</span><div><strong>${E.escapar(it.nombre)}</strong>${pres ? `<span>${E.escapar(pres)}</span>` : ''}</div></div>
+      ${E.etiquetasHtml(it)}
       ${it.notas ? `<p class="ent-notas">📝 ${E.escapar(it.notas)}</p>` : ''}
       ${it.instrucciones ? `<details class="ent-instrucciones"><summary>Cómo se hace</summary><p>${E.escapar(it.instrucciones)}</p></details>` : ''}
       ${E.videoEmbed(it.video_url) ? `<button class="btn-secondary ent-video-btn" type="button" data-video="${i}">▶ Ver vídeo</button><div class="ent-video" id="ent-video-${i}" hidden></div>` : ''}

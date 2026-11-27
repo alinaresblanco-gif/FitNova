@@ -3,7 +3,7 @@
 // asignados al cliente (clientes_workouts), lo que el cliente realiza
 // (clientes_workout_registros) y comentarios del profesional.
 window.FitNovaEntrenos = (() => {
-  const CAMPOS_EJERCICIO = 'id, nombre, categoria, instrucciones, video_url, actualizado_en';
+  const CAMPOS_EJERCICIO = 'id, nombre, categoria, especialidades, articulaciones, instrucciones, video_url, actualizado_en';
   const CAMPOS_WORKOUT = 'id, nombre, descripcion, ejercicios, actualizado_en';
   const CAMPOS_ASIGNADO = 'id, cliente_id, profesional_id, workout_origen_id, fecha, nombre, descripcion, ejercicios, programa_nombre, programa_semana, creado_en, actualizado_en';
   const CAMPOS_REGISTRO = 'id, workout_id, cliente_id, fecha, duracion_min, esfuerzo, comentario, resultados, creado_en, actualizado_en';
@@ -18,8 +18,23 @@ window.FitNovaEntrenos = (() => {
     { valor: 'movilidad', texto: 'Movilidad' },
     { valor: 'estiramiento', texto: 'Estiramiento' },
     { valor: 'otro', texto: 'Otro' },
+    { valor: 'equilibrio', texto: 'Equilibrio' },
+    { valor: 'activacion', texto: 'Activación' },
+    { valor: 'propiocepcion', texto: 'Propiocepción' },
+    { valor: 'rehabilitacion', texto: 'Rehabilitación' },
+    { valor: 'hipopresivos', texto: 'Hipopresivos' },
+    { valor: 'fortalecimiento', texto: 'Fortalecimiento' },
   ];
 
+  const ARTICULACIONES = [
+    { valor: 'brazo', texto: 'Brazo' }, { valor: 'cadera', texto: 'Cadera' },
+    { valor: 'codo', texto: 'Codo' }, { valor: 'escapulas', texto: 'Escápulas' },
+    { valor: 'mano', texto: 'Mano' }, { valor: 'muneca', texto: 'Muñeca' },
+    { valor: 'pie', texto: 'Pie' }, { valor: 'pierna', texto: 'Pierna' },
+    { valor: 'raquis', texto: 'Raquis' }, { valor: 'rodilla', texto: 'Rodilla' },
+    { valor: 'rotula', texto: 'Rótula' }, { valor: 'tobillo', texto: 'Tobillo' },
+  ];
+  const CATEGORIAS_ANTIGUAS = ['fuerza', 'cardio', 'core', 'movilidad', 'estiramiento', 'otro'];
   const ESTADOS = {
     realizado: { texto: 'Realizado', icono: '✅' },
     pendiente: { texto: 'Pendiente', icono: '🕒' },
@@ -63,6 +78,26 @@ window.FitNovaEntrenos = (() => {
 
   function categoria(valor) {
     return CATEGORIAS.find((c) => c.valor === valor) || null;
+  }
+
+  function especialidades(e) {
+    return Array.isArray(e.especialidades) ? e.especialidades : e.categoria ? [e.categoria] : [];
+  }
+
+  function etiquetasHtml(e) {
+    const grupos = [
+      ['Especialidad', especialidades(e), CATEGORIAS],
+      ['Articulación', e.articulaciones || [], ARTICULACIONES],
+    ];
+    return grupos.map(([nombre, valores, opciones]) => {
+      const etiquetas = valores.map((v) => opciones.find((o) => o.valor === v)).filter(Boolean);
+      return etiquetas.length ? `<div style="margin:5px 0;font-size:12px"><strong>${nombre}:</strong> ${etiquetas.map((o) => `<span style="display:inline-block;background:#e8f1ff;color:#174c89;border-radius:12px;padding:3px 8px;margin:2px">${escapar(o.texto)}</span>`).join(' ')}</div>` : '';
+    }).join('');
+  }
+
+  function etiquetasValidas(valores, opciones) {
+    return Array.isArray(valores) && new Set(valores).size === valores.length
+      && valores.every((v) => opciones.some((o) => o.valor === v));
   }
 
   function rol(valor) {
@@ -134,16 +169,21 @@ window.FitNovaEntrenos = (() => {
     return Number.isFinite(n) ? n : NaN;
   }
 
-  function validarEjercicio({ nombre, categoria: cat, instrucciones, video_url: video }) {
+  function validarEjercicio({ nombre, categoria: cat, especialidades: especialidadesElegidas, articulaciones, instrucciones, video_url: video }) {
+    const esp = especialidadesElegidas === undefined ? (cat ? [cat] : []) : especialidadesElegidas;
+    const art = articulaciones === undefined ? [] : articulaciones;
+    if (!etiquetasValidas(esp, CATEGORIAS)) return { error: 'Selecciona especialidades válidas.' };
+    if (!etiquetasValidas(art, ARTICULACIONES)) return { error: 'Selecciona articulaciones válidas.' };
     const fila = {
       nombre: texto(nombre),
-      categoria: cat || null,
+      categoria: esp.find((v) => CATEGORIAS_ANTIGUAS.includes(v)) || null,
+      especialidades: esp,
+      articulaciones: art,
       instrucciones: texto(instrucciones) || null,
       video_url: texto(video) || null,
     };
     if (!fila.nombre) return { error: 'Escribe el nombre del ejercicio.' };
     if (fila.nombre.length > 120) return { error: 'El nombre no puede superar 120 caracteres.' };
-    if (fila.categoria && !categoria(fila.categoria)) return { error: 'La categoría no es válida.' };
     if (fila.instrucciones && fila.instrucciones.length > 2000) return { error: 'Las instrucciones no pueden superar 2000 caracteres.' };
     if (!videoValido(fila.video_url) || (fila.video_url && !videoEmbed(fila.video_url))) {
       return { error: 'El vídeo debe ser un enlace de YouTube o Vimeo (por ejemplo, https://youtu.be/... o https://vimeo.com/...).' };
@@ -160,6 +200,8 @@ window.FitNovaEntrenos = (() => {
       nombre,
       instrucciones: texto(item.instrucciones) || null,
       video_url: texto(item.video_url) || null,
+      especialidades: especialidades(item),
+      articulaciones: item.articulaciones || [],
       series: decimal(item.series),
       repeticiones: texto(item.repeticiones) || null,
       carga_kg: decimal(item.carga_kg),
@@ -168,6 +210,7 @@ window.FitNovaEntrenos = (() => {
       notas: texto(item.notas) || null,
     };
     if (!nombre) return { error: `${donde}: falta el nombre.` };
+    if (!etiquetasValidas(limpio.especialidades, CATEGORIAS) || !etiquetasValidas(limpio.articulaciones, ARTICULACIONES)) return { error: `${donde}: las etiquetas no son válidas.` };
     if (nombre.length > 120) return { error: `${donde}: el nombre es demasiado largo.` };
     if (limpio.series !== null && !(Number.isInteger(limpio.series) && limpio.series >= 1 && limpio.series <= MAX_SERIES)) {
       return { error: `${donde}: las series deben ser un número entero entre 1 y ${MAX_SERIES}.` };
@@ -201,18 +244,19 @@ window.FitNovaEntrenos = (() => {
     return { fila };
   }
 
-  // Actualiza nombre, instrucciones y vídeo de cada ejercicio con los del catálogo actual.
+  // Actualiza los datos del ejercicio con los del catálogo actual al asignar.
   function refrescar(ejercicios, catalogo) {
     const porId = new Map((catalogo || []).map((e) => [e.id, e]));
     return ejercicios.map((item) => {
       const base = item.ejercicio_id && porId.get(item.ejercicio_id);
-      return base ? { ...item, nombre: base.nombre, instrucciones: base.instrucciones || null, video_url: base.video_url || null } : item;
+      return base ? { ...item, nombre: base.nombre, instrucciones: base.instrucciones || null, video_url: base.video_url || null, especialidades: especialidades(base), articulaciones: base.articulaciones || [] } : item;
     });
   }
 
   function itemDesdeCatalogo(e) {
     return {
       ejercicio_id: e.id, nombre: e.nombre, instrucciones: e.instrucciones || null, video_url: e.video_url || null,
+      especialidades: especialidades(e), articulaciones: e.articulaciones || [],
       series: null, repeticiones: null, carga_kg: null, duracion_seg: null, descanso_seg: null, notas: null,
     };
   }
@@ -432,8 +476,8 @@ window.FitNovaEntrenos = (() => {
   }
 
   return {
-    CATEGORIAS, ESTADOS, MAX_EJERCICIOS, MAX_SERIES,
-    escapar, hoyIso, sumarDias, fechaLarga, etiquetaDia, categoria, rol, segundos, numero,
+    CATEGORIAS, ARTICULACIONES, ESTADOS, MAX_EJERCICIOS, MAX_SERIES,
+    escapar, hoyIso, sumarDias, fechaLarga, etiquetaDia, categoria, especialidades, etiquetasHtml, rol, segundos, numero,
     videoValido, videoEmbed, videoHtml,
     validarEjercicio, validarItem, validarWorkout, refrescar, itemDesdeCatalogo, textoPrescripcion, validarRegistro,
     listarEjercicios, guardarEjercicio, eliminarEjercicio, listarWorkouts, guardarWorkout, eliminarWorkout,

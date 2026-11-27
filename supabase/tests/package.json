@@ -2,7 +2,7 @@
   "name": "fitnova-agenda-tests",
   "private": true,
   "scripts": {
-    "test": "node --test agenda.test.cjs programas.test.cjs videos.test.cjs planificacion-cliente.test.cjs planes-nutricionales.test.cjs comunicacion.test.cjs equipos.test.cjs archivos.test.cjs formularios.test.cjs seguimiento-integracion.test.cjs recuperacion.test.cjs correo-invitaciones.test.cjs negocio.test.cjs go-cuenta-foto.test.cjs manager-cuenta-dashboard.test.cjs"
+    "test": "node --test agenda.test.cjs programas.test.cjs videos.test.cjs planificacion-cliente.test.cjs entrenos-etiquetas.test.cjs planes-nutricionales.test.cjs comunicacion.test.cjs equipos.test.cjs archivos.test.cjs formularios.test.cjs seguimiento-integracion.test.cjs recuperacion.test.cjs correo-invitaciones.test.cjs negocio.test.cjs go-cuenta-foto.test.cjs manager-cuenta-dashboard.test.cjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.6.0"

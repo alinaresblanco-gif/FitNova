@@ -21,6 +21,7 @@ function cpEntDetalleHtml(w) {
     return `<tr>
       <td style="width:24px;">${i + 1}</td>
       <td><strong style="font-size:13px;">${E.escapar(it.nombre)}</strong>${it.video_url ? ` <a href="${E.escapar(it.video_url)}" target="_blank" rel="noopener noreferrer" title="Ver vídeo">▶</a>` : ''}
+        ${E.etiquetasHtml(it)}
         ${it.notas ? `<div style="font-size:12px;color:#55606f;">${E.escapar(it.notas)}</div>` : ''}</td>
       <td style="font-size:13px;">${E.escapar(E.textoPrescripcion(it)) || '—'}</td>
       ${r ? `<td style="font-size:13px;">${hecho} ${res && res.series.length ? res.series.map((s, n) => `S${n + 1}: ${E.escapar(E.textoSerie(s))}`).join('<br>') : ''}</td>` : ''}

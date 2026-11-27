@@ -116,17 +116,17 @@ function libPintarEjercicios() {
   }
   const q = libNormalizar(document.getElementById('lib-buscar').value);
   const cat = document.getElementById('lib-filtro-categoria').value;
-  const lista = lib.ejercicios.filter((e) => (!cat || e.categoria === cat)
+  const lista = lib.ejercicios.filter((e) => (!cat || E.especialidades(e).includes(cat))
     && (!q || libNormalizar(`${e.nombre} ${e.instrucciones || ''}`).includes(q)));
   if (!lista.length) {
     caja.innerHTML = '<p style="color:var(--gris-texto);">Ningún ejercicio coincide con la búsqueda.</p>';
     return;
   }
   caja.innerHTML = `<table class="data-table">
-    <thead><tr><th>Ejercicio</th><th>Categoría</th><th>Vídeo</th><th style="text-align:right;">Acciones</th></tr></thead>
+    <thead><tr><th>Ejercicio</th><th>Especialidades y articulaciones</th><th>Vídeo</th><th style="text-align:right;">Acciones</th></tr></thead>
     <tbody>${lista.map((e) => `<tr>
       <td><strong>${E.escapar(e.nombre)}</strong>${e.instrucciones ? `<div style="font-size:12px;color:var(--gris-texto);max-width:480px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${E.escapar(e.instrucciones)}</div>` : ''}</td>
-      <td style="font-size:13px;">${e.categoria ? E.escapar(E.categoria(e.categoria).texto) : '—'}</td>
+      <td style="font-size:13px;">${E.etiquetasHtml(e) || '—'}</td>
       <td style="font-size:13px;">${e.video_url ? `<a href="${E.escapar(e.video_url)}" target="_blank" rel="noopener noreferrer">▶ Ver</a>` : '—'}</td>
       <td style="text-align:right;white-space:nowrap;">
         <button class="btn-outline" type="button" data-lib-accion="editar-ejercicio" data-id="${e.id}">Editar</button>
