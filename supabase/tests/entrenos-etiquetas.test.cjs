@@ -161,9 +161,10 @@ test('Go muestra miniaturas de YouTube y Vimeo y permite abrir y cerrar el víde
     { nombre: 'Vimeo sin miniatura', video_url: 'https://vimeo.com/654321' },
     { nombre: 'Sin vídeo' },
   ];
-  contextoGo.window.FitNovaEntrenos.obtener = async () => ({
+  const workout = {
     id: 'w', nombre: 'Rutina', fecha: '2026-11-27', ejercicios, registro: null, comentarios: [],
-  });
+  };
+  contextoGo.window.FitNovaEntrenos.obtener = async () => workout;
   vm.runInContext(fs.readFileSync(path.join(raiz, 'mockup-fitnova-go', 'js', 'entrenos-go.js'), 'utf8'), contextoGo);
   iniciar();
   await new Promise(setImmediate);
@@ -191,4 +192,25 @@ test('Go muestra miniaturas de YouTube y Vimeo y permite abrir y cerrar el víde
   assert.equal(caja.hidden, true);
   assert.equal(elemento('ent-miniatura-0').hidden, false);
   assert.equal(elemento('ent-reproductor-0').innerHTML, '');
+
+  const registrar = { target: { closest: (selector) => selector === '#ent-registrar' ? {} : null } };
+  await click(registrar);
+  let formulario = elemento('ent-contenido').innerHTML;
+  assert.match(formulario, /YouTube<\/strong><\/label>\s*<button class="ent-video-miniatura"/);
+  assert.equal((formulario.match(/class="ent-video-miniatura"/g) || []).length, 4);
+  assert.doesNotMatch(formulario, /Reproducir vídeo de Sin vídeo/);
+  await click(evento);
+  assert.match(elemento('ent-reproductor-0').innerHTML, /youtube-nocookie\.com\/embed\/abcdefghijk/);
+  await click(evento);
+
+  workout.registro = { fecha: '2026-11-27', resultados: [{ indice: 0, hecho: true, series: [{ reps: 12, kg: 5 }] }] };
+  await click(registrar);
+  formulario = elemento('ent-contenido').innerHTML;
+  assert.match(formulario, /Editar registro/);
+  assert.match(formulario, /YouTube<\/strong><\/label>\s*<button class="ent-video-miniatura"/);
+  assert.match(formulario, /value="12"/);
+  assert.match(formulario, /value="5"/);
+  await click(evento);
+  assert.match(elemento('ent-reproductor-0').innerHTML, /youtube-nocookie\.com\/embed\/abcdefghijk/);
+  await click(evento);
 });

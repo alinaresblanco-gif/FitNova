@@ -120,17 +120,21 @@
   }
 
   // ----------------------------------------------------- Página: detalle
+  function videoEjercicioHtml(it, i) {
+    if (!E.videoEmbed(it.video_url)) return '';
+    return `<button class="ent-video-miniatura" id="ent-miniatura-${i}" type="button" data-video="${i}" aria-label="Reproducir vídeo de ${E.escapar(it.nombre)}" aria-controls="ent-video-${i}" aria-expanded="false">
+      <img id="ent-miniatura-img-${i}" alt="" hidden><span class="ent-video-play" aria-hidden="true">▶</span><span class="ent-miniatura-estado" id="ent-miniatura-estado-${i}">Cargando miniatura…</span>
+    </button><div class="ent-video" id="ent-video-${i}" hidden><div id="ent-reproductor-${i}"></div><button class="btn-secondary ent-video-cerrar" type="button" data-video="${i}">Cerrar vídeo</button></div>`;
+  }
+
   function ejercicioHtml(it, i) {
     const pres = E.textoPrescripcion(it);
-    const video = E.videoEmbed(it.video_url);
     return `<article class="ent-ejercicio">
       <div class="ent-ejercicio-cab"><span class="ent-num">${i + 1}</span><div><strong>${E.escapar(it.nombre)}</strong>${pres ? `<span>${E.escapar(pres)}</span>` : ''}</div></div>
       ${E.etiquetasHtml(it)}
       ${it.notas ? `<p class="ent-notas">📝 ${E.escapar(it.notas)}</p>` : ''}
       ${it.instrucciones ? `<details class="ent-instrucciones"><summary>Cómo se hace</summary><p>${E.escapar(it.instrucciones)}</p></details>` : ''}
-      ${video ? `<button class="ent-video-miniatura" id="ent-miniatura-${i}" type="button" data-video="${i}" aria-label="Reproducir vídeo de ${E.escapar(it.nombre)}" aria-controls="ent-video-${i}" aria-expanded="false">
-        <img id="ent-miniatura-img-${i}" alt="" hidden><span class="ent-video-play" aria-hidden="true">▶</span><span class="ent-miniatura-estado" id="ent-miniatura-estado-${i}">Cargando miniatura…</span>
-      </button><div class="ent-video" id="ent-video-${i}" hidden><div id="ent-reproductor-${i}"></div><button class="btn-secondary ent-video-cerrar" type="button" data-video="${i}">Cerrar vídeo</button></div>` : ''}
+      ${videoEjercicioHtml(it, i)}
     </article>`;
   }
 
@@ -224,6 +228,7 @@
       const conSeg = Boolean(it.duracion_seg) || Boolean(res && res.series.some((s) => s.seg));
       return `<article class="ent-ejercicio" data-ejercicio="${i}" data-seg="${conSeg ? '1' : ''}">
         <label class="ent-hecho"><input type="checkbox" data-hecho ${!r || (res && res.hecho) ? 'checked' : ''} /> <strong>${E.escapar(it.nombre)}</strong></label>
+        ${videoEjercicioHtml(it, i)}
         ${E.textoPrescripcion(it) ? `<span class="ent-pres">Prescrito: ${E.escapar(E.textoPrescripcion(it))}</span>` : ''}
         <div data-series>${seriesIniciales(it, res).map((s, n) => serieFila(i, n, s, conSeg, it.repeticiones)).join('')}</div>
       </article>`;
@@ -292,7 +297,7 @@
         ${registroHtml(w)}`}
       ${comentariosHtml(w)}
       <p class="sesion-error" id="ent-error" role="alert"></p>`;
-    if (!st.registrando) w.ejercicios.forEach(cargarMiniatura);
+    w.ejercicios.forEach(cargarMiniatura);
   }
 
   async function recargarDetalle() {
